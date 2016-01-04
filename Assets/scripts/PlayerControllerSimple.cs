@@ -1,0 +1,48 @@
+﻿using UnityEngine;
+using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
+
+
+public class PlayerControllerSimple : MonoBehaviour
+{
+    public Rigidbody rigid;
+    public float rotationSpeed = 0.6f;
+    public float moveSpeed = 1;
+    Transform m_Cam;
+
+    // Use this for initialization
+    void Start()
+    {
+        m_Cam = Camera.main.transform;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float h = CrossPlatformInputManager.GetAxis("Horizontal");
+        float v = CrossPlatformInputManager.GetAxis("Vertical");
+
+        if (h != 0 || v != 0)
+        {
+            RaycastHit hit;
+            Vector3 hitNormal = Vector3.zero;
+            Vector3 from = Vector3.up + transform.position;
+            if (Physics.Raycast(from, -Vector3.up, out hit))
+            {
+                hitNormal = hit.normal;
+            }
+
+            Vector3 nowVelocity = h * m_Cam.right + v * m_Cam.up;
+            nowVelocity = Vector3.ProjectOnPlane(nowVelocity, hitNormal);
+            nowVelocity.Normalize();
+            rigid.velocity = moveSpeed * nowVelocity;
+
+            Vector3 forward = nowVelocity;
+            forward.y = 0;
+            Quaternion targetRotation = Quaternion.LookRotation(forward, transform.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime* rotationSpeed);
+
+            Debug.DrawLine(transform.position, transform.position + rigid.velocity, Color.blue);
+        }
+    }
+}

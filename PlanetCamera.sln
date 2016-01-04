@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.CSharp.Plugins", "PlanetCamera.CSharp.Plugins.csproj", "{611E9F39-748D-70E2-D428-430799C12C8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.CSharp", "PlanetCamera.CSharp.csproj", "{55578D7B-D3CF-CF66-3817-4845B913974A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.CSharp.Editor", "PlanetCamera.CSharp.Editor.csproj", "{061A94FB-E9A2-2687-1A91-DC13F7027CD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{611E9F39-748D-70E2-D428-430799C12C8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{611E9F39-748D-70E2-D428-430799C12C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{611E9F39-748D-70E2-D428-430799C12C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{611E9F39-748D-70E2-D428-430799C12C8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55578D7B-D3CF-CF66-3817-4845B913974A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55578D7B-D3CF-CF66-3817-4845B913974A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55578D7B-D3CF-CF66-3817-4845B913974A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55578D7B-D3CF-CF66-3817-4845B913974A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
