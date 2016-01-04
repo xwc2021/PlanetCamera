@@ -51,13 +51,15 @@ public class PlayerController : MonoBehaviour {
             //end
 
             //加上向心速度
-            Vector3 predictionPos = transform.position + Time.deltaTime * rigid.velocity;
+            Vector3 predictionPos = transform.position + Time.deltaTime * nowVelocity;
             Vector3 centripetalVelocity = laddingPlanet.position - predictionPos;
             centripetalVelocity.Normalize();
 
             nowVelocity = moveSpeed * (nowVelocity + centripetalScale * centripetalVelocity);
-            rigid.velocity = nowVelocity;
 
+            Vector3 verticalV =Vector3.Project(rigid.velocity, headUp);//保留地心引力
+            rigid.velocity = verticalV+nowVelocity;
+            
             Debug.DrawLine(transform.position, transform.position + rigid.velocity, Color.blue);
         }
 
