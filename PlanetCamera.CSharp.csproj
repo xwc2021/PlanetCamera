@@ -68,8 +68,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\bear\Move.cs" />
     <Compile Include="Assets\scripts\FlowCamera.cs" />
     <Compile Include="Assets\scripts\FlowPoint.cs" />
+    <Compile Include="Assets\scripts\MirrorCamera.cs" />
     <Compile Include="Assets\scripts\PlayerController.cs" />
     <Compile Include="Assets\scripts\PlayerControllerSimple.cs" />
     <Compile Include="Assets\scripts\TestRotation.cs" />
@@ -77,6 +79,7 @@
   <ItemGroup>
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Standard Assets\Fonts\OpenSans\License!.txt" />
+    <None Include="Assets\materials\mirror.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

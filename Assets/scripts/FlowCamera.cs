@@ -12,11 +12,9 @@ public class FlowCamera : MonoBehaviour {
 	
 	}
 	
-	// Update is called once per frame
 	void LateUpdate() {
         if (follow)
         {
-            //這種follow方式不太好
             transform.position = Vector3.Lerp(transform.position, target.position, speedTranslate * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, target.rotation, speedRotation * Time.deltaTime);
         }

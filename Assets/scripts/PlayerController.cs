@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour {
     Vector3 previouPosistion;
 
     // Update is called once per frame
-    void Update () {
+    void FixedUpdate() {
         Vector3 planetGravity =laddingPlanet.position - transform.position;
         rigid.AddForce(gravityScale * planetGravity);
 

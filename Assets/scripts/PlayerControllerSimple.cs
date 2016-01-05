@@ -17,7 +17,7 @@ public class PlayerControllerSimple : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float h = CrossPlatformInputManager.GetAxis("Horizontal");
         float v = CrossPlatformInputManager.GetAxis("Vertical");
@@ -25,7 +25,7 @@ public class PlayerControllerSimple : MonoBehaviour
         if (h != 0 || v != 0)
         {
             RaycastHit hit;
-            Vector3 hitNormal = Vector3.zero;
+            Vector3 hitNormal = transform.up;
             Vector3 from = Vector3.up + transform.position;
             if (Physics.Raycast(from, -Vector3.up, out hit))
             {
@@ -39,10 +39,12 @@ public class PlayerControllerSimple : MonoBehaviour
 
             Vector3 forward = nowVelocity;
             forward.y = 0;
-            Quaternion targetRotation = Quaternion.LookRotation(forward, transform.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime* rotationSpeed);
-
-            Debug.DrawLine(transform.position, transform.position + rigid.velocity, Color.blue);
+            if (forward != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(forward, transform.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+            }
+            Debug.DrawLine(transform.position, transform.position + rigid.velocity, Color.yellow);
         }
     }
 }

@@ -10,7 +10,7 @@ public class FlowPoint : MonoBehaviour {
     Transform target;
 
     Vector3 dirInWorld;
-    float R;
+    public float R;
     float smallR;
 	// Use this for initialization
 	void Start () {
