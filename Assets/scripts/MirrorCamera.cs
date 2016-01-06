@@ -6,6 +6,7 @@ public class MirrorCamera : MonoBehaviour {
     public Camera refCamera;
     public Transform targetMirror;
     public Material mirrorMaterial;
+    public Transform testPoint;
 
     Camera myCamera;
     // Use this for initialization
@@ -14,7 +15,7 @@ public class MirrorCamera : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
         Vector3 normal = targetMirror.up;
         Vector3 mirrorZ = Vector3.Reflect(refCamera.transform.forward, normal);
         Vector3 mirrorY = Vector3.Reflect(refCamera.transform.up, normal);
@@ -30,8 +31,15 @@ public class MirrorCamera : MonoBehaviour {
 
         //set data to shader
         Matrix4x4 M =targetMirror.transform.localToWorldMatrix;
-        Matrix4x4 V = transform.worldToLocalMatrix;
+        Matrix4x4 V = myCamera.worldToCameraMatrix;
         Matrix4x4 P = myCamera.projectionMatrix;
         mirrorMaterial.SetMatrix("_mirror_camera_mvp", P * V * M);
+
+        Vector4 v = testPoint.localPosition;
+        v.w = 1;
+        Vector4 tv = P * V * M * v;
+        tv = tv / tv.w;
+        print("testPoint NDC = ("+tv.x + "," + tv.y+")");
+
     }
 }
