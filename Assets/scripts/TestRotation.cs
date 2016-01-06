@@ -6,17 +6,27 @@ public class TestRotation : MonoBehaviour {
     public float degree = 0;
     public bool dynamic = false;
     public bool pre= true;
+    public bool bufferFlyEffect = true;
     public Transform target;
 
 	// Use this for initialization
 	void Start () {
         backup = transform.rotation;
+        backupRight = transform.right;
     }
     Quaternion backup;
+    Vector3 backupRight;
+    
     // Update is called once per frame
     void Update () {
 
-        Quaternion rotQ =  Quaternion.AngleAxis(degree, transform.right);
+        Quaternion rotQ = Quaternion.identity;
+        //這樣在!dynamic時累積誤差會產生蝴蝶效應(當degree太大時，沒多久就會開始晃動)
+        if (bufferFlyEffect)
+            rotQ =  Quaternion.AngleAxis(degree, transform.right);
+        else
+            rotQ = Quaternion.AngleAxis(degree, backupRight);
+
         if (!dynamic)
         {
             if (pre)

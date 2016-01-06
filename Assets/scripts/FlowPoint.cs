@@ -6,6 +6,7 @@ public class FlowPoint : MonoBehaviour {
 
     public float perPitchDegreen = 200;
     public float perYawDegreen = 600;
+    public float Rspeed = 10;
 
     Transform target;
 
@@ -100,6 +101,9 @@ public class FlowPoint : MonoBehaviour {
         Vector3 newCameraUp = Vector3.Cross(-dirInWorld, newCameraRight);
         transform.rotation = Quaternion.LookRotation(-dirInWorld, newCameraUp);
 
+        float Rscale = Input.GetAxis("Mouse ScrollWheel");
+        R += Rspeed*Rscale;
+        R = Mathf.Max(2, R);
         Debug.DrawLine(transform.position, target.position, Color.red);
     }
 }
