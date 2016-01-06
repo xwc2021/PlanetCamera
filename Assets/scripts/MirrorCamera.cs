@@ -35,11 +35,13 @@ public class MirrorCamera : MonoBehaviour {
         Matrix4x4 P = myCamera.projectionMatrix;
         mirrorMaterial.SetMatrix("_mirror_camera_mvp", P * V * M);
 
-        Vector4 v = testPoint.localPosition;
-        v.w = 1;
-        Vector4 tv = P * V * M * v;
-        tv = tv / tv.w;
-        print("testPoint NDC = ("+tv.x + "," + tv.y+")");
-
+        if (testPoint != null)
+        {
+            Vector4 v = testPoint.localPosition;
+            v.w = 1;
+            Vector4 tv = P * V * M * v;
+            tv = tv / tv.w;
+            print("testPoint NDC = (" + tv.x + "," + tv.y + ")");
+        }
     }
 }
