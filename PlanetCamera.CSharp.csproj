@@ -76,7 +76,8 @@
     <Compile Include="Assets\scripts\MirrorCamera.cs" />
     <Compile Include="Assets\scripts\PlayerController.cs" />
     <Compile Include="Assets\scripts\PlayerControllerSimple.cs" />
-    <Compile Include="Assets\scripts\TestRotation.cs" />
+    <Compile Include="Assets\scripts\TestRotationAxis.cs" />
+    <Compile Include="Assets\scripts\TestRotationEularAngle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />

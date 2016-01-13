@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TestRotation : MonoBehaviour {
+public class TestRotationAxis : MonoBehaviour {
 
     public float degree = 0;
     public bool dynamic = false;
-    public bool pre= true;
+    public bool global = true;
     public bool bufferFlyEffect = true;
     public Transform target;
 
@@ -29,7 +29,7 @@ public class TestRotation : MonoBehaviour {
 
         if (!dynamic)
         {
-            if (pre)
+            if (global)
             {
                 transform.rotation = rotQ * backup;
             }  
@@ -38,7 +38,7 @@ public class TestRotation : MonoBehaviour {
         }
         else
         {
-            if (pre)
+            if (global)
             {
                 Debug.DrawLine(transform.position, transform.position+transform.right*20, Color.green);
                 Matrix4x4 m = Matrix4x4.TRS(Vector3.zero, rotQ, Vector3.one);
