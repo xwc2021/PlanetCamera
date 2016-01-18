@@ -73,7 +73,7 @@
     <Compile Include="Assets\scripts\Domino.cs" />
     <Compile Include="Assets\scripts\DominoSpwan.cs" />
     <Compile Include="Assets\scripts\FlowCamera.cs" />
-    <Compile Include="Assets\scripts\FlowPoint.cs" />
+    <Compile Include="Assets\scripts\FollowPoint.cs" />
     <Compile Include="Assets\scripts\MirrorCamera.cs" />
     <Compile Include="Assets\scripts\PlayerController.cs" />
     <Compile Include="Assets\scripts\PlayerControllerSimple.cs" />

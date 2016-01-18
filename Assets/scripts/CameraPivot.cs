@@ -4,8 +4,8 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraPivot : MonoBehaviour {
 
-    public bool flow = true;
-    public float flowSpeed = 5;
+    public bool follow = true;
+    public float followSpeed = 5;
     public float pitchSpeed = 2;
     public float yawSpeed = 5;
     public float Rspeed = 10;
@@ -27,8 +27,8 @@ public class CameraPivot : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (flow)
-            recordPos = Vector3.Lerp(recordPos, myParent.position, flowSpeed * Time.deltaTime);
+        if (follow)
+            recordPos = Vector3.Lerp(recordPos, myParent.position, followSpeed * Time.deltaTime);
         else
             recordPos = myParent.position;
 
