@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\bear\Move.cs" />
+    <Compile Include="Assets\scripts\CameraPivot.cs" />
     <Compile Include="Assets\scripts\Domino.cs" />
     <Compile Include="Assets\scripts\DominoSpwan.cs" />
     <Compile Include="Assets\scripts\FlowCamera.cs" />

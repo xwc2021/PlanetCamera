@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//舊方法，已改成使用CameraPivot
 public class FlowCamera : MonoBehaviour {
 
     public Transform target;

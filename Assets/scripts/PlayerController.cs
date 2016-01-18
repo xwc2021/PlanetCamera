@@ -5,7 +5,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerController : MonoBehaviour {
 
-    public FlowPoint flowPoint;
+    public CameraPivot cameraPivot;
     public Transform laddingPlanet;
     public Rigidbody rigid;
     public float rotationSpeed = 0.6f;
@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour {
 
         //如果位置有更新，就更新FlowPoint
         //透過headUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
-        //用A軸來旋轉FlowPoint的dirInWorld
+        //用A軸來旋轉CameraPivot
 
         Vector3 diffV = transform.position - previouPosistion;
         Vector3 Z = Vector3.Cross(headUp, diffV);
@@ -74,7 +74,9 @@ public class PlayerController : MonoBehaviour {
         Vector3 to = (transform.position - laddingPlanet.position).normalized;
         float cosValue =Vector3.Dot(from,to);
         float rotDegree =Mathf.Acos(cosValue) * Mathf.Rad2Deg;
-        flowPoint.rotateByAxis(rotDegree, Z);
+
+        if(cameraPivot)
+            cameraPivot.rotateByAxis(rotDegree, Z);
 
          previouPosistion = transform.position;
     }

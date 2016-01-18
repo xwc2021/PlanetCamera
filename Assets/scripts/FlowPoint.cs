@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
+
+//舊方法，已改成使用CameraPivot
 public class FlowPoint : MonoBehaviour {
 
     public float perPitchDegreen = 200;
@@ -52,7 +54,7 @@ public class FlowPoint : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void test () {
 
         Vector3 newPos = target.position + dirInWorld * R;
 
