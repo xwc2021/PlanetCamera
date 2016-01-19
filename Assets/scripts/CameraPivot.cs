@@ -6,8 +6,8 @@ public class CameraPivot : MonoBehaviour {
 
     public bool follow = true;
     public float followSpeed = 5;
-    public float pitchSpeed = 2;
-    public float yawSpeed = 5;
+    public float perPitchDegreen = 200;
+    public float perYawDegreen = 600;
     public float Rspeed = 10;
 
     Vector3 recordPos;
@@ -35,11 +35,11 @@ public class CameraPivot : MonoBehaviour {
         transform.position = recordPos;
 
         float deltaY = CrossPlatformInputManager.GetAxis("Mouse Y");
-        Quaternion pitch = Quaternion.Euler(pitchSpeed * deltaY, 0, 0);
+        Quaternion pitch = Quaternion.Euler(perPitchDegreen * deltaY * Time.deltaTime, 0, 0);
         rot =  rot* pitch;
 
         float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
-        Quaternion yaw = Quaternion.AngleAxis(yawSpeed * deltaX,myParent.up);
+        Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
         rot = yaw*rot ;
 
         transform.rotation = rot;

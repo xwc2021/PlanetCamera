@@ -4,7 +4,10 @@ using UnityStandardAssets.CrossPlatformInput;
 
 
 //舊方法，已改成使用CameraPivot
-public class FollowPoint : MonoBehaviour {
+public class SpringArm : MonoBehaviour {
+
+    public float maxPitchDegree = 60;
+    public float minPitchDegree = -80;
 
     public float perPitchDegreen = 200;
     public float perYawDegreen = 600;
@@ -15,10 +18,11 @@ public class FollowPoint : MonoBehaviour {
 
     Transform myParent;
 
-    public Vector3 dirInWorld;
+    Vector3 dirInWorld;
     float R;
     
     Vector3 recordPos;
+    Vector3 recordRight;
 	// Use this for initialization
 	void Start () {
 
@@ -28,6 +32,7 @@ public class FollowPoint : MonoBehaviour {
         R = dirInWorld.magnitude;
         dirInWorld.Normalize();
         transform.rotation = Quaternion.LookRotation(-dirInWorld, myParent.up);
+        recordRight = transform.right;
     }
 
     public void rotateByAxis(float angle, Vector3 axis)
@@ -49,30 +54,31 @@ public class FollowPoint : MonoBehaviour {
         else
             recordPos = myParent.position;
 
+        float nowPitchDegree = 0;
         //handle pitch
         {
             float deltaY = CrossPlatformInputManager.GetAxis("Mouse Y");
 
-            Vector3 pitchHelpX = Vector3.Cross(dirInWorld, myParent.up);
-            Vector3 pitchHelpZ = Vector3.Cross(pitchHelpX, myParent.up);
+            //Vector3 pitchHelpX = Vector3.Cross(dirInWorld, myParent.up);
+            //Vector3 pitchHelpZ = Vector3.Cross(pitchHelpX, myParent.up);
+            //原來的作法，在nowPitchDegree>0時，pitchHelpZ會差180度
+            Vector3 pitchHelpZ = Vector3.Cross(recordRight, myParent.up);
             pitchHelpZ.Normalize();
 
             Vector2 c = new Vector2(Vector3.Dot(dirInWorld, myParent.up), Vector3.Dot(dirInWorld, pitchHelpZ));
 
-            float nowPitchDegree =Mathf.Atan2(c.y, c.x)*Mathf.Rad2Deg;
+            nowPitchDegree = Mathf.Atan2(c.y, c.x)*Mathf.Rad2Deg;
 
             //在helpX軸上轉動
             //Complex multiplication
             //(x+yi)*(cos(theda)+sin(theda)i) = x*cos(theda)-y*sin(theda)+i(y*cos(theda)+x*sin(theda)) 
-
-            const float maxDegree = -10;
-            const float minDegree = -170;
+ 
             print("newPitchDegree="+nowPitchDegree);
-            if (minDegree <= nowPitchDegree && nowPitchDegree <= maxDegree)
+            if (minPitchDegree <= nowPitchDegree && nowPitchDegree <= maxPitchDegree)
             {
                 float addPitchDegree = perPitchDegreen * deltaY * Time.deltaTime;
                 float newPitchDegree = nowPitchDegree + addPitchDegree;
-                if (minDegree <= newPitchDegree && newPitchDegree <= maxDegree)
+                if (minPitchDegree <= newPitchDegree && newPitchDegree <= maxPitchDegree)
                 {
                     float addPitchRad = addPitchDegree * Mathf.Deg2Rad;
 
@@ -80,6 +86,9 @@ public class FollowPoint : MonoBehaviour {
                     float imaginary = c.y * Mathf.Cos(addPitchRad) + c.x * Mathf.Sin(addPitchRad);
 
                     dirInWorld = real * myParent.up + imaginary * pitchHelpZ;
+
+                    //更新nowPitchDegree，因為之後會用到
+                    nowPitchDegree = nowPitchDegree + addPitchDegree;
                 } 
             }
         }
@@ -109,8 +118,15 @@ public class FollowPoint : MonoBehaviour {
         transform.position = recordPos+ R* dirInWorld;
         Debug.DrawLine(transform.position, myParent.position, Color.red);
 
-        Vector3 newCameraRight = Vector3.Cross(dirInWorld, myParent.up);
-        Vector3 newCameraUp = Vector3.Cross(newCameraRight,dirInWorld);
-        transform.rotation = Quaternion.LookRotation(-dirInWorld, newCameraUp);    
+        //更新旋轉
+        {
+            Vector3 newCameraRight = Vector3.Cross(dirInWorld, myParent.up);
+            if (nowPitchDegree > 0)
+                newCameraRight = -newCameraRight;
+
+            Vector3 newCameraUp = Vector3.Cross(newCameraRight, dirInWorld);
+            transform.rotation = Quaternion.LookRotation(-dirInWorld, newCameraUp);
+            recordRight = transform.right;
+        }  
     }
 }
