@@ -8,7 +8,7 @@ public class CameraPivot : MonoBehaviour {
     public float followSpeed = 5;
     public float perPitchDegreen = 200;
     public float perYawDegreen = 600;
-    public float Rspeed = 10;
+    public float Rdiff = 300;
 
     Vector3 recordPos;
     Quaternion rot;
@@ -45,7 +45,7 @@ public class CameraPivot : MonoBehaviour {
         transform.rotation = rot;
 
         float Rscale = Input.GetAxis("Mouse ScrollWheel");
-        R += Rspeed * Rscale;
+        R += Rdiff * Rscale * Time.deltaTime;
         R = Mathf.Max(2, R);
 
         camera.localPosition = new Vector3(0,0,-R);
