@@ -116,6 +116,7 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
             R = Mathf.Max(2, R);
         }
 
+        dirInWorld.Normalize();
         transform.position = recordPos+ R* dirInWorld;
         Debug.DrawLine(transform.position, myParent.position, Color.red);
 
