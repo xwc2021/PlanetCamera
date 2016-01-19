@@ -4,7 +4,8 @@ using UnityStandardAssets.CrossPlatformInput;
 
 
 //舊方法，已改成使用CameraPivot
-public class SpringArm : MonoBehaviour {
+public class SpringArm : MonoBehaviour, FollowCameraBehavior
+{
 
     public float maxPitchDegree = 60;
     public float minPitchDegree = -80;

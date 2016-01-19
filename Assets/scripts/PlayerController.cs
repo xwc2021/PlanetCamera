@@ -2,10 +2,16 @@
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
+public interface FollowCameraBehavior
+{
+    void rotateByAxis(float angle, Vector3 axis);
+}
+
 
 public class PlayerController : MonoBehaviour {
 
-    public CameraPivot cameraPivot;
+    public FollowCameraBehavior cameraBehavior;
+    public MonoBehaviour cameraSocket;
     public Transform laddingPlanet;
     public Rigidbody rigid;
     public float rotationSpeed = 0.6f;
@@ -18,6 +24,11 @@ public class PlayerController : MonoBehaviour {
     void Start () {
         m_Cam = Camera.main.transform;
         previouPosistion = transform.position;
+
+        if (cameraSocket != null)
+            cameraBehavior = cameraSocket as FollowCameraBehavior;
+
+        //print("cameraBehavior="+cameraBehavior);
     }
 
     Vector3 previouPosistion;
@@ -75,8 +86,8 @@ public class PlayerController : MonoBehaviour {
         float cosValue =Vector3.Dot(from,to);
         float rotDegree =Mathf.Acos(cosValue) * Mathf.Rad2Deg;
 
-        if(cameraPivot)
-            cameraPivot.rotateByAxis(rotDegree, Z);
+        if(cameraBehavior != null)
+            cameraBehavior.rotateByAxis(rotDegree, Z);
 
          previouPosistion = transform.position;
     }

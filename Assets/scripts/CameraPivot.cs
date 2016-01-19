@@ -2,7 +2,8 @@
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class CameraPivot : MonoBehaviour {
+public class CameraPivot : MonoBehaviour, FollowCameraBehavior
+{
 
     public bool follow = true;
     public float followSpeed = 5;
