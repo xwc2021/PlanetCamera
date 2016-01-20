@@ -5,8 +5,8 @@ using System.Collections;
 public class FlowCamera : MonoBehaviour {
 
     public Transform target;
-    public float speedTranslate=1;
-    public float speedRotation = 1;
+    public float speedTranslate=10;
+    public float speedRotation = 10;
     public bool follow = false;
     // Use this for initialization
     void Start () {

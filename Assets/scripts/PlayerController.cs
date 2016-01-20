@@ -10,6 +10,7 @@ public interface FollowCameraBehavior
 
 public class PlayerController : MonoBehaviour {
 
+    public bool adjustCameraWhenMove = true;
     public FollowCameraBehavior cameraBehavior;
     public MonoBehaviour cameraSocket;
     public Transform laddingPlanet;
@@ -72,23 +73,34 @@ public class PlayerController : MonoBehaviour {
             rigid.velocity = verticalV+nowVelocity;
             
             Debug.DrawLine(transform.position, transform.position + rigid.velocity, Color.blue);
-        }
+        }  
+    }
 
+    void Update()
+    {
+        //如果在FixedUpdate做會抖動
+        if (adjustCameraWhenMove)
+            doAdjust();
+    }
+
+    void doAdjust()
+    {
         //如果位置有更新，就更新FlowPoint
         //透過headUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
         //用A軸來旋轉CameraPivot
 
         Vector3 diffV = transform.position - previouPosistion;
-        Vector3 Z = Vector3.Cross(headUp, diffV);
+        //Vector3 Z = Vector3.Cross(headUp, diffV);
+        Vector3 Z = Vector3.Cross(transform.up, diffV);
 
         Vector3 from = (previouPosistion - laddingPlanet.position).normalized;
         Vector3 to = (transform.position - laddingPlanet.position).normalized;
-        float cosValue =Vector3.Dot(from,to);
-        float rotDegree =Mathf.Acos(cosValue) * Mathf.Rad2Deg;
+        float cosValue = Vector3.Dot(from, to);
+        float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
 
-        if(cameraBehavior != null)
+        if (cameraBehavior != null)
             cameraBehavior.rotateByAxis(rotDegree, Z);
 
-         previouPosistion = transform.position;
+        previouPosistion = transform.position;
     }
 }

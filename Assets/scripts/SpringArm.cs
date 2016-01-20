@@ -21,7 +21,6 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
 
     Vector3 dirInWorld;
     float R;
-    
     Vector3 recordPos;
     Vector3 recordRight;
 	// Use this for initialization
