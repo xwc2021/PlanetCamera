@@ -121,6 +121,8 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
 
         //更新旋轉
         {
+            //because myParent.up is varying when player move on planet, I guess it is the resson why camera shakes.
+            //When using CameraPivot, 3 axis of camera are affected on  the same time.
             Vector3 newCameraRight = Vector3.Cross(dirInWorld, myParent.up);
             if (nowPitchDegree > 0)
                 newCameraRight = -newCameraRight;
