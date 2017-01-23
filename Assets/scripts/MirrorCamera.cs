@@ -41,7 +41,7 @@ public class MirrorCamera : MonoBehaviour {
             v.w = 1;
             Vector4 tv = P * V * M * v;
             tv = tv / tv.w;
-            print("testPoint NDC = (" + tv.x + "," + tv.y + ")");
+            //print("testPoint NDC = (" + tv.x + "," + tv.y + ")");
         }
     }
 }

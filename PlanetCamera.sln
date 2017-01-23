@@ -1,11 +1,11 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.CSharp.Plugins", "PlanetCamera.CSharp.Plugins.csproj", "{611E9F39-748D-70E2-D428-430799C12C8B}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{DAA2D7EB-7DEA-337A-875B-4B31AC610218}") = "PlanetCamera", "Assembly-CSharp-firstpass.csproj", "{1D372459-91F5-D52D-DA3F-385ACBEC7492}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.CSharp", "PlanetCamera.CSharp.csproj", "{55578D7B-D3CF-CF66-3817-4845B913974A}"
+Project("{DAA2D7EB-7DEA-337A-875B-4B31AC610218}") = "PlanetCamera", "Assembly-CSharp.csproj", "{B9C3A9C0-E226-A843-F1FC-34B72B45F830}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.CSharp.Editor", "PlanetCamera.CSharp.Editor.csproj", "{061A94FB-E9A2-2687-1A91-DC13F7027CD3}"
+Project("{DAA2D7EB-7DEA-337A-875B-4B31AC610218}") = "PlanetCamera", "Assembly-CSharp-Editor.csproj", "{6FBF9479-B063-1C6D-12EA-5135BB0629C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,20 +13,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{611E9F39-748D-70E2-D428-430799C12C8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{611E9F39-748D-70E2-D428-430799C12C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{611E9F39-748D-70E2-D428-430799C12C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{611E9F39-748D-70E2-D428-430799C12C8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55578D7B-D3CF-CF66-3817-4845B913974A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55578D7B-D3CF-CF66-3817-4845B913974A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55578D7B-D3CF-CF66-3817-4845B913974A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55578D7B-D3CF-CF66-3817-4845B913974A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{061A94FB-E9A2-2687-1A91-DC13F7027CD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D372459-91F5-D52D-DA3F-385ACBEC7492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D372459-91F5-D52D-DA3F-385ACBEC7492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D372459-91F5-D52D-DA3F-385ACBEC7492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D372459-91F5-D52D-DA3F-385ACBEC7492}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C3A9C0-E226-A843-F1FC-34B72B45F830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C3A9C0-E226-A843-F1FC-34B72B45F830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C3A9C0-E226-A843-F1FC-34B72B45F830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C3A9C0-E226-A843-F1FC-34B72B45F830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FBF9479-B063-1C6D-12EA-5135BB0629C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FBF9479-B063-1C6D-12EA-5135BB0629C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FBF9479-B063-1C6D-12EA-5135BB0629C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FBF9479-B063-1C6D-12EA-5135BB0629C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal

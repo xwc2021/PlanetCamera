@@ -1,5 +1,6 @@
 Library/
 webgl/
+obj/
 PlanetCamera_Data/
 PlanetCamera.exe
 *.pdb

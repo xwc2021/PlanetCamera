@@ -27,7 +27,10 @@ public class PlayerControllerSimple : MonoBehaviour
             RaycastHit hit;
             Vector3 hitNormal = transform.up;
             Vector3 from = Vector3.up + transform.position;
-            if (Physics.Raycast(from, -Vector3.up, out hit))
+
+            //原本沒作mask會射到雪人自己，所以就飛起來了
+            int layerMask = 1 << 10;
+            if (Physics.Raycast(from, -Vector3.up, out hit,5,layerMask))
             {
                 hitNormal = hit.normal;
             }
