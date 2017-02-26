@@ -7,11 +7,16 @@ public interface FollowCameraBehavior
     void rotateByAxis(float angle, Vector3 axis);
 }
 
+public interface InputProxy
+{
+    Vector2 getHV();
+}
+
 
 public class PlayerController : MonoBehaviour {
 
     public bool adjustCameraWhenMove = true;
-    public FollowCameraBehavior cameraBehavior;
+    FollowCameraBehavior cameraBehavior;
     public MonoBehaviour cameraSocket;
     public Transform laddingPlanet;
     public Rigidbody rigid;
@@ -20,6 +25,8 @@ public class PlayerController : MonoBehaviour {
     public float centripetalScale = 0.6f;
     public float moveSpeed = 1;
     Transform m_Cam;
+    InputProxy inputProxy;
+    public MonoBehaviour inputPorxySocket;
 
     // Use this for initialization
     void Start () {
@@ -30,22 +37,36 @@ public class PlayerController : MonoBehaviour {
             cameraBehavior = cameraSocket as FollowCameraBehavior;
 
         //print("cameraBehavior="+cameraBehavior);
+
+        if (inputPorxySocket != null)
+            inputProxy = inputPorxySocket as InputProxy;
     }
+
+    
 
     Vector3 previouPosistion;
 
+    
+
+
+
+
     // Update is called once per frame
-    void FixedUpdate() {
-        Vector3 planetGravity =laddingPlanet.position - transform.position;
+    void FixedUpdate()
+    {
+        Vector3 planetGravity = laddingPlanet.position - transform.position;
         rigid.AddForce(gravityScale * planetGravity);
 
         Vector3 headUp = -planetGravity.normalized;
         Vector3 forward = Vector3.Cross(transform.right, headUp);
-        Quaternion targetRotation =Quaternion.LookRotation(forward, headUp);
+        Quaternion targetRotation = Quaternion.LookRotation(forward, headUp);
         transform.rotation = targetRotation;
 
-        float h = CrossPlatformInputManager.GetAxis("Horizontal");
-        float v = CrossPlatformInputManager.GetAxis("Vertical");
+
+        Vector2 hv = inputProxy.getHV();
+        float h = hv.x;
+        float v = hv.y;
+        
         if (h != 0 || v != 0)
         {
 
@@ -69,11 +90,13 @@ public class PlayerController : MonoBehaviour {
 
             nowVelocity = moveSpeed * (nowVelocity + centripetalScale * centripetalVelocity);
 
-            Vector3 verticalV =Vector3.Project(rigid.velocity, headUp);//保留地心引力
-            rigid.velocity = verticalV+nowVelocity;
-            
+            Vector3 verticalV = Vector3.Project(rigid.velocity, headUp);//保留地心引力
+            rigid.velocity = verticalV + nowVelocity;
+
             Debug.DrawLine(transform.position, transform.position + rigid.velocity, Color.blue);
-        }  
+
+
+        }
     }
 
     void Update()
