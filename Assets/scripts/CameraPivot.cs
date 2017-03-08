@@ -4,7 +4,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 {
-
+    public float rotateByAxisScale = 0.5f;
     public bool follow = true;
     public float followSpeed = 5;
     public float perPitchDegreen = 200;
@@ -59,7 +59,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             return;
 
         //print(angle);
-        Quaternion q = Quaternion.AngleAxis(angle, axis);
+        Quaternion q = Quaternion.AngleAxis(angle* rotateByAxisScale, axis);
         rot = q * rot;
     }
 }

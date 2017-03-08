@@ -18,7 +18,7 @@ public interface MoveController
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
 
-    public Transform laddingPlanet;
+    public PlanetMovable planetMovable;
     FollowCameraBehavior followCameraBehavior;
     public MonoBehaviour followCameraBehaviorSocket;
     public bool adjustCameraWhenMove = true;
@@ -26,11 +26,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     public MonoBehaviour inputPorxySocket;
     Transform m_Cam;
 
-    Vector3 previouPosistion;
+    Vector3 previousPosistion;
+    Vector3 previousGroundUp;
 
     // Use this for initialization
     void Start () {
-        previouPosistion = transform.position;
+        previousPosistion = transform.position;
+        previousGroundUp = planetMovable.getGroundUp();
 
         if (followCameraBehaviorSocket != null)
             followCameraBehavior = followCameraBehaviorSocket as FollowCameraBehavior;
@@ -43,9 +45,10 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         m_Cam = Camera.main.transform;
     }
 
+    //void FixedUpdate()
     void Update()
     {
-        //如果在FixedUpdate做會抖動
+        //如果在FixedUpdate做會抖動？
         if (adjustCameraWhenMove)
             doAdjust();
     }
@@ -53,23 +56,34 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     void doAdjust()
     {
         //如果位置有更新，就更新FlowPoint
-        //透過headUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
-        //用A軸來旋轉CameraPivot
+        //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
 
-        Vector3 diffV = transform.position - previouPosistion;
-        //Vector3 Z = Vector3.Cross(headUp, diffV);
-        Vector3 Z = Vector3.Cross(transform.up, diffV);
+        Vector3 groundUp = planetMovable.getGroundUp();
+        
+        Vector3 diffV = transform.position - previousPosistion;
+
+        Vector3 averageGroundUp = (groundUp + previousGroundUp)/2;
+        Vector3 Z = Vector3.Cross(averageGroundUp, diffV);
+        Z.Normalize();
+        Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
 
         //算出2個frame之間在planet上移動的角度差
-        Vector3 from = (previouPosistion - laddingPlanet.position).normalized;
-        Vector3 to = (transform.position - laddingPlanet.position).normalized;
-        float cosValue = Vector3.Dot(from, to);
+        float cosValue = Vector3.Dot(previousGroundUp, groundUp);
+
+        //http://answers.unity3d.com/questions/778626/mathfacos-1-return-nan.html
+        //上面說Dot有可能會>1或<-1
+        cosValue = Mathf.Max(-1.0f, cosValue);
+        cosValue = Mathf.Min(1.0f, cosValue);
+
         float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
 
-        if (followCameraBehavior != null)
-            followCameraBehavior.rotateByAxis(rotDegree, Z);
+        //print("rotDegree=" + rotDegree);
 
-        previouPosistion = transform.position;
+        if (followCameraBehavior != null)
+           followCameraBehavior.rotateByAxis(rotDegree, Z);
+
+        previousPosistion = transform.position;
+        previousGroundUp = groundUp;
     }
 
     public Vector3 getMoveForce()
