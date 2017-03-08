@@ -12,6 +12,7 @@ public interface FollowCameraBehavior
 public interface MoveController
 {
     Vector3 getMoveForce();
+    bool doJump();
 }
 
 public class PlanetPlayerController : MonoBehaviour, MoveController
@@ -86,5 +87,10 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         }
 
         return Vector3.zero;
+    }
+
+    public bool doJump()
+    {
+        return inputProxy.pressJump();
     }
 }

@@ -6,6 +6,11 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class PCInput : MonoBehaviour,  InputProxy
 {
+    public bool pressJump()
+    {
+        return CrossPlatformInputManager.GetButtonDown("Jump");
+    }
+
     public Vector2 getHV()
     {
         float h = CrossPlatformInputManager.GetAxis("Horizontal");

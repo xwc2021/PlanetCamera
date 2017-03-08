@@ -37,4 +37,8 @@ public class AndroidInput : MonoBehaviour, InputProxy
 
     }
 
+    public bool pressJump()
+    {
+        return false;
+    }
 }
