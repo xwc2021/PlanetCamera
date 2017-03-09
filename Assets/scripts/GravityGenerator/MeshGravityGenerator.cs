@@ -38,8 +38,21 @@ public class MeshGravityGenerator : MonoBehaviour, GrounGravityGenerator
                 sum = sum + nowGS.transform.forward;
             }
             sum = sum / overlapCount;
+            sum.Normalize();
+
             Debug.DrawLine(transform.position, transform.position + sum * 6, Color.green);
-            return sum.normalized;
+
+            RaycastHit hit;
+            int layerMaskGround = 1 << 10;
+            Vector3 from = transform.position + sum;
+            if (Physics.Raycast(from, -sum, out hit, 5, layerMaskGround))
+            {
+                print("hit by");
+                return hit.normal;
+                
+            }
+            else
+                return sum;
         }
         else
         {
