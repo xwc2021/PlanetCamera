@@ -35,7 +35,7 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
         recordRight = transform.right;
     }
 
-    public void setRotateByAxis(float angle, Vector3 axis)
+    public void setRotateByAxis(bool doRotate,float angle, Vector3 axis)
     {
         if (angle < Mathf.Epsilon || float.IsNaN(angle))
             return;

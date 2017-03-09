@@ -14,15 +14,15 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     Vector3 recordPos;
     Quaternion rot;
     Transform myParent;
-    Transform camera;
+    Transform CAMERA;
     float R;
     // Use this for initialization
     void Start () {
         rot = transform.rotation;
         myParent = transform.parent;
-        camera = transform.GetChild(0);
+        CAMERA = transform.GetChild(0);
         recordPos = transform.position;
-        R = (transform.position - camera.position).magnitude;
+        R = (transform.position - CAMERA.position).magnitude;
     }
 	
 	void LateUpdate() {
@@ -51,19 +51,19 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         R += Rdiff * Rscale * Time.deltaTime;
         R = Mathf.Max(2, R);
 
-        camera.localPosition = new Vector3(0,0,-R);
-        Debug.DrawLine(transform.position, camera.position, Color.red);
+        CAMERA.localPosition = new Vector3(0,0,-R);
+        Debug.DrawLine(transform.position, CAMERA.position, Color.red);
     }
 
     float angle=0;
     Vector3 axis=Vector3.up;
     bool doRotateByAsix = false;
 
-    public void setRotateByAxis(float angle, Vector3 axis)
+    public void setRotateByAxis(bool doRotate,float angle, Vector3 axis)
     {
         this.angle = angle;
         this.axis = axis;
-        doRotateByAsix = true;
+        doRotateByAsix = doRotate;
     }
 
     private void doRotateByAxis()

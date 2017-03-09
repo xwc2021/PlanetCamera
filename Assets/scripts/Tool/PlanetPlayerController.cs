@@ -6,7 +6,7 @@ using UnityEngine;
 
 public interface FollowCameraBehavior
 {
-    void setRotateByAxis(float angle, Vector3 axis);
+    void setRotateByAxis(bool doRotate,float angle, Vector3 axis);
 }
 
 public interface MoveController
@@ -17,7 +17,6 @@ public interface MoveController
 
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
-
     public PlanetMovable planetMovable;
     FollowCameraBehavior followCameraBehavior;
     public MonoBehaviour followCameraBehaviorSocket;
@@ -51,10 +50,40 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     {
         //還是會有點抖動呢
         if (adjustCameraWhenMove)
-            doAdjust();
+            doAdjustByGroundUp();
+            //doAdjustByDiff();
     }
 
-    void doAdjust()
+    void doAdjustByGroundUp()
+    {
+        //如果位置有更新，就更新FlowPoint
+        //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
+
+        Vector3 groundUp = planetMovable.getGroundUp();
+
+        Vector3 Z = Vector3.Cross(previousGroundUp, groundUp);
+        Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
+        Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
+        Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
+
+        //算出2個frame之間在planet上移動的角度差
+        float cosValue = Vector3.Dot(previousGroundUp, groundUp);
+
+        //http://answers.unity3d.com/questions/778626/mathfacos-1-return-nan.html
+        //上面說Dot有可能會>1或<-1
+        cosValue = Mathf.Max(-1.0f, cosValue);
+        cosValue = Mathf.Min(1.0f, cosValue);
+
+        float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
+
+        if (followCameraBehavior != null)
+        {
+            followCameraBehavior.setRotateByAxis(true, rotDegree, Z);
+            previousGroundUp = groundUp;//有轉動才更新
+        }
+    }
+
+    void doAdjustByDiff()
     {
         //如果位置有更新，就更新FlowPoint
         //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
@@ -82,7 +111,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         //print("rotDegree=" + rotDegree);
 
         if (followCameraBehavior != null)
-            followCameraBehavior.setRotateByAxis(rotDegree, Z);
+            followCameraBehavior.setRotateByAxis(true,rotDegree, Z);
 
         previousPosistion = transform.position;
         previousGroundUp = groundUp;
