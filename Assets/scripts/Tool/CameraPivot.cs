@@ -4,9 +4,9 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 {
-    public float rotateByAxisScale = 1.0f;
+    public float rotateFollowSpeed = 5;
     public bool follow = true;
-    public float followSpeed = 5;
+    public float posFollowSpeed = 5;
     public float perPitchDegreen = 200;
     public float perYawDegreen = 600;
     public float Rdiff = 300;
@@ -27,25 +27,37 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 	
 	void LateUpdate() {
 
-        if(doRotateByAsix)
-            doRotateByAxis();
-
         if (follow)
-            recordPos = Vector3.Lerp(recordPos, myParent.position, followSpeed * Time.deltaTime);
+            recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
         else
             recordPos = myParent.position;
 
         transform.position = recordPos;
 
+        //從此之後，rot永遠在local space運作(它的parent space是temporary)
         float deltaY = CrossPlatformInputManager.GetAxis("Mouse Y");
         Quaternion pitch = Quaternion.Euler(perPitchDegreen * deltaY * Time.deltaTime, 0, 0);
-        rot =  rot* pitch;
+        rot = rot * pitch;
 
         float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
-        Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
-        rot = yaw*rot ;
+        //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
+        Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
 
-        transform.rotation = rot;
+        rot = yaw * rot;
+
+        if (!doRotateFollow)
+            transform.rotation = rot;
+        else
+        {
+            if (isFirst)
+            {
+                temporary = Quaternion.identity;
+                isFirst = false;
+            } 
+
+            temporary = Quaternion.Slerp(temporary, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
+            transform.rotation = temporary* rot;
+        }
 
         float Rscale = Input.GetAxis("Mouse ScrollWheel");
         R += Rdiff * Rscale * Time.deltaTime;
@@ -55,24 +67,14 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         Debug.DrawLine(transform.position, CAMERA.position, Color.red);
     }
 
-    float angle=0;
-    Vector3 axis=Vector3.up;
-    bool doRotateByAsix = false;
+    Quaternion temporary;
+    Quaternion sumAdjustRot=Quaternion.identity;
+    bool doRotateFollow = false;
+    bool isFirst = true;
 
-    public void setRotateByAxis(bool doRotate,float angle, Vector3 axis)
+    public void setAdjustRotate(bool doRotateFollow, Quaternion adjustRotate)
     {
-        this.angle = angle;
-        this.axis = axis;
-        doRotateByAsix = doRotate;
-    }
-
-    private void doRotateByAxis()
-    {
-        if (angle < Mathf.Epsilon || float.IsNaN(angle))
-            return;
-
-        print("angle=" + angle);
-        Quaternion q = Quaternion.AngleAxis(angle * rotateByAxisScale, axis);
-        rot = q * rot;
+        sumAdjustRot = adjustRotate*sumAdjustRot;
+        this.doRotateFollow = doRotateFollow;
     }
 }

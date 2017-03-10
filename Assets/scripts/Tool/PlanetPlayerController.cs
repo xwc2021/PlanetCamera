@@ -6,7 +6,7 @@ using UnityEngine;
 
 public interface FollowCameraBehavior
 {
-    void setRotateByAxis(bool doRotate,float angle, Vector3 axis);
+    void setAdjustRotate(bool doRotateFollow, Quaternion adjustRot);
 }
 
 public interface MoveController
@@ -32,7 +32,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     void Start()
     {
         previousPosistion = transform.position;
-        previousGroundUp = planetMovable.getGroundUp();
+        previousGroundUp = transform.up;
 
         if (followCameraBehaviorSocket != null)
             followCameraBehavior = followCameraBehaviorSocket as FollowCameraBehavior;
@@ -75,10 +75,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         cosValue = Mathf.Min(1.0f, cosValue);
 
         float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
-
-        if (followCameraBehavior != null)
+        print("rotDegree=" + rotDegree);
+        if (rotDegree > Mathf.Epsilon && !float.IsNaN(rotDegree) && followCameraBehavior != null)
         {
-            followCameraBehavior.setRotateByAxis(true, rotDegree, Z);
+           
+            Quaternion q = Quaternion.AngleAxis(rotDegree , Z);
+
+            followCameraBehavior.setAdjustRotate(true, q);
             previousGroundUp = groundUp;//有轉動才更新
         }
     }
@@ -110,9 +113,12 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         //print("rotDegree=" + rotDegree);
 
-        if (followCameraBehavior != null)
-            followCameraBehavior.setRotateByAxis(true,rotDegree, Z);
-
+        if (rotDegree < Mathf.Epsilon && float.IsNaN(rotDegree) && followCameraBehavior != null)
+        {
+            Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
+            followCameraBehavior.setAdjustRotate(true, q);
+        }
+            
         previousPosistion = transform.position;
         previousGroundUp = groundUp;
     }

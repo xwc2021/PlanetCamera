@@ -35,13 +35,8 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
         recordRight = transform.right;
     }
 
-    public void setRotateByAxis(bool doRotate,float angle, Vector3 axis)
+    public void setAdjustRotate(bool doRotate, Quaternion q)
     {
-        if (angle < Mathf.Epsilon || float.IsNaN(angle))
-            return;
-
-        //print(angle);
-        Quaternion q =Quaternion.AngleAxis(angle, axis);
         Matrix4x4 rot =Matrix4x4.TRS(Vector3.zero, q, Vector3.one);
         dirInWorld = rot * dirInWorld;
     }
