@@ -75,7 +75,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         cosValue = Mathf.Min(1.0f, cosValue);
 
         float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
-        print("rotDegree=" + rotDegree);
+        //print("rotDegree=" + rotDegree);
         if (rotDegree > Mathf.Epsilon && !float.IsNaN(rotDegree) && followCameraBehavior != null)
         {
            

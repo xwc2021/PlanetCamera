@@ -13,7 +13,15 @@ public interface GrounGravityGenerator
     Vector3 findGroundUp();
 }
 
+public interface MoveForceMonitor
+{
+    float getNowForceStrength();
+}
+
 public class PlanetMovable : MonoBehaviour {
+
+    MoveForceMonitor moveForceMonitor;
+    public MonoBehaviour moveForceMonitorSocket;
 
     GrounGravityGenerator grounGravityGenerator;
     public MonoBehaviour grounGravityGeneratorSocket;
@@ -22,8 +30,7 @@ public class PlanetMovable : MonoBehaviour {
     public MonoBehaviour moveControllerSocket;
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
-    public float gravityScale = 360f;
-    public float moveForceScale = 600f;
+    public float gravityScale = 100f;
     public bool useRayHitNormal = false;
 
     
@@ -38,6 +45,9 @@ public class PlanetMovable : MonoBehaviour {
 
         if (moveControllerSocket != null)
             moveController = moveControllerSocket as MoveController;
+
+        if (moveForceMonitorSocket != null)
+            moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
     }
 
     
@@ -47,11 +57,12 @@ public class PlanetMovable : MonoBehaviour {
         return groundUp;
     }
 
-    public bool ladding = false;
+    bool ladding = false;
 
-    public Vector3 groundUp;
+    Vector3 groundUp;
     bool firstUpdate = true;
     // Update is called once per frame
+    public float velocity;
     void FixedUpdate()
     {
         groundUp = grounGravityGenerator.findGroundUp();  
@@ -107,7 +118,7 @@ public class PlanetMovable : MonoBehaviour {
             //使用rigid.velocity的話，下面的重力就會失效
             //addForce就可以有疊加的效果
             //雪人的mass也要作相應的調整，不然會推不動骨牌
-            rigid.AddForce(moveForceScale * moveForce, ForceMode.Acceleration);
+            rigid.AddForce(moveForceMonitor.getNowForceStrength() * moveForce, ForceMode.Acceleration);
             
         }
 
@@ -120,7 +131,9 @@ public class PlanetMovable : MonoBehaviour {
 
         //print("rigid="+rigid.velocity.magnitude);
 
-        if(rigid.velocity.magnitude>0.01f)
+        velocity = rigid.velocity.magnitude;
+
+        if (rigid.velocity.magnitude>0.01f)
         Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
  
