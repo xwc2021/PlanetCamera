@@ -62,7 +62,7 @@ public class PlanetMovable : MonoBehaviour {
     Vector3 groundUp;
     bool firstUpdate = true;
     // Update is called once per frame
-    public float velocity;
+    float velocity;
     void FixedUpdate()
     {
         groundUp = grounGravityGenerator.findGroundUp();  
@@ -101,10 +101,17 @@ public class PlanetMovable : MonoBehaviour {
         {
             Vector3 moveForce = moveController.getMoveForce();
 
-            
+            //原先的方法：
             //把moveForce投影到地面(期望可以貼著地面移動)
-            moveForce = Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
+            //moveForce = Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
+
+            //改成用求2平面的交線(也就是用2個平面的法向量作外積)
+            //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
+            Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
+            moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+
             moveForce.Normalize();
+            //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
             //更新面向begin
             Vector3 forward2 = moveForce;
@@ -133,8 +140,8 @@ public class PlanetMovable : MonoBehaviour {
 
         velocity = rigid.velocity.magnitude;
 
-        if (rigid.velocity.magnitude>0.01f)
-        Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
+        //if (rigid.velocity.magnitude>0.01f)
+        //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
  
 }

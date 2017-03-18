@@ -48,7 +48,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     void Update()
     {
-        //還是會有點抖動呢
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
             //doAdjustByDiff();
@@ -62,9 +61,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         Vector3 groundUp = planetMovable.getGroundUp();
 
         Vector3 Z = Vector3.Cross(previousGroundUp, groundUp);
-        Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
-        Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
-        Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
+        //Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
+        //Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
+        //Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
 
         //算出2個frame之間在planet上移動的角度差
         float cosValue = Vector3.Dot(previousGroundUp, groundUp);
@@ -97,9 +96,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         Vector3 averageGroundUp = (groundUp + previousGroundUp) / 2;
         Vector3 Z = Vector3.Cross(groundUp, diffV);
-        Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
-        Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
-        Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
+        //Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
+        //Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
+        //Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
 
         //算出2個frame之間在planet上移動的角度差
         float cosValue = Vector3.Dot(previousGroundUp, groundUp);
