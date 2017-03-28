@@ -11,6 +11,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public float perYawDegreen = 600;
     public float Rdiff = 300;
 
+    Vector3 recordParentInitUp;
     Vector3 recordPos;
     Quaternion rot;
     Transform myParent;
@@ -23,6 +24,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         CAMERA = transform.GetChild(0);
         recordPos = transform.position;
         R = (transform.position - CAMERA.position).magnitude;
+        recordParentInitUp = myParent.up;
     }
 	
 	void LateUpdate() {
@@ -41,7 +43,10 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
         float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
         //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
-        Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
+
+        //Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
+        //修正錯誤：原來的code只有在雪人的Tramsfrom.up是(0,1,0)時才會正確執行
+        Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
 
         rot = yaw * rot;
 
