@@ -28,6 +28,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Vector3 previousPosistion;
     Vector3 previousGroundUp;
 
+    public bool firstPersonMode =false;
+
     // Use this for initialization
     void Start()
     {
@@ -132,8 +134,16 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (h != 0 || v != 0)
         {
             //由camera向方計算出角色的移動方向
-            Vector3 controllForce = h * m_Cam.right + v * m_Cam.up;
-            return controllForce;
+            if (!firstPersonMode)
+            {
+                Vector3 controllForce = h * m_Cam.right + v * m_Cam.up;
+                return controllForce;
+            }
+            else
+            {
+                Vector3 controllForce = h * m_Cam.right + v * m_Cam.forward;
+                return controllForce;
+            }
         }
 
         return Vector3.zero;

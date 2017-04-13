@@ -10,7 +10,9 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public float perPitchDegreen = 200;
     public float perYawDegreen = 600;
     public float Rdiff = 300;
-
+    public Transform syncDirTarget;
+    public bool firstPersonMode = false;
+    public float limitR = 2.0f;
     Vector3 recordParentInitUp;
     Vector3 recordPos;
     Quaternion rot;
@@ -26,8 +28,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         R = (transform.position - CAMERA.position).magnitude;
         recordParentInitUp = myParent.up;
     }
-	
-	void LateUpdate() {
+
+    void LateUpdate() {
 
         if (follow)
             recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
@@ -58,18 +60,31 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             {
                 temporary = Quaternion.identity;
                 isFirst = false;
-            } 
+            }
 
             temporary = Quaternion.Slerp(temporary, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
-            transform.rotation = temporary* rot;
+            transform.rotation = temporary * rot;
+
+            if (firstPersonMode)
+            {
+                //更新模型轉向
+                Vector3 right = Vector3.Cross(syncDirTarget.up, transform.forward);
+                Vector3 forward = Vector3.Cross(right, syncDirTarget.up);
+                Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
+                syncDirTarget.rotation = q;
+            }
+
         }
 
-        float Rscale = Input.GetAxis("Mouse ScrollWheel");
-        R += Rdiff * Rscale * Time.deltaTime;
-        R = Mathf.Max(2, R);
+        if (!firstPersonMode)
+        { 
+            float Rscale = Input.GetAxis("Mouse ScrollWheel");
+            R += Rdiff * Rscale * Time.deltaTime;
+            R = Mathf.Max(limitR, R);
 
-        CAMERA.localPosition = new Vector3(0,0,-R);
-        Debug.DrawLine(transform.position, CAMERA.position, Color.red);
+            CAMERA.localPosition = new Vector3(0, 0, -R);
+            Debug.DrawLine(transform.position, CAMERA.position, Color.red);
+        }
     }
 
     Quaternion temporary;

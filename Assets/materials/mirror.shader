@@ -1,4 +1,6 @@
-﻿Shader "Custom/mirror" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/mirror" {
 	Properties{
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
@@ -33,7 +35,7 @@
 				v2f vert(appdata v)
 				{
 					v2f o;
-					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.vertex = UnityObjectToClipPos(v.vertex);
 					o.uv = mul(_mirror_camera_mvp, v.vertex);
 					return o;
 				}

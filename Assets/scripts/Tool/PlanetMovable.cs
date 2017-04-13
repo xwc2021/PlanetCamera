@@ -32,8 +32,9 @@ public class PlanetMovable : MonoBehaviour {
     public float rotationSpeed = 6f;
     public float gravityScale = 100f;
     public bool useRayHitNormal = false;
+    public bool firstPersonMode = false;
 
-    
+
     Transform m_Cam;
     
     // Use this for initialization
@@ -115,7 +116,7 @@ public class PlanetMovable : MonoBehaviour {
 
             //更新面向begin
             Vector3 forward2 = moveForce;
-            if (forward2 != Vector3.zero)
+            if (forward2 != Vector3.zero && !firstPersonMode)
             {
                 Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
