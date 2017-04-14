@@ -19,6 +19,10 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     Transform myParent;
     Transform CAMERA;
     float R;
+
+    public float rotateMaxBorader=45;
+    public float rotateMinBorader=-80;
+    public float nowPitchDegree;//-90<PitchDegree<90
     // Use this for initialization
     void Start () {
         rot = transform.rotation;
@@ -27,6 +31,18 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         recordPos = transform.position;
         R = (transform.position - CAMERA.position).magnitude;
         recordParentInitUp = myParent.up;
+
+        //計算一開始的ptich值
+
+        nowPitchDegree = getNowPitchDegree(recordParentInitUp);
+    }
+
+    float getNowPitchDegree(Vector3 PlaneNormal)
+    {
+        Vector3 x = Vector3.ProjectOnPlane(transform.forward, PlaneNormal);
+        Vector3 y = transform.forward - x;
+        float sign = Vector3.Dot(PlaneNormal, y) > 0 ? 1 : -1;
+        return Mathf.Rad2Deg * Mathf.Atan2(sign * y.magnitude, x.magnitude);
     }
 
     void LateUpdate() {
@@ -40,7 +56,25 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
         //從此之後，rot永遠在local space運作(它的parent space是temporary)
         float deltaY = CrossPlatformInputManager.GetAxis("Mouse Y");
-        Quaternion pitch = Quaternion.Euler(perPitchDegreen * deltaY * Time.deltaTime, 0, 0);
+
+        //加上Pitch的邊界檢查
+        float deltaPitch = perPitchDegreen * deltaY * Time.deltaTime;
+        //deltaPitch增加時，會讓nowPitchDegree減少
+        float deltaPitchDegree = -deltaPitch;
+        float newPitchDegree = nowPitchDegree + deltaPitchDegree;
+        if (newPitchDegree > rotateMaxBorader)
+        {
+            deltaPitchDegree = rotateMaxBorader-nowPitchDegree;
+            deltaPitch = -(deltaPitchDegree);
+        }
+        else if (newPitchDegree < rotateMinBorader)
+        {
+            deltaPitchDegree = rotateMinBorader - nowPitchDegree;
+            deltaPitch = -(deltaPitchDegree);
+        }
+        print(deltaPitch);
+
+        Quaternion pitch = Quaternion.Euler(deltaPitch, 0, 0);
         rot = rot * pitch;
 
         float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
@@ -74,6 +108,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
             syncDirTarget.rotation = q;
         }
+
+        nowPitchDegree = getNowPitchDegree(myParent.up);
 
         if (!firstPersonMode)
         { 
