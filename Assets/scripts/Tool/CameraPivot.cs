@@ -64,16 +64,15 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
             temporary = Quaternion.Slerp(temporary, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
             transform.rotation = temporary * rot;
+        }
 
-            if (firstPersonMode)
-            {
-                //更新模型轉向
-                Vector3 right = Vector3.Cross(syncDirTarget.up, transform.forward);
-                Vector3 forward = Vector3.Cross(right, syncDirTarget.up);
-                Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
-                syncDirTarget.rotation = q;
-            }
-
+        if (firstPersonMode)
+        {
+            //更新模型轉向
+            Vector3 right = Vector3.Cross(syncDirTarget.up, transform.forward);
+            Vector3 forward = Vector3.Cross(right, syncDirTarget.up);
+            Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
+            syncDirTarget.rotation = q;
         }
 
         if (!firstPersonMode)
