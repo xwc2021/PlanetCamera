@@ -16,6 +16,9 @@ public class MirrorCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void LateUpdate () {
+        if (refCamera == null)
+            return;
+
         Vector3 normal = targetMirror.up;
         Vector3 mirrorZ = Vector3.Reflect(refCamera.transform.forward, normal);
         Vector3 mirrorY = Vector3.Reflect(refCamera.transform.up, normal);
