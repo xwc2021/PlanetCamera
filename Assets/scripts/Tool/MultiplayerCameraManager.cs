@@ -5,11 +5,15 @@ using UnityEngine.Networking;
 
 public class MultiplayerCameraManager : NetworkBehaviour {
 
-    public GameObject refCameraGameObject;
+    public GameObject refCameraPivot;
+    public MonoBehaviour planetMovable;
+    public MonoBehaviour  planetPlayerController;
     public override void OnStartLocalPlayer()
     {
-        refCameraGameObject.SetActive(true);
-        print("active Camera GameObject");
+        refCameraPivot.SetActive(true);
+        planetMovable.enabled = true;
+        planetPlayerController.enabled = true;
+        print("active Camera GameObject and MonoBehaviour");
 
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public interface FollowCameraBehavior
 {
@@ -17,8 +16,6 @@ public interface MoveController
 
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
-    MultiplayerCameraManager cm;
-    public NetworkBehaviour cmSocket;
 
     public PlanetMovable planetMovable;
     FollowCameraBehavior followCameraBehavior;
@@ -47,22 +44,12 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (inputPorxySocket != null)
             inputProxy = inputPorxySocket as InputProxy;
 
-        if (cmSocket != null)
-            cm = cmSocket as MultiplayerCameraManager;
-
-        bool s1 = cm != null && cm.isLocalPlayer;
-        bool s2 = cm == null;
-        if(s1 || s2)
-            m_Cam = GetComponentInChildren<Camera>().transform;
-
+        m_Cam = GetComponentInChildren<Camera>().transform;
     }
 
 
     void Update()
     {
-        if (cm != null && !cm.isLocalPlayer)
-            return;
-
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
             //doAdjustByDiff();

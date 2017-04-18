@@ -1,13 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
-using UnityEngine.Networking;
 
 public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 {
-    MultiplayerCameraManager cm;
-    public NetworkBehaviour cmSocket;
-
     public float rotateFollowSpeed = 5;
     public bool follow = true;
     public float posFollowSpeed = 5;
@@ -39,10 +35,6 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         //計算一開始的ptich值
 
         nowPitchDegree = getNowPitchDegree(recordParentInitUp);
-
-        if (cmSocket != null)
-            cm = cmSocket as MultiplayerCameraManager;
-
     }
 
     float getNowPitchDegree(Vector3 PlaneNormal)
@@ -55,8 +47,6 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
     void LateUpdate() {
 
-        if (cm!=null && !cm.isLocalPlayer)
-            return;
 
         if (follow)
             recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);

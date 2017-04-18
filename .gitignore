@@ -6,4 +6,5 @@ build/
 temp/
 PlanetCamera_Data/
 PlanetCamera.exe
+Test.exe
 *.pdb

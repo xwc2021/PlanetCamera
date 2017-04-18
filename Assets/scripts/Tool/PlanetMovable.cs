@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
-using UnityEngine.Networking;
 
 public interface InputProxy
 {
@@ -21,10 +20,6 @@ public interface MoveForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
-
-    MultiplayerCameraManager cm;
-    public NetworkBehaviour cmSocket;
-
     MoveForceMonitor moveForceMonitor;
     public MonoBehaviour moveForceMonitorSocket;
 
@@ -42,9 +37,6 @@ public class PlanetMovable : MonoBehaviour
 
     // Use this for initialization
     void Start () {
-
-        if (cmSocket != null)
-            cm = cmSocket as MultiplayerCameraManager;
 
         if (grounGravityGeneratorSocket != null)
             grounGravityGenerator = grounGravityGeneratorSocket as GrounGravityGenerator;
@@ -66,14 +58,10 @@ public class PlanetMovable : MonoBehaviour
     bool ladding = false;
 
     Vector3 groundUp;
-    bool firstUpdate = true;
     // Update is called once per frame
     float velocity;
     void FixedUpdate()
     {
-        if (cm != null && !cm.isLocalPlayer)
-            return;
-
         groundUp = grounGravityGenerator.findGroundUp();  
 
         //計算重力方向
