@@ -20,7 +20,10 @@ public class EndlessCorridorHolder : MonoBehaviour {
     {
         
         get { return listIndex; }
-        set { listIndex = value;this.name = "EndlessCorridorHolder_" + listIndex.ToString("D3"); }
+        set {
+            listIndex = value;
+            this.name = "EndlessCorridorHolder_" + listIndex.ToString("D3");
+        }
     }
 
     public Transform getHeadDummy()

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 11063438511c0b2449360db50bd62085
-timeCreated: 1492529267
+guid: 197eb8de8cf0cdf4e9c2dbe98c68e32d
+timeCreated: 1492586232
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,10 +9,12 @@ ModelImporter:
     100002: HeadDummy
     100004: TailDummy
     100006: TriggerBox
+    100008: triggerBoxBorderLine
     400000: //RootNode
     400002: HeadDummy
     400004: TailDummy
     400006: TriggerBox
+    400008: triggerBoxBorderLine
     2300000: //RootNode
     2300002: TriggerBox
     3300000: //RootNode

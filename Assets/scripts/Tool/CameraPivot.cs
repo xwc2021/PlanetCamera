@@ -53,6 +53,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         else
             recordPos = myParent.position;
 
+        //(待辦)加上判定：如果原來的position比recordPos還靠近目標就不更新
         transform.position = recordPos;
 
         //從此之後，rot永遠在local space運作(它的parent space是temporary)

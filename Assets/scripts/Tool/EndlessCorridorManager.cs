@@ -6,6 +6,7 @@ public class EndlessCorridorManager : MonoBehaviour {
 
     public EndlessCorridorHolder[] prefabList;
     public Transform scaleCenter;
+    public Scalable scaleTarget;
 
     public int createSize=5;
     LinkedList<EndlessCorridorHolder> createlist;
@@ -83,6 +84,14 @@ public class EndlessCorridorManager : MonoBehaviour {
         newObj.transform.localScale = new Vector3(nowScale, nowScale, nowScale);
         newObj.initEC(index, this);
         return newObj;
+    }
+
+    public void updateList(int nowIndex)
+    {
+        if (nowIndex < halfIndex)
+            addHead();
+        else if (nowIndex > halfIndex)
+            addTail();
     }
 
     void addHead()
