@@ -16,6 +16,9 @@ public class Scalable : MonoBehaviour {
 
     public void doScale(float scale)
     {
+        //鎖scale的增加值(為了減少縮放player時，camera的抖動)
+        //原來的scale會浮動
+        scale = scale - (scale % 0.1f);
         transform.localScale = new Vector3(scale, scale, scale);
     }
 }

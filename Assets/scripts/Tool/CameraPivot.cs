@@ -23,6 +23,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public float rotateMaxBorader=45;
     public float rotateMinBorader=-80;
     public float nowPitchDegree;//-90<PitchDegree<90
+    public bool flyAway = false;
     // Use this for initialization
     void Start () {
         rot = transform.rotation;
@@ -35,6 +36,11 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         //計算一開始的ptich值
 
         nowPitchDegree = getNowPitchDegree(recordParentInitUp);
+
+        //只解除parent關系，只要player有縮小就是會搖動
+        //還是得在doScale裡鎖scale的增加值
+        if (flyAway)
+            transform.parent = null;
     }
 
     float getNowPitchDegree(Vector3 PlaneNormal)
@@ -45,16 +51,19 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         return Mathf.Rad2Deg * Mathf.Atan2(sign * y.magnitude, x.magnitude);
     }
 
+    public void resetRecordPos(Vector3 v,float scaleR)
+    {
+        recordPos = v;
+        R = R * scaleR;
+    }
+
     void LateUpdate() {
 
-
         if (follow)
+        {
             recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
-        else
-            recordPos = myParent.position;
-
-        //(待辦)加上判定：如果原來的position比recordPos還靠近目標就不更新
-        transform.position = recordPos;
+            transform.position = recordPos;
+        }     
 
         //從此之後，rot永遠在local space運作(它的parent space是temporary)
         float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y");

@@ -32,7 +32,6 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
         checkValue = Mathf.Min(borderValue, localValue);
         float ratio = checkValue / borderValue;
 
-        print(ratio);
         return ratio;
     }
 
@@ -40,7 +39,8 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     {
         float r = getLocalRatio(other);
         float scale = Mathf.Lerp(scaleA, scaleB, r);
-        ecManager.scaleTarget.doScale(scale);
+
+        ecManager.player.doScale(scale);
     }
 
     private void OnTriggerStay(Collider other)
@@ -56,24 +56,22 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     {
         if (other.name == "player")
         {
-            print("exit");
-            scaleIt(other);
-
             float playerScale = other.transform.localScale.y;
-            if (playerScale<0.6)
+            print(playerScale);
+            if (playerScale<0.51f)
             {
                 //進行縮小修正
-                other.transform.localScale = Vector3.one;
-                ecManager.worldReSacle(0.5f);
+                ecManager.worldReSacle(2.0f);
                 print("縮小修正");
             }
-            else if (playerScale>1.9)
+            else if (playerScale>1.8f)
             {
                 //進行放大修正
-                other.transform.localScale = Vector3.one;
-                ecManager.worldReSacle(2.0f);
+                ecManager.worldReSacle(0.5f);
                 print("放大修正");
             }
+            else if(playerScale<0.91f)
+                other.transform.localScale = Vector3.one;
         }
 
     }
