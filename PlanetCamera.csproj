@@ -146,7 +146,6 @@
     <Compile Include="Assets\scripts\Tool\CameraPivot.cs" />
     <Compile Include="Assets\scripts\Tool\ConstMoveForceMonitor.cs" />
     <Compile Include="Assets\scripts\Tool\CreateGravitySensor.cs" />
-    <Compile Include="Assets\scripts\Tool\DoWorldScale.cs" />
     <Compile Include="Assets\scripts\Tool\EndlessCorridorHolder.cs" />
     <Compile Include="Assets\scripts\Tool\EndlessCorridorManager.cs" />
     <Compile Include="Assets\scripts\Tool\EndlessCorridorTriggerBox.cs" />

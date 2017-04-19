@@ -4,22 +4,23 @@ using UnityEngine;
 
 public class EndlessCorridorTriggerBox : MonoBehaviour {
 
+    public EndlessCorridorManager ecManager;
     void OnTriggerExit(Collider other)
     {
         if (other.name == "player")
         {
             float playerScale = other.transform.localScale.y;
-            if (playerScale > 1.5)
+            if (Mathf.Abs(playerScale-2.0f)<float.Epsilon)
             {
                 //進行縮小修正
                 other.transform.localScale = Vector3.one;
-                other.gameObject.SendMessage("callWorldReSacle", 0.5);
+                ecManager.worldReSacle(0.5f);
             }
-            else if (playerScale < 0.75)
+            else if (Mathf.Abs(playerScale - 0.5f) < float.Epsilon)
             {
                 //進行放大修正
                 other.transform.localScale = Vector3.one;
-                other.gameObject.SendMessage("callWorldReSacle", 2.0);
+                ecManager.worldReSacle(2.0f);
             }
         }
 

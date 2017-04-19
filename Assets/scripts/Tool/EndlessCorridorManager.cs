@@ -8,28 +8,14 @@ public class EndlessCorridorManager : MonoBehaviour {
     public Transform scaleCenter;
 
     public int createSize=5;
-    List<EndlessCorridorHolder> createlist;
+    LinkedList<EndlessCorridorHolder> createlist;
+    public EndlessCorridorHolder Head;
+    public EndlessCorridorHolder Tail;
+    int halfIndex;
+
     // Use this for initialization
     void Start () {
-        createlist = new List<EndlessCorridorHolder>();
-
-        //create 1st 
-        EndlessCorridorHolder prefab = getRandomEndlessCorridorPrefab();
-        EndlessCorridorHolder refObj =(EndlessCorridorHolder)GameObject.Instantiate(prefab, Vector3.zero, Quaternion.Euler(-90,0,0));
-        createlist.Add(refObj);
-
-        float nowPrefabScale = 0.5f;
-        while (createlist.Count < createSize)
-        {
-            Transform tailDummy =refObj.getTailDummy();
-            EndlessCorridorHolder nowPrefab = getRandomEndlessCorridorPrefab();
-            EndlessCorridorHolder newObj = (EndlessCorridorHolder)GameObject.Instantiate(nowPrefab, tailDummy.position, tailDummy.rotation);
-            newObj.transform.localScale = new Vector3(nowPrefabScale, nowPrefabScale, nowPrefabScale);
-            createlist.Add(newObj);
-
-            refObj = newObj;
-            nowPrefabScale = nowPrefabScale * 0.5f;
-        }
+        initEC();
     }
 
     EndlessCorridorHolder getRandomEndlessCorridorPrefab()
@@ -44,9 +30,39 @@ public class EndlessCorridorManager : MonoBehaviour {
 	void Update () {
 		
 	}
-
-    void GenerateEC()
+    
+    void initEC()
     {
+        createlist = new LinkedList<EndlessCorridorHolder>();
+
+        //建立最中間的
+        EndlessCorridorHolder prefab = getRandomEndlessCorridorPrefab();
+        EndlessCorridorHolder initObj = (EndlessCorridorHolder)GameObject.Instantiate(prefab, Vector3.zero, Quaternion.Euler(-90, 0, 0));
+        halfIndex = createSize / 2;
+        initObj.initEC(halfIndex, this);
+        createlist.AddLast(initObj);
+
+        //add head
+        EndlessCorridorHolder refObj = initObj;
+        for (int i = halfIndex - 1; i >= 0; i--)
+        {
+            EndlessCorridorHolder newObj=createEcByRef(i, refObj, refObj.getHeadDummy(), 2.0f);
+            createlist.AddFirst(newObj);
+
+            refObj = newObj;
+        }
+        Head = refObj;
+
+        // add tail
+        refObj = initObj;
+        for (int i = halfIndex + 1; i < createSize; i++)
+        {
+            EndlessCorridorHolder newObj = createEcByRef(i, refObj, refObj.getTailDummy(), 0.5f);
+            createlist.AddLast(newObj);
+
+            refObj = newObj;
+        }
+        Tail = refObj;
     }
 
     //因為player不可能無限縮小(或是放大)
@@ -59,11 +75,53 @@ public class EndlessCorridorManager : MonoBehaviour {
         print("worldReSacle"+scaleValue);
     }
 
+    EndlessCorridorHolder createEcByRef(int index, EndlessCorridorHolder refObj,Transform dummy,float ScaleValue)
+    {
+        float nowScale = refObj.getGlobalScale() * ScaleValue;
+        EndlessCorridorHolder nowPrefab = getRandomEndlessCorridorPrefab();
+        EndlessCorridorHolder newObj = (EndlessCorridorHolder)GameObject.Instantiate(nowPrefab, dummy.position, dummy.rotation);
+        newObj.transform.localScale = new Vector3(nowScale, nowScale, nowScale);
+        newObj.initEC(index, this);
+        return newObj;
+    }
+
     void addHead()
-    { }
+    {
+        //修改其他元素序號
+        // 0 1 2 3 4 變成
+        // 1 2 3 4 5
+        foreach (EndlessCorridorHolder element in createlist)
+        {
+            element.ListIndex = element.ListIndex + 1;
+        }
+
+        //刪除Tail元素
+        createlist.RemoveLast();
+        Destroy(Tail.gameObject);
+        Tail = createlist.Last.Value;
+
+        EndlessCorridorHolder newObj = createEcByRef(0, Head,Head.getHeadDummy(), 2.0f);
+        createlist.AddFirst(newObj);
+        Head = newObj;
+    }
 
     void addTail()
-    { }
+    {
+        //修改其他元素序號
+        // 0 1 2 3 4 變成
+        //-1 0 1 2 3
+        foreach (EndlessCorridorHolder element in createlist)
+        {
+            element.ListIndex = element.ListIndex - 1;
+        }
 
+        //刪除Head元素
+        createlist.RemoveFirst();
+        Destroy(Head.gameObject);
+        Head = createlist.First.Value;
 
+        EndlessCorridorHolder newObj = createEcByRef(createSize-1, Tail, Tail.getTailDummy(), 0.5f);
+        createlist.AddLast(newObj);
+        Tail = newObj;
+    }
 }
