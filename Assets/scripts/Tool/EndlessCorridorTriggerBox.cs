@@ -65,7 +65,6 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
         if (other.name == "player")
         {
             float playerScale = other.transform.localScale.y;
-            print(playerScale);
             if (playerScale<0.6f)
             {
                 //進行縮小修正
