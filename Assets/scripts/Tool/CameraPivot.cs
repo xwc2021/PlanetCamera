@@ -18,7 +18,21 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     Quaternion rot;
     Transform myParent;
     Transform CAMERA;
+
+    public float RScale=1;
     float R;
+
+    float targetRScale=1;
+    public void resetTargetRScale(float s)
+    {
+        targetRScale = s;
+    }
+
+    public void resetRScale(float s)
+    {
+        RScale = s;
+        targetRScale = s;
+    }
 
     public float rotateMaxBorader=45;
     public float rotateMinBorader=-80;
@@ -54,7 +68,6 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public void resetRecordPos(Vector3 v,float scaleR)
     {
         recordPos = scaleR * recordPos+v;
-        R = R * scaleR;
     }
 
     void LateUpdate() {
@@ -127,7 +140,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             R += Rdiff * Rscale * Time.deltaTime;
             R = Mathf.Max(limitR, R);
 
-            CAMERA.localPosition = new Vector3(0, 0, -R);
+            RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
+            CAMERA.localPosition = new Vector3(0, 0, -R* RScale);
             Debug.DrawLine(transform.position, CAMERA.position, Color.red);
         }
     }
