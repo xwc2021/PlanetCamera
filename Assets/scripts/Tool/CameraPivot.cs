@@ -53,7 +53,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
     public void resetRecordPos(Vector3 v,float scaleR)
     {
-        recordPos = v;
+        recordPos = scaleR * recordPos+v;
         R = R * scaleR;
     }
 

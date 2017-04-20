@@ -9,10 +9,11 @@ public class EndlessCorridorHolder : MonoBehaviour {
     public EndlessCorridorTriggerBox triggerbox;
 
 
-    public void initEC(int index, EndlessCorridorManager ecManager)
+    public void initEC(int index, EndlessCorridorManager ecManager,bool doRescale)
     {
         ListIndex = index;
         triggerbox.ecManager = ecManager;
+        triggerbox.doRescale = doRescale;
     }
 
     int listIndex;

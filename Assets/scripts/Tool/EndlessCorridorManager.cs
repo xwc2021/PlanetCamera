@@ -26,10 +26,10 @@ public class EndlessCorridorManager : MonoBehaviour {
         return prefabList[nowIndex];
     }
 
+    public bool doRescale = true;
 
-	
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
 		
 	}
     
@@ -41,7 +41,7 @@ public class EndlessCorridorManager : MonoBehaviour {
         EndlessCorridorHolder prefab = getRandomEndlessCorridorPrefab();
         EndlessCorridorHolder initObj = (EndlessCorridorHolder)GameObject.Instantiate(prefab, Vector3.zero, Quaternion.Euler(-90, 0, 0));
         halfIndex = createSize / 2;
-        initObj.initEC(halfIndex, this);
+        initObj.initEC(halfIndex, this, doRescale);
         createlist.AddLast(initObj);
 
         //add head
@@ -74,12 +74,13 @@ public class EndlessCorridorManager : MonoBehaviour {
     //藉此產生無限縮小的假象
     public void worldReSacle(float scaleValue)
     {
+
         player.transform.localScale = Vector3.one;
         player.transform.position = scaleValue * player.transform.position;
         Vector3 offset = -player.transform.position;
 
         player.transform.position = Vector3.zero;
-        flyCamara.resetRecordPos(Vector3.zero, scaleValue);
+        flyCamara.resetRecordPos(offset, scaleValue);
 
 
         foreach (EndlessCorridorHolder element in createlist)
@@ -88,8 +89,7 @@ public class EndlessCorridorManager : MonoBehaviour {
             float temp = localScale * scaleValue;
             Vector3 scale = new Vector3(temp, temp, temp);
             element.transform.localScale = scale;
-            element.transform.position = scaleValue * element.transform.position;
-            element.transform.position = element.transform.position + offset;
+            element.transform.position = scaleValue * element.transform.position + offset;
         }
     }
 
@@ -99,7 +99,7 @@ public class EndlessCorridorManager : MonoBehaviour {
         EndlessCorridorHolder nowPrefab = getRandomEndlessCorridorPrefab();
         EndlessCorridorHolder newObj = (EndlessCorridorHolder)GameObject.Instantiate(nowPrefab, dummy.position, dummy.rotation);
         newObj.transform.localScale = new Vector3(nowScale, nowScale, nowScale);
-        newObj.initEC(index, this);
+        newObj.initEC(index, this, doRescale);
         return newObj;
     }
 

@@ -17,6 +17,8 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     float scaleA;
     float scaleB;
 
+    public bool doRescale = true;
+
     float borderValue;
     private void Awake()
     {
@@ -45,6 +47,9 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     private void OnTriggerStay(Collider other)
     {
+        if (!doRescale)
+            return;
+
         if (other.name == "player")
         {
 
@@ -54,11 +59,14 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     void OnTriggerExit(Collider other)
     {
+        if (!doRescale)
+            return;
+
         if (other.name == "player")
         {
             float playerScale = other.transform.localScale.y;
             print(playerScale);
-            if (playerScale<0.51f)
+            if (playerScale<0.6f)
             {
                 //進行縮小修正
                 ecManager.worldReSacle(2.0f);
@@ -77,9 +85,12 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other)
-    {
+    {    
         //更新地板
         ecManager.updateList(ec.ListIndex);
+
+        if (!doRescale)
+            return;
 
         float localRatio = getLocalRatio(other);
         if (localRatio < 0.5)//變小
