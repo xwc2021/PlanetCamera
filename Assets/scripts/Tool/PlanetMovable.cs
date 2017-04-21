@@ -130,8 +130,14 @@ public class PlanetMovable : MonoBehaviour
         rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
 
         //跳
-        if(ladding && moveController.doJump())
-            rigid.AddForce(20*gravityScale * -planetGravity, ForceMode.Acceleration);
+        if (moveController.doJump())
+        {
+            if (ladding)
+                rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
+            else
+                print("起跳失敗");
+        }
+            
 
         //print("rigid="+rigid.velocity.magnitude);
 
