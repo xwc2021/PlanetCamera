@@ -51,10 +51,13 @@ public class PlanetMovable : MonoBehaviour
     bool doJump=false;
     private void Update()
     {
-        //這邊要加上判斷，因為如果在|frame1|按下跳，其實會在|frame2|才執行
-        //有可能|frame2|不會執行到fixedUPdate，但在|fram2|裡的moveController.doJump()又把doJump更新為false
-        //這樣到了|frame3|即使執行到fixedUpdate，也不會跳了
-        // |frame1| |frame2||frame3|
+        //這邊要加上if (!doJump)的判斷，因為：
+        //如果在|frame1|按下跳，其實會在|frame2|的Update裡才執行GetButtonDown檢查(在同個Frame裡FixedUpdate會先於Update執行)
+        //這時GetButtonDown為true，但要等到|frame3|才會執行到fixedUPdate
+        //如果|frame3|裡沒有fixedUpdate，接著還是會執行Update，這時GetButtonDown檢查已經變成false了
+        //所以到|frame4|時執行fixedUpdate還是不會跳
+
+        // |frame1| |frame2||frame3||frame4|
         //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
         if (!doJump)
             doJump = moveController.doJump();
