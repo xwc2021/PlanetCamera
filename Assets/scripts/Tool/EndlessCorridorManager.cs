@@ -67,12 +67,30 @@ public class EndlessCorridorManager : MonoBehaviour {
         Tail = refObj;
     }
 
+    bool doWorldReScale = false;
+    float scaleValue;
+    private void LateUpdate()
+    {
+        if (doWorldReScale)
+        {
+            worldReSacle(scaleValue);
+            doWorldReScale = false;
+        }
+    }
+
+    public void CallWorldReSacle(float value)
+    {
+        //在LateUpdate裡作，大平台才不會不正常的跳動
+        doWorldReScale = true;
+        scaleValue = value;
+    }
+
     //因為player不可能無限縮小(或是放大)
     //當player離開triggerbox，並且由1縮小到0.5倍之後
     //會把player和所有EndlessCorrior都x2倍
     //這樣player到了下一個EndlessCorrior又可以再次縮小
     //藉此產生無限縮小的假象
-    public void worldReSacle(float scaleValue)
+    void worldReSacle(float scaleValue)
     {
 
         //player.transform.localScale = Vector3.one;

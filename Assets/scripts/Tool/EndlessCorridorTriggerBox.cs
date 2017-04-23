@@ -68,13 +68,13 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
         if (playerScale < 0.6f)
         {
             //進行縮小修正
-            ecManager.worldReSacle(2.0f);
+            ecManager.CallWorldReSacle(2.0f);
             print("縮小修正");
         }
         else if (playerScale > 1.8f)
         {
             //進行放大修正
-            ecManager.worldReSacle(0.5f);
+            ecManager.CallWorldReSacle(0.5f);
             print("放大修正");
         }
         else if (playerScale < 0.91f)
