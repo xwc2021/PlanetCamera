@@ -48,7 +48,18 @@ public class PlanetMovable : MonoBehaviour
             moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
     }
 
-    
+    bool doJump=false;
+    private void Update()
+    {
+        //這邊要加上判斷，因為如果在|frame1|按下跳，其實會在|frame2|才執行
+        //有可能|frame2|不會執行到fixedUPdate，但在|fram2|裡的moveController.doJump()又把doJump更新為false
+        //這樣到了|frame3|即使執行到fixedUpdate，也不會跳了
+        // |frame1| |frame2||frame3|
+        //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
+        if (!doJump)
+            doJump = moveController.doJump();
+    }
+
 
     public Vector3 getGroundUp()
     {
@@ -130,12 +141,14 @@ public class PlanetMovable : MonoBehaviour
         rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
 
         //跳
-        if (moveController.doJump())
+        if (doJump)
         {
             if (ladding)
                 rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
             else
-                print("起跳失敗");
+                print("失敗");
+
+            doJump = false;
         }
             
 
