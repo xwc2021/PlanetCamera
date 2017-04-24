@@ -33,6 +33,8 @@ public class PlanetMovable : MonoBehaviour
     public float gravityScale = 100f;
     public bool useRayHitNormal = false;
     public bool firstPersonMode = false;
+    public float jumpForce= 100f;
+    public bool useUserDefinedJumpForce = false;
 
 
     // Use this for initialization
@@ -147,7 +149,12 @@ public class PlanetMovable : MonoBehaviour
         if (doJump)
         {
             if (ladding)
-                rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
+            {
+                if(useUserDefinedJumpForce)
+                    rigid.AddForce(jumpForce * -planetGravity, ForceMode.Acceleration);
+                else
+                    rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
+            } 
             else
                 print("失敗");
 
