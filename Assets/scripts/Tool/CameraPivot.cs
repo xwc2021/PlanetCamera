@@ -19,6 +19,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     Transform myParent;
     Transform CAMERA;
 
+    public bool lockYaw = false;
+
     public float RScale=1;
     float R;
 
@@ -100,14 +102,17 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         Quaternion pitch = Quaternion.Euler(deltaPitch, 0, 0);
         rot = rot * pitch;
 
-        float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
-        //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
+        if (!lockYaw)
+        {
+            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
+            //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
 
-        //Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
-        //修正錯誤：原來的code只有在雪人的Tramsfrom.up是(0,1,0)時才會正確執行
-        Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
+            //Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
+            //修正錯誤：原來的code只有在雪人的Tramsfrom.up是(0,1,0)時才會正確執行
+            Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
 
-        rot = yaw * rot;
+            rot = yaw * rot;
+        }
 
         if (!doRotateFollow)
             transform.rotation = rot;

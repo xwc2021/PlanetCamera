@@ -23,12 +23,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     public bool adjustCameraWhenMove = true;
     InputProxy inputProxy;
     public MonoBehaviour inputPorxySocket;
-    Transform m_Cam;
+    public Transform m_Cam;
 
     Vector3 previousPosistion;
     Vector3 previousGroundUp;
 
-    public bool firstPersonMode =false;
+    public bool firstPersonMode = false;
+    public bool WorldMoveMode = false;
 
     // Use this for initialization
     void Start()
@@ -44,7 +45,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (inputPorxySocket != null)
             inputProxy = inputPorxySocket as InputProxy;
 
-        m_Cam = GetComponentInChildren<Camera>().transform;
+        if(m_Cam==null)
+            m_Cam = GetComponentInChildren<Camera>().transform;
     }
 
 
@@ -52,7 +54,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     {
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
-            //doAdjustByDiff();
+        //doAdjustByDiff();
     }
 
     void doAdjustByGroundUp()
@@ -79,8 +81,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         //print("rotDegree=" + rotDegree);
         if (rotDegree > Mathf.Epsilon && !float.IsNaN(rotDegree) && followCameraBehavior != null)
         {
-           
-            Quaternion q = Quaternion.AngleAxis(rotDegree , Z);
+
+            Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
 
             followCameraBehavior.setAdjustRotate(true, q);
             previousGroundUp = groundUp;//有轉動才更新
@@ -119,11 +121,33 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
             Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
             followCameraBehavior.setAdjustRotate(true, q);
         }
-            
+
         previousPosistion = transform.position;
         previousGroundUp = groundUp;
     }
 
+    //https://msdn.microsoft.com/zh-tw/library/14akc2c7.aspx
+    void doDegreeLock(ref float h, ref float v)
+    {
+        //鑜16個方向移動
+        int lockPiece = 16;
+        float snapDegree = 360.0f / lockPiece;
+        float degree = Mathf.Rad2Deg * Mathf.Atan2(v, h);
+
+        float extraDegree = degree % snapDegree;
+        float finalDegree = degree - extraDegree;
+
+        float extraRad = extraDegree * Mathf.Deg2Rad;
+
+        //作旋轉修正
+        float newH = h * Mathf.Cos(-extraRad) + v * -Mathf.Sin(-extraRad);
+        float newV = h * Mathf.Sin(-extraRad) + v * Mathf.Cos(-extraRad);
+
+        h = newH;
+        v = newV;
+    }
+
+    public bool doDergeeLock = false;
     public Vector3 getMoveForce()
     {
         //取得輸入
@@ -133,15 +157,33 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         if (h != 0 || v != 0)
         {
-            //由camera向方計算出角色的移動方向
-            if (!firstPersonMode)
-            {
-                Vector3 controllForce = h * m_Cam.right + v * m_Cam.up;
-                return controllForce;
-            }
-            else
+
+            if (firstPersonMode)
             {
                 Vector3 controllForce = h * m_Cam.right + v * m_Cam.forward;
+                return controllForce;
+            }
+
+            if (WorldMoveMode)
+            {
+                Vector3 worldX = new Vector3(1, 0, 0);
+                Vector3 worldZ = new Vector3(0, 0, 1);
+                if(doDergeeLock)
+                    doDegreeLock(ref h, ref v);
+
+                Vector3 controllForce = h * worldX + v * worldZ;
+
+                Vector3 from = transform.position;
+                Debug.DrawLine(from, from + controllForce, Color.red);
+
+                return controllForce;
+
+            }
+
+            //ThirdPersonMode
+            {
+                //由camera向方計算出角色的移動方向
+                Vector3 controllForce = h * m_Cam.right + v * m_Cam.up;
                 return controllForce;
             }
         }
