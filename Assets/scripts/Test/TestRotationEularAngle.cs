@@ -7,7 +7,6 @@ public class TestRotationEularAngle : MonoBehaviour
     public float degree = 0;
     public bool dynamic = false;
     public bool global = true;
-    public Transform target;
 
     // Use this for initialization
     void Start()

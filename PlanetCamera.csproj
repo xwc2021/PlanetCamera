@@ -129,6 +129,7 @@
     <Compile Include="Assets\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
     <Compile Include="Assets\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
+    <Compile Include="Assets\Water\WaterRange.cs" />
     <Compile Include="Assets\bear\Move.cs" />
     <Compile Include="Assets\scripts\Actor\Domino.cs" />
     <Compile Include="Assets\scripts\Actor\DominoSpwan.cs" />
@@ -207,6 +208,8 @@
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAdd.shader" />
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAddSoft.shader" />
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAlpha.shader" />
+    <None Include="Assets\Water\fetchWaveData.shader" />
+    <None Include="Assets\Water\wave.shader" />
     <None Include="Assets\materials\mirror.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
