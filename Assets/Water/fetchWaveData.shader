@@ -56,7 +56,6 @@ Shader "Custom/fetchWaveData" {
 				float up_height = tex2Dlod (_MainTex, float4(uv+up,0,0)).r;
 				float down_height = tex2Dlod (_MainTex, float4(uv+down,0,0)).r;
 
-				//因為v.vertex.x是負值，所以要這樣作外積
 				float3 temp =cross(float3(_dW,0,right_height)-float3(-_dW,0,left_height),float3(0,_dH,up_height)-float3(0,-_dH,down_height));
 				v.normal =normalize(temp);	
 			}
