@@ -2,62 +2,53 @@
 
 Shader "Custom/fetchWaveData" {
 	Properties{
-		_A ("Transparent",Float) = 0.2
 		_W ("WaterWidth",Float) = 222.3952
 		_H ("WaterHeight", Float) = 202.5132
+		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
 		SubShader{
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
-         ZWrite Off
-         Blend SrcAlpha OneMinusSrcAlpha
+		Tags { "RenderType"="Opaque"}
 
-			Pass
+
+			CGPROGRAM
+			#pragma surface surf Standard  vertex:vert
+			//#pragma vertex vert
+			//#pragma fragment frag
+
+			struct Input {
+				float2 a;
+			};
+
+			sampler2D _MainTex;
+
+			float _W;
+			float _H;
+			float _A;
+			float _Metallic;
+
+			void vert(inout appdata_full v, out Input data)
 			{
-				CGPROGRAM
-				#pragma vertex vert
-				#pragma fragment frag
+				UNITY_INITIALIZE_OUTPUT(Input,data);
+				float2 uv;
+				uv.x = v.vertex.x /_W;//分子和分母都是負值
+				uv.y = v.vertex.y /_H;
 
-				struct appdata
-				{
-					float4 vertex : POSITION;
-					float2 uv : TEXCOORD0;
-				};
-
-				struct v2f
-				{
-					float4 vertex : SV_POSITION;
-					float2 uv : TEXCOORD0;
-				};
-
-				sampler2D _MainTex;
-
-				float _W;
-				float _H;
-				float _A;
-
-				v2f vert(appdata v)
-				{
-					float2 uv;
-					uv.x = v.vertex.x /_W;//分子和分母都是負值
-					uv.y = v.vertex.y /_H;
-
-					float4 height = tex2Dlod (_MainTex, float4(uv,0,0));
-					v2f o;
-					o.vertex = v.vertex;
-					o.vertex.z =height;
-					o.vertex = UnityObjectToClipPos(o.vertex);
-					return o;
-				}
-
-				
-
-				float4 frag(v2f i) : SV_Target
-				{
-					return float4(0.72,1,1,_A);
-				}
-				ENDCG
+				float4 height = tex2Dlod (_MainTex, float4(uv,0,0));
+						
+				v.vertex.z =height;
+				//似乎會自己計算normal
+					
 			}
+
+			void surf (Input IN, inout SurfaceOutputStandard o) {
+				o.Albedo= fixed4(0.72,1,1,1);
+				o.Metallic =_Metallic;
+				o.Smoothness=1.0f;
+			}
+
+		
+			ENDCG
 		}
 		FallBack "Diffuse"
 }
