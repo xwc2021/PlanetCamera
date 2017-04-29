@@ -8,14 +8,18 @@ public class WaterRange : MonoBehaviour {
     public Transform borderDummy;
     // Use this for initialization
 
-    public Renderer r;
+    public Renderer []r;
     private void Start()
     {
-        r.material.SetFloat("_W", getWidth());
-        r.material.SetFloat("_H", getHeight());
+        foreach (Renderer ele in r)
+        {
+            ele.material.SetFloat("_W", getWidth());
+            ele.material.SetFloat("_H", getHeight());
 
-        //r.material.SetFloat("_dW", getDiffWidth());
-        //r.material.SetFloat("_dH", getDiffHeight());
+            ele.material.SetFloat("_dW", getDiffWidth());
+            ele.material.SetFloat("_dH", getDiffHeight());
+        }
+        
     }
 
     public float getWidth() { return borderDummy.localPosition.x; }

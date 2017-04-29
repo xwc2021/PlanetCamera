@@ -3,11 +3,12 @@
 Shader "Custom/fetchWaveData" {
 	Properties{
 		
-		_dW ("diff Width",Float) = -5.17198 //data from 3dsmax
-		_dH ("diff Height", Float) = 4.50029 //data from 3dsmax
+		_dW ("diff Width",Float) =-1
+		_dH ("diff Height", Float) = 1
 		_W ("WaterWidth",Float) = 222.3952
 		_H ("WaterHeight", Float) = 202.5132
 		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_Smoothness ("Smoothness", Range(0,1)) = 0.0
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
 		SubShader{
@@ -20,7 +21,7 @@ Shader "Custom/fetchWaveData" {
 			//#pragma fragment frag
 
 			struct Input {
-				float2 a;
+				fixed3 normal;
 			};
 
 			sampler2D _MainTex;
@@ -29,6 +30,7 @@ Shader "Custom/fetchWaveData" {
 			float _H;
 			float _A;
 			float _Metallic;
+			float _Smoothness;
 
 			float _dW;
 			float _dH;
@@ -42,7 +44,7 @@ Shader "Custom/fetchWaveData" {
 
 				float height = tex2Dlod (_MainTex, float4(uv,0,0)).r;
 						
-				v.vertex.z =height;
+				v.vertex.z +=height;
 				//計算normal
 
 				float2 uvDiff = float2(_dW,_dH)/float2(_W,_H);
@@ -56,14 +58,15 @@ Shader "Custom/fetchWaveData" {
 				float up_height = tex2Dlod (_MainTex, float4(uv+up,0,0)).r;
 				float down_height = tex2Dlod (_MainTex, float4(uv+down,0,0)).r;
 
-				float3 temp =cross(float3(_dW,0,right_height)-float3(-_dW,0,left_height),float3(0,_dH,up_height)-float3(0,-_dH,down_height));
+				//因為_dW是負值
+				float3 temp =cross(float3(-_dW,0,right_height)-float3(_dW,0,left_height),float3(0,_dH,up_height)-float3(0,-_dH,down_height));
 				v.normal =normalize(temp);	
 			}
 
 			void surf (Input IN, inout SurfaceOutputStandard o) {
 				o.Albedo= fixed4(0.72,1,1,1);
 				o.Metallic =_Metallic;
-				o.Smoothness=1.0f;
+				o.Smoothness=_Smoothness;
 			}
 
 		

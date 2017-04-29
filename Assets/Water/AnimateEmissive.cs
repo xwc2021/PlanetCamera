@@ -14,7 +14,7 @@ public class AnimateEmissive : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        float emission = Mathf.PingPong(10.0f*Time.time,3.0f);
+        float emission = Mathf.PingPong(5.0f*Time.time,1.5f);
         r.material.SetColor("_EmissionColor", color * emission);
     }
 }
