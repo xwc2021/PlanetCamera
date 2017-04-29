@@ -3,7 +3,7 @@
 Shader "Custom/fetchWaveData" {
 	Properties{
 		
-		_dW ("diff Width",Float) = 5.17198 //data from 3dsmax
+		_dW ("diff Width",Float) = -5.17198 //data from 3dsmax
 		_dH ("diff Height", Float) = 4.50029 //data from 3dsmax
 		_W ("WaterWidth",Float) = 222.3952
 		_H ("WaterHeight", Float) = 202.5132
