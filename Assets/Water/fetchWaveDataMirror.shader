@@ -8,7 +8,6 @@ Shader "Custom/fetchWaveDataMirror" {
 	}
 		SubShader{
 		Tags{ "RenderType" = "Opaque" }
-		LOD 200
 
 			Pass
 			{
