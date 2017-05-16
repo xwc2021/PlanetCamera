@@ -8,7 +8,7 @@ public class CreateGravitySensor : MonoBehaviour {
 
     //GravitySensor的作用：GravisySensor的axix forward會指出地面(平面)的方向
     //使用時記得產生後再旋轉物件，不然位置會對不到
-    //再改成旋轉後可以使用的話，要再加一層GameObject，然後把動態產生的GS都放到它底下，之後旋轉GameObject就行了，以後再說
+    //要改成旋轉後可以使用的話，要再加一層GameObject，然後把動態產生的GS都放到它底下，之後旋轉GameObject就行了，以後再說
     public void createGS()
     {
         Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
