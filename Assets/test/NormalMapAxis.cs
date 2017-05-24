@@ -20,9 +20,9 @@ public class NormalMapAxis : MonoBehaviour {
         transform.rotation=Quaternion.LookRotation(T, N);
 
         if (T.w == -1)
-            objBN.localPosition = new Vector3(-2.5f,0,0);
+            objBN.localPosition = new Vector3(-0.5f,0,0);
         else
-            objBN.localPosition = new Vector3(2.5f, 0, 0);
+            objBN.localPosition = new Vector3(0.5f, 0, 0);
     }
 
 

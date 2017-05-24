@@ -13,18 +13,17 @@ public class PeekGeoEditor : UnityEditor.Editor
         behavior = (PeekGeo)target;
     }
 
-    string index="0";
+   
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        
-        index = GUILayout.TextField(index);
 
-        int i = int.Parse(index);
+        
+
         if (GUILayout.Button("createTri3Axis"))
         {
-            behavior.createTri3Axis(i);
+            behavior.createTri3Axis();
         }
 
         if (GUILayout.Button("clear all"))
