@@ -10,7 +10,7 @@ public class PeekGeo : MonoBehaviour {
     void createAxis(int index,float scale)
     {
         NormalMapAxis obj = Instantiate<NormalMapAxis>(axis, Vector3.zero, Quaternion.identity);
-        obj.name += "[" + triIndex + "]";
+        obj.name += "triIndex[" + triIndex + "],vertices["+index+"]";
 
         //旋轉沒差，因為parent的世界旋轉已經設成Quaternion.identity
         obj.initByData(tangents[index], normals[index]);
