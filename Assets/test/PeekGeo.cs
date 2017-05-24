@@ -4,55 +4,72 @@ using UnityEngine;
 
 public class PeekGeo : MonoBehaviour {
 
-    public Transform r;
-    public Transform g;
-    public Transform b;
-    public void createGS()
+    public NormalMapAxis axis;
+
+
+    void createAxis(int index)
     {
-        Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
+        Vector3 original = transform.position + vertices[index];
 
-        int triCount = mesh.triangles.Length / 3;
-        int[] triangles = mesh.triangles;
+        NormalMapAxis obj = Instantiate<NormalMapAxis>(axis, original, Quaternion.identity);
+        obj.initByData(tangents[index], normals[index]);
+        obj.transform.parent = this.transform;
+    }
 
-        Vector4[] tangents = mesh.tangents;
-        Vector3[] normals = mesh.normals;
-        Vector3[] vertices = mesh.vertices;
-        for (int i = 0; i < triCount; i++)
+    Mesh mesh;
+    int triCount;
+    int[] triangles;
+    Vector4[] tangents;
+    Vector3[] normals;
+    Vector3[] vertices;
+
+    public void clearAll()
+    {
+        int childCount =transform.childCount;
+        for (int i = childCount - 1; i >= 0; i--)
+            DestroyImmediate(transform.GetChild(i).gameObject);
+    }
+
+    public void createTri3Axis(int triIndex)
+    {
+        Quaternion tempRot= transform.rotation;
+        //強制取消旋轉
+        transform.rotation = Quaternion.identity;
+
+        if (mesh == null)
         {
+            mesh = GetComponent<MeshFilter>().sharedMesh;
 
-            if (i != 33 && i != 18)
-                continue;
+            triCount = mesh.triangles.Length / 3;
+            triangles = mesh.triangles;
 
-            int v0 = triangles[3 * i];
-            int v1 = triangles[3 * i + 1];
-            int v2 = triangles[3 * i + 2];
-
-
-
-
-
-            Vector3 center = transform.position + vertices[v0] ;
-            Instantiate(r, center, Quaternion.identity, this.transform);
-
-            Vector3 normal = center + normals[v0];
-            Instantiate(g, normal, Quaternion.identity, this.transform);
-
-            Vector3 temp = new Vector3(tangents[v0].x, tangents[v0].y, tangents[v0].z);
-            Vector3 tangent = center + temp;
-            Transform obj=Instantiate(b, tangent, Quaternion.identity, this.transform);
-            obj.name = obj.name + "[("+i+")tangent.w=" + tangents[v0].w + "]";
-
-            center = transform.position + vertices[v1];
-            Instantiate(r, center, Quaternion.identity, this.transform);
-
-           
-
-            center = transform.position + vertices[v2];
-            Instantiate(r, center, Quaternion.identity, this.transform);
-
-           
-
+            tangents = mesh.tangents;
+            normals = mesh.normals;
+            vertices = mesh.vertices;
         }
 
+        print("tangents length="+tangents.Length);
+        if (tangents.Length == 0)
+        {
+            print("沒有tangents資料");
+            return;
+        }
+
+        if(triIndex> triCount)
+        {
+            print("三角形索引超出範圍");
+            return;
+        }
+
+        int v0 = triangles[3 * triIndex];
+        int v1 = triangles[3 * triIndex + 1];
+        int v2 = triangles[3 * triIndex + 2];
+
+        createAxis(v0);
+        createAxis(v1);
+        createAxis(v2);
+
+        //復原
+        transform.rotation = tempRot;
     }
 }
