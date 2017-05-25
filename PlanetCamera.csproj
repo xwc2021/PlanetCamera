@@ -163,6 +163,8 @@
     <Compile Include="Assets\scripts\Tool\Scalable.cs" />
     <Compile Include="Assets\test\NormalMapAxis.cs" />
     <Compile Include="Assets\test\PeekGeo.cs" />
+    <Compile Include="Assets\test\RotateByAxis.cs" />
+    <Compile Include="Assets\test\RotateByAxis2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
