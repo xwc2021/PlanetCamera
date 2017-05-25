@@ -1,32 +1,32 @@
 fileFormatVersion: 2
-guid: 5eb244ca19b8b0146970213212d72832
-timeCreated: 1495539100
+guid: 451d31494d28a2640ae72dd3852c691f
+timeCreated: 1495678419
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Box001
-    100002: Box002
-    100004: smooth
-    100006: //RootNode
+    100000: Box
+    100002: smooth
+    100004: //RootNode
+    100006: smoothBox
     100008: Sphere002
-    400000: Box001
-    400002: Box002
-    400004: smooth
-    400006: //RootNode
+    400000: Box
+    400002: smooth
+    400004: //RootNode
+    400006: smoothBox
     400008: Sphere002
-    2300000: Box001
-    2300002: Box002
-    2300004: smooth
+    2300000: Box
+    2300002: smooth
+    2300004: smoothBox
     2300006: Sphere002
-    3300000: Box001
-    3300002: Box002
-    3300004: smooth
+    3300000: Box
+    3300002: smooth
+    3300004: smoothBox
     3300006: Sphere002
     4300000: smooth
     4300002: Sphere002
-    4300004: Box001
-    4300006: Box002
+    4300004: smoothBox
+    4300006: Box
   materials:
     importMaterials: 1
     materialName: 0
@@ -71,7 +71,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 3
+    tangentImportMode: 1
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
