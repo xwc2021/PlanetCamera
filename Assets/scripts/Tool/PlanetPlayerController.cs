@@ -6,6 +6,7 @@ using UnityEngine;
 public interface FollowCameraBehavior
 {
     void setAdjustRotate(bool doRotateFollow, Quaternion adjustRot);
+    void adjustCameraYaw(float diff);
 }
 
 public interface MoveController
@@ -55,6 +56,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
         //doAdjustByDiff();
+
+        Vector2 hv = inputProxy.getHV();
+        followCameraBehavior.adjustCameraYaw(hv.x);
     }
 
     void doAdjustByGroundUp()

@@ -127,4 +127,9 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
             recordRight = transform.right;
         }  
     }
+
+    public void adjustCameraYaw(float diff)
+    {
+        //do nothing
+    }
 }

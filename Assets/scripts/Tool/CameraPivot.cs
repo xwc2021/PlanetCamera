@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
+using System;
 
 public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 {
@@ -105,6 +106,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         if (!lockYaw)
         {
             float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
+            deltaX += adjustYawDiff;
             //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
 
             //Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
@@ -160,5 +162,12 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     {
         sumAdjustRot = adjustRotate*sumAdjustRot;
         this.doRotateFollow = doRotateFollow;
+    }
+
+    public float adjustYawDiffScale =0.1f;
+    float adjustYawDiff=0.0f;
+    public void adjustCameraYaw(float diff)
+    {
+        adjustYawDiff = diff* adjustYawDiffScale;
     }
 }
