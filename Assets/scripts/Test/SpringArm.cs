@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
+using System;
 
 
 //舊方法，已改成使用CameraPivot
@@ -128,8 +129,18 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
         }  
     }
 
-    public void adjustCameraYaw(float diff)
+    void FollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRot)
     {
-        //do nothing
+        throw new NotImplementedException();
+    }
+
+    void FollowCameraBehavior.adjustCameraYaw(bool doYawFollow,float yawDegree)
+    {
+        throw new NotImplementedException();
+    }
+
+    void FollowCameraBehavior.adjustCameraYaw(float diff)
+    {
+        throw new NotImplementedException();
     }
 }

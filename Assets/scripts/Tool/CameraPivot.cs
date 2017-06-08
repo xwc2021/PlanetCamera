@@ -5,6 +5,7 @@ using System;
 
 public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 {
+    public float yawFollowSpeed = 1.5f;
     public float rotateFollowSpeed = 5;
     public bool follow = true;
     public float posFollowSpeed = 5;
@@ -37,6 +38,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         targetRScale = s;
     }
 
+    Vector3 posDebug;
+
     public float rotateMaxBorader=45;
     public float rotateMinBorader=-80;
     public float nowPitchDegree;//-90<PitchDegree<90
@@ -47,7 +50,11 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         myParent = transform.parent;
         CAMERA = transform.GetChild(0);
         recordPos = transform.position;
+        posDebug = recordPos;
         R = (transform.position - CAMERA.position).magnitude;
+
+        temporaryTargetTurnDiff= Quaternion.AngleAxis(0, recordParentInitUp); ;
+
         recordParentInitUp = myParent.up;
 
         //計算一開始的ptich值
@@ -81,7 +88,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             transform.position = recordPos;
         }     
 
-        //從此之後，rot永遠在local space運作(它的parent space是temporary)
+        //從此之後，rot永遠在local space運作
         float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y");
 
         //加上Pitch的邊界檢查
@@ -106,7 +113,6 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         if (!lockYaw)
         {
             float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
-            deltaX += adjustYawDiff;
             //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
 
             //Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
@@ -114,21 +120,26 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
 
             rot = yaw * rot;
+
         }
 
-        if (!doRotateFollow)
-            transform.rotation = rot;
-        else
+        Quaternion chain = Quaternion.identity;
+
+        if (doYawFollow)
         {
-            if (isFirst)
-            {
-                temporary = Quaternion.identity;
-                isFirst = false;
-            }
-
-            temporary = Quaternion.Slerp(temporary, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
-            transform.rotation = temporary * rot;
+            temporaryTargetTurnDiff = Quaternion.Slerp(temporaryTargetTurnDiff, sumTargetTurnDiff, yawFollowSpeed * Time.deltaTime);
+            chain = temporaryTargetTurnDiff * chain;
         }
+
+        if (doRotateFollow)
+        {
+            temporaryFinal = Quaternion.Slerp(temporaryFinal, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
+            chain = temporaryFinal * chain;
+        }
+
+        transform.rotation = chain*rot;
+
+        
 
         if (firstPersonMode)
         {
@@ -153,21 +164,32 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         }
     }
 
-    Quaternion temporary;
+    Quaternion temporaryFinal = Quaternion.identity;
     Quaternion sumAdjustRot=Quaternion.identity;
     bool doRotateFollow = false;
-    bool isFirst = true;
 
-    public void setAdjustRotate(bool doRotateFollow, Quaternion adjustRotate)
+    void FollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRotate)
     {
         sumAdjustRot = adjustRotate*sumAdjustRot;
         this.doRotateFollow = doRotateFollow;
     }
 
-    public float adjustYawDiffScale =0.1f;
-    float adjustYawDiff=0.0f;
-    public void adjustCameraYaw(float diff)
+    void FollowCameraBehavior.adjustCameraYaw(float diff)
     {
-        adjustYawDiff = diff* adjustYawDiffScale;
+        //do nothing
     }
+
+    public float sumTurnDiff=0;
+    bool doYawFollow=false;
+    Quaternion temporaryTargetTurnDiff;
+    public Quaternion sumTargetTurnDiff= Quaternion.identity;
+    void FollowCameraBehavior.adjustCameraYaw(bool doYawFollow,float yawDegree)
+    {
+        yawDegree = yawDegree < 180 ? yawDegree : yawDegree-360;
+        sumTurnDiff = (sumTurnDiff + yawDegree)%360.0f;
+        sumTargetTurnDiff = Quaternion.AngleAxis(sumTurnDiff, recordParentInitUp);
+        this.doYawFollow = doYawFollow;
+        print(yawDegree);
+    }
+    public Vector3 debugRot;
 }
