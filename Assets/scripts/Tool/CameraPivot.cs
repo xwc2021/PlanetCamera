@@ -1,7 +1,12 @@
-﻿using UnityEngine;
+﻿//#define method_one
+#define method_two
+
+using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using System;
+
+ 
 
 public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 {
@@ -44,6 +49,9 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public float rotateMinBorader=-80;
     public float nowPitchDegree;//-90<PitchDegree<90
     public bool flyAway = false;
+#if (method_two)
+    Quaternion initParentRotation;
+#endif
     // Use this for initialization
     void Start () {
         rot = transform.rotation;
@@ -53,7 +61,11 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         posDebug = recordPos;
         R = (transform.position - CAMERA.position).magnitude;
 
-        temporaryTargetTurnDiff= Quaternion.AngleAxis(0, recordParentInitUp); ;
+        temporaryTargetTurnDiff = Quaternion.identity;
+
+#if (method_two)
+        initParentRotation = myParent.rotation;
+#endif
 
         recordParentInitUp = myParent.up;
 
@@ -179,17 +191,30 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         //do nothing
     }
 
-    public float sumTurnDiff=0;
+    float sumTurnDiff=0;
     bool doYawFollow=false;
     Quaternion temporaryTargetTurnDiff;
-    public Quaternion sumTargetTurnDiff= Quaternion.identity;
+    Quaternion sumTargetTurnDiff= Quaternion.identity;
     void FollowCameraBehavior.adjustCameraYaw(bool doYawFollow,float yawDegree)
     {
         yawDegree = yawDegree < 180 ? yawDegree : yawDegree-360;
         sumTurnDiff = (sumTurnDiff + yawDegree)%360.0f;
+
+#if (method_one)
         sumTargetTurnDiff = Quaternion.AngleAxis(sumTurnDiff, recordParentInitUp);
+#endif
+
+#if (method_two)
+        //使用這方法也是可以的(雖然有點迂迴)
+        Quaternion temp = initParentRotation * Quaternion.Euler(0, sumTurnDiff, 0);
+        //但別忘了這裡要的是diff
+        //diff可能有local跟global兩種，這裡要用gloabl，才能配合上面的Quaternion rot
+        //temp=sumTargetTurnDiff*initParentRotation
+        sumTargetTurnDiff = temp * Quaternion.Inverse(initParentRotation);
+#endif
+
+
         this.doYawFollow = doYawFollow;
         print(yawDegree);
     }
-    public Vector3 debugRot;
 }
