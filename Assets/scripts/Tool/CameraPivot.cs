@@ -43,9 +43,9 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
     Vector3 posDebug;
 
-    static public float rotateMaxBorader=190;
-    static public float rotateMinBorader=-10;
-    public float localNowPitchDegree;//-90<PitchDegree<90
+    static public float rotateMaxBorader=240;
+    static public float rotateMinBorader=-60;
+    public float localNowPitchDegree;
     public bool flyAway = false;
 
     // Use this for initialization
