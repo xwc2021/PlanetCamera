@@ -43,9 +43,9 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
     Vector3 posDebug;
 
-    public float rotateMaxBorader=45;
-    public float rotateMinBorader=-80;
-    public float nowPitchDegree;//-90<PitchDegree<90
+    static public float rotateMaxBorader=190;
+    static public float rotateMinBorader=-10;
+    public float localNowPitchDegree;//-90<PitchDegree<90
     public bool flyAway = false;
 
     // Use this for initialization
@@ -61,8 +61,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
         recordParentInitUp = myParent.up;
 
-        //計算一開始的ptich值
-        nowPitchDegree = getNowPitchDegree(recordParentInitUp);
+        //記錄一開始的pitch值
+        localNowPitchDegree = transform.localRotation.eulerAngles.x;
 
         //只解除parent關系，只要player有縮小就是會搖動
         //還是得在doScale裡鎖scale的增加值
@@ -70,33 +70,20 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             transform.parent = null;
     }
 
-    float getNowPitchDegree(Vector3 PlaneNormal)
-    {
-        Vector3 x = Vector3.ProjectOnPlane(transform.forward, PlaneNormal);
-        Vector3 y = transform.forward - x;
-        float sign = Vector3.Dot(PlaneNormal, y) > 0 ? 1 : -1;
-        return Mathf.Rad2Deg * Mathf.Atan2(sign * y.magnitude, x.magnitude);
-    }
-
     public void resetRecordPos(Vector3 v,float scaleR)
     {
         recordPos = scaleR * recordPos+v;
     }
 
-    float limitDeltaPitch(float deltaPitch)
+    void addPitch(float deltaPitch)
     {
-        //deltaPitch增加時，會讓nowPitchDegree減少
-        float deltaPitchDegree = -deltaPitch;
-        float newPitchDegree = nowPitchDegree + deltaPitchDegree;
+        float newPitchDegree = localNowPitchDegree + deltaPitch;
 
         //加上Pitch的邊界檢查
         newPitchDegree = Mathf.Min(newPitchDegree, rotateMaxBorader);
         newPitchDegree = Mathf.Max(newPitchDegree, rotateMinBorader);
 
-        deltaPitchDegree = newPitchDegree - nowPitchDegree;
-        deltaPitch = -(deltaPitchDegree);
-
-        return deltaPitch;
+        localNowPitchDegree = newPitchDegree;
     }
 
     void LateUpdate() {
@@ -107,36 +94,36 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             transform.position = recordPos;
         }     
 
-        //rot在local space運作
+        //pitch旋轉
         float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y");
-
-        float deltaPitch = limitDeltaPitch(perPitchDegreen * deltaY * Time.deltaTime);
-        Quaternion pitch = Quaternion.Euler(deltaPitch, 0, 0);
-        rot = rot * pitch;
+        addPitch(perPitchDegreen * deltaY * Time.deltaTime);
+        Quaternion pitch = Quaternion.Euler(localNowPitchDegree, 0, 0);
 
         if (!lockYaw)
         {
+            //yaw旋轉
             float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");   
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
-
             rot = yaw * rot;
         }
 
         Quaternion chain = Quaternion.identity;
 
+        //當avatar轉向時所作的修正
         if (doYawFollow)
         {
             temporaryTargetTurnDiff = Quaternion.Slerp(temporaryTargetTurnDiff, sumTargetTurnDiff, yawFollowSpeed * Time.deltaTime);
             chain = temporaryTargetTurnDiff * chain;
         }
 
+        //因為可以在曲面(球、甜甜圈、knock)上移動，所以要有這一項的修正
         if (doRotateFollow)
         {
             temporaryFinal = Quaternion.Slerp(temporaryFinal, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
             chain = temporaryFinal * chain;
         }
 
-        transform.rotation = chain*rot;
+        transform.rotation = chain*rot*pitch;
 
         if (firstPersonMode)
         {
@@ -146,9 +133,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
             syncDirTarget.rotation = q;
         }
-
-        nowPitchDegree = getNowPitchDegree(myParent.up);
-
+ 
         if (!firstPersonMode)
         { 
             float Rscale = Input.GetAxis("Mouse ScrollWheel");
