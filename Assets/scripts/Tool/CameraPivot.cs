@@ -20,7 +20,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public float limitR = 2.0f;
     Vector3 recordParentInitUp;
     Vector3 recordPos;
-    Quaternion rot;
+    Quaternion cameraTargetRot;
     Transform myParent;
     Transform CAMERA;
 
@@ -50,8 +50,8 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
     // Use this for initialization
     void Start () {
-        rot = transform.rotation;
         myParent = transform.parent;
+        cameraTargetRot = myParent.rotation;
         CAMERA = transform.GetChild(0);
         recordPos = transform.position;
         posDebug = recordPos;
@@ -104,7 +104,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             //yaw旋轉
             float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");   
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
-            rot = yaw * rot;
+            cameraTargetRot = yaw * cameraTargetRot;
         }
 
         Quaternion chain = Quaternion.identity;
@@ -123,7 +123,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             chain = temporaryFinal * chain;
         }
 
-        transform.rotation = chain*rot*pitch;
+        transform.rotation = chain* cameraTargetRot * pitch;
 
         if (firstPersonMode)
         {
