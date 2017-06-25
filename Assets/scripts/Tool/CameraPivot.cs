@@ -1,6 +1,4 @@
-﻿//#define method_one
-#define method_two
-
+﻿
 using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
@@ -49,9 +47,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
     public float rotateMinBorader=-80;
     public float nowPitchDegree;//-90<PitchDegree<90
     public bool flyAway = false;
-#if (method_two)
-    Quaternion initParentRotation;
-#endif
+
     // Use this for initialization
     void Start () {
         rot = transform.rotation;
@@ -63,14 +59,9 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
         temporaryTargetTurnDiff = Quaternion.identity;
 
-#if (method_two)
-        initParentRotation = myParent.rotation;
-#endif
-
         recordParentInitUp = myParent.up;
 
         //計算一開始的ptich值
-
         nowPitchDegree = getNowPitchDegree(recordParentInitUp);
 
         //只解除parent關系，只要player有縮小就是會搖動
@@ -92,6 +83,22 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         recordPos = scaleR * recordPos+v;
     }
 
+    float limitDeltaPitch(float deltaPitch)
+    {
+        //deltaPitch增加時，會讓nowPitchDegree減少
+        float deltaPitchDegree = -deltaPitch;
+        float newPitchDegree = nowPitchDegree + deltaPitchDegree;
+
+        //加上Pitch的邊界檢查
+        newPitchDegree = Mathf.Min(newPitchDegree, rotateMaxBorader);
+        newPitchDegree = Mathf.Max(newPitchDegree, rotateMinBorader);
+
+        deltaPitchDegree = newPitchDegree - nowPitchDegree;
+        deltaPitch = -(deltaPitchDegree);
+
+        return deltaPitch;
+    }
+
     void LateUpdate() {
 
         if (follow)
@@ -100,39 +107,19 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             transform.position = recordPos;
         }     
 
-        //從此之後，rot永遠在local space運作
+        //rot在local space運作
         float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y");
 
-        //加上Pitch的邊界檢查
-        float deltaPitch = perPitchDegreen * deltaY * Time.deltaTime;
-        //deltaPitch增加時，會讓nowPitchDegree減少
-        float deltaPitchDegree = -deltaPitch;
-        float newPitchDegree = nowPitchDegree + deltaPitchDegree;
-        if (newPitchDegree > rotateMaxBorader)
-        {
-            deltaPitchDegree = rotateMaxBorader-nowPitchDegree;
-            deltaPitch = -(deltaPitchDegree);
-        }
-        else if (newPitchDegree < rotateMinBorader)
-        {
-            deltaPitchDegree = rotateMinBorader - nowPitchDegree;
-            deltaPitch = -(deltaPitchDegree);
-        }
-
+        float deltaPitch = limitDeltaPitch(perPitchDegreen * deltaY * Time.deltaTime);
         Quaternion pitch = Quaternion.Euler(deltaPitch, 0, 0);
         rot = rot * pitch;
 
         if (!lockYaw)
         {
-            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");
-            //Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, myParent.up);
-
-            //Quaternion yaw = Quaternion.Euler(0, perYawDegreen * deltaX * Time.deltaTime, 0);
-            //修正錯誤：原來的code只有在雪人的Tramsfrom.up是(0,1,0)時才會正確執行
+            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");   
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
 
             rot = yaw * rot;
-
         }
 
         Quaternion chain = Quaternion.identity;
@@ -150,8 +137,6 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         }
 
         transform.rotation = chain*rot;
-
-        
 
         if (firstPersonMode)
         {
@@ -200,19 +185,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         yawDegree = yawDegree < 180 ? yawDegree : yawDegree-360;
         sumTurnDiff = (sumTurnDiff + yawDegree)%360.0f;
 
-#if (method_one)
         sumTargetTurnDiff = Quaternion.AngleAxis(sumTurnDiff, recordParentInitUp);
-#endif
-
-#if (method_two)
-        //使用這方法也是可以的(雖然有點迂迴)
-        Quaternion temp = initParentRotation * Quaternion.Euler(0, sumTurnDiff, 0);
-        //但別忘了這裡要的是diff
-        //diff可能有local跟global兩種，這裡要用gloabl，才能配合上面的Quaternion rot
-        //temp=sumTargetTurnDiff*initParentRotation
-        sumTargetTurnDiff = temp * Quaternion.Inverse(initParentRotation);
-#endif
-
 
         this.doYawFollow = doYawFollow;
         print(yawDegree);
