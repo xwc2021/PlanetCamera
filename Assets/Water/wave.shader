@@ -3,6 +3,7 @@
 Shader "Custom/wave" {
 	Properties{
 		_HS ("Wave Height Scale",Float) = 0.5
+		_LH ("low height",Float) = 0.0
 	}
 		SubShader{
 		Tags{ "RenderType" = "Opaque" }
