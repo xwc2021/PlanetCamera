@@ -5,7 +5,7 @@ using System;
 
 
 //舊方法，已改成使用CameraPivot
-public class SpringArm : MonoBehaviour, FollowCameraBehavior
+public class SpringArm : MonoBehaviour, SurfaceFollowCameraBehavior
 {
 
     public float maxPitchDegree = 60;
@@ -129,17 +129,7 @@ public class SpringArm : MonoBehaviour, FollowCameraBehavior
         }  
     }
 
-    void FollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRot)
-    {
-        throw new NotImplementedException();
-    }
-
-    void FollowCameraBehavior.adjustCameraYaw(bool doYawFollow,float yawDegree)
-    {
-        throw new NotImplementedException();
-    }
-
-    void FollowCameraBehavior.adjustCameraYaw(float diff)
+    void SurfaceFollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRot)
     {
         throw new NotImplementedException();
     }

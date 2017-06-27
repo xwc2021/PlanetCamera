@@ -6,7 +6,7 @@ using System;
 
  
 
-public class CameraPivot : MonoBehaviour, FollowCameraBehavior
+public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 {
     public float yawFollowSpeed = 1.5f;
     public float rotateFollowSpeed = 5;
@@ -41,8 +41,6 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         targetRScale = s;
     }
 
-    Vector3 posDebug;
-
     static public float rotateMaxBorader=240;
     static public float rotateMinBorader=-60;
     public float localNowPitchDegree;
@@ -54,11 +52,7 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         cameraTargetRot = myParent.rotation;
         CAMERA = transform.GetChild(0);
         recordPos = transform.position;
-        posDebug = recordPos;
         R = (transform.position - CAMERA.position).magnitude;
-
-        temporaryTargetTurnDiff = Quaternion.identity;
-
         recordParentInitUp = myParent.up;
 
         //記錄一開始的pitch值
@@ -90,7 +84,14 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
 
         if (follow)
         {
+            Vector3 old = recordPos;
             recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
+            
+            float diff = (old - recordPos).magnitude;
+            //print(diff);
+            if(autoYawFollow)
+                doYawFollow = (diff > doYawFollowDiff) ? true : false;//超過門檻值才作
+
             transform.position = recordPos;
         }     
 
@@ -105,25 +106,51 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
             float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");   
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
             cameraTargetRot = yaw * cameraTargetRot;
-        }
 
-        Quaternion chain = Quaternion.identity;
+            //doYawFollow
+            if (autoYawFollow && doYawFollow)
+            {
+                Quaternion y = Quaternion.Slerp(Quaternion.identity, autoYawFollowTurnDiff, yawFollowSpeed * Time.deltaTime);
+                cameraTargetRot = y * cameraTargetRot;
+            }
+        }      
 
-        //當avatar轉向時所作的修正
-        if (doYawFollow)
-        {
-            temporaryTargetTurnDiff = Quaternion.Slerp(temporaryTargetTurnDiff, sumTargetTurnDiff, yawFollowSpeed * Time.deltaTime);
-            chain = temporaryTargetTurnDiff * chain;
-        }
-
+        Quaternion surfaceFollow = Quaternion.identity;
         //因為可以在曲面(球、甜甜圈、knock)上移動，所以要有這一項的修正
-        if (doRotateFollow)
+        if (doSurfaceFollow)
         {
-            temporaryFinal = Quaternion.Slerp(temporaryFinal, sumAdjustRot, rotateFollowSpeed * Time.deltaTime);
-            chain = temporaryFinal * chain;
+            temporarySurfaceRot = Quaternion.Slerp(temporarySurfaceRot, sumSurfaceRot, rotateFollowSpeed * Time.deltaTime);
+            surfaceFollow = temporarySurfaceRot;
         }
 
-        transform.rotation = chain* cameraTargetRot * pitch;
+        transform.rotation = surfaceFollow * cameraTargetRot * pitch;
+
+        //calculate yawFollow
+        if (autoYawFollow && doYawFollow)
+        {
+            //使用cameraForwardOnPlane和targetForward的夾角作為yawFollow的旋轉量
+            Quaternion final = sumSurfaceRot * cameraTargetRot * pitch;//使用sumSurfaceRot來計算!
+            Vector3 cameraForwardInWorld = final* Vector3.forward;
+            Vector3 planeNormal = myParent.up;
+            Vector3 cameraForwardOnPlane =Vector3.ProjectOnPlane(cameraForwardInWorld, planeNormal);
+            cameraForwardOnPlane.Normalize();
+            Vector3 targetForward = myParent.forward;
+          
+            Vector3 helpV=Vector3.Cross(cameraForwardOnPlane, targetForward);
+            float dotValue = Vector3.Dot(cameraForwardOnPlane, targetForward);
+            float sign = Vector3.Dot(helpV, planeNormal) > 0.0f ? 1.0f : -1.0f;
+            yawFollowDegree = Mathf.Acos(dotValue)*Mathf.Rad2Deg;
+
+            //在限定的範圍內才作yawFollow
+            bool doAdjust = yawFollowDegree > yawFollowMin && yawFollowDegree < yawFollowMax;
+            autoYawFollowTurnDiff = doAdjust ? Quaternion.AngleAxis(sign * yawFollowDegree, recordParentInitUp): Quaternion.identity;
+
+            //draw debug
+            Vector3 pPos = myParent.transform.position;
+            float scale = 5.0f;
+            Debug.DrawLine(pPos, pPos + scale * targetForward, Color.yellow);
+            Debug.DrawLine(pPos, pPos + scale * cameraForwardOnPlane, Color.blue);
+        }
 
         if (firstPersonMode)
         {
@@ -146,33 +173,21 @@ public class CameraPivot : MonoBehaviour, FollowCameraBehavior
         }
     }
 
-    Quaternion temporaryFinal = Quaternion.identity;
-    Quaternion sumAdjustRot=Quaternion.identity;
-    bool doRotateFollow = false;
+    Quaternion temporarySurfaceRot = Quaternion.identity;
+    Quaternion sumSurfaceRot = Quaternion.identity;
+    bool doSurfaceFollow = false;
 
-    void FollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRotate)
+    void SurfaceFollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRotate)
     {
-        sumAdjustRot = adjustRotate*sumAdjustRot;
-        this.doRotateFollow = doRotateFollow;
+        sumSurfaceRot = adjustRotate* sumSurfaceRot;
+        this.doSurfaceFollow = doRotateFollow;
     }
 
-    void FollowCameraBehavior.adjustCameraYaw(float diff)
-    {
-        //do nothing
-    }
-
-    float sumTurnDiff=0;
+    public bool autoYawFollow = false;
     bool doYawFollow=false;
-    Quaternion temporaryTargetTurnDiff;
-    Quaternion sumTargetTurnDiff= Quaternion.identity;
-    void FollowCameraBehavior.adjustCameraYaw(bool doYawFollow,float yawDegree)
-    {
-        yawDegree = yawDegree < 180 ? yawDegree : yawDegree-360;
-        sumTurnDiff = (sumTurnDiff + yawDegree)%360.0f;
-
-        sumTargetTurnDiff = Quaternion.AngleAxis(sumTurnDiff, recordParentInitUp);
-
-        this.doYawFollow = doYawFollow;
-        print(yawDegree);
-    }
+    Quaternion autoYawFollowTurnDiff= Quaternion.identity;
+    public  float doYawFollowDiff = 0.2f;
+    public float yawFollowDegree;
+    public float yawFollowMin = 30.0f;
+    public float yawFollowMax = 95.0f;
 }

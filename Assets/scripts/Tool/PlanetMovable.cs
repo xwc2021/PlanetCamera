@@ -35,15 +35,9 @@ public class PlanetMovable : MonoBehaviour
     public bool firstPersonMode = false;
     public float jumpForce= 100f;
     public bool useUserDefinedJumpForce = false;
-    public bool adjustCameraYawWhenTurn = false;
-
-    FollowCameraBehavior followCameraBehavior;
 
     // Use this for initialization
     void Start () {
-
-        CameraPivot cameraPivot = GetComponentInChildren<CameraPivot>();
-        followCameraBehavior = cameraPivot as FollowCameraBehavior;
 
         if (grounGravityGeneratorSocket != null)
             grounGravityGenerator = grounGravityGeneratorSocket as GrounGravityGenerator;
@@ -137,12 +131,6 @@ public class PlanetMovable : MonoBehaviour
             {
                 Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
                 Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
-                if (adjustCameraYawWhenTurn)
-                {
-                    //newRot= transform.rotation*localTargetTurnDiff
-                    Quaternion localTargetTurnDiff = Quaternion.Inverse(transform.rotation) * newRot;
-                    followCameraBehavior.adjustCameraYaw(true, localTargetTurnDiff.eulerAngles.y);
-                }
                 transform.rotation = newRot;
             }
             //更新面向end

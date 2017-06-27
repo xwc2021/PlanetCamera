@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface FollowCameraBehavior
+public interface SurfaceFollowCameraBehavior
 {
     void setAdjustRotate(bool doRotateFollow, Quaternion adjustRot);
-    void adjustCameraYaw(bool doYawFollow, float yawDegree);
-    void adjustCameraYaw(float diff);
 }
 
 public interface MoveController
@@ -20,7 +18,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 {
 
     public PlanetMovable planetMovable;
-    FollowCameraBehavior followCameraBehavior;
+    SurfaceFollowCameraBehavior followCameraBehavior;
     public MonoBehaviour followCameraBehaviorSocket;
     public bool adjustCameraWhenMove = true;
     InputProxy inputProxy;
@@ -40,7 +38,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         previousGroundUp = transform.up;
 
         if (followCameraBehaviorSocket != null)
-            followCameraBehavior = followCameraBehaviorSocket as FollowCameraBehavior;
+            followCameraBehavior = followCameraBehaviorSocket as SurfaceFollowCameraBehavior;
 
         //print("cameraBehavior="+cameraBehavior);
 
