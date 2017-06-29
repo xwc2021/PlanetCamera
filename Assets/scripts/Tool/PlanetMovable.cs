@@ -36,8 +36,11 @@ public class PlanetMovable : MonoBehaviour
     public float jumpForce= 100f;
     public bool useUserDefinedJumpForce = false;
 
+    Animator animator;
     // Use this for initialization
     void Start () {
+
+        animator = GetComponentInChildren<Animator>();
 
         if (grounGravityGeneratorSocket != null)
             grounGravityGenerator = grounGravityGeneratorSocket as GrounGravityGenerator;
@@ -101,7 +104,7 @@ public class PlanetMovable : MonoBehaviour
 
                 float distance = (hit.point - transform.position).magnitude;
             //如果距離小於某個值就判定是在地面上
-            if (distance < 1)
+            if (distance < 0.25f)
             {
                 ladding = true;
                 //print("ladding");
@@ -142,25 +145,35 @@ public class PlanetMovable : MonoBehaviour
             
         }
 
+        bool moving =rigid.velocity.magnitude>2;
+        animator.SetBool("moving", moving);
+
         //加上重力
         rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
 
         //跳
-        if (doJump)
+        if (ladding)
         {
-            if (ladding)
+            animator.SetBool("onAir", false);
+            Debug.DrawLine(transform.position, transform.position - transform.up,Color.green);
+            if (doJump)
             {
-                if(useUserDefinedJumpForce)
+                if (useUserDefinedJumpForce)
                     rigid.AddForce(jumpForce * -planetGravity, ForceMode.Acceleration);
                 else
                     rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
-            } 
-            else
-                print("失敗");
+                animator.SetBool("onAir", true);
 
-            doJump = false;
+                doJump = false;
+            }  
         }
-            
+        else
+        {
+            //不是ladding時按下doJump，也要把doJump設為false
+            //不然的話會一直持續到當ladding為true再進行跳躍
+            if (doJump)
+                doJump = false;
+        }      
 
         //print("rigid="+rigid.velocity.magnitude);
 
