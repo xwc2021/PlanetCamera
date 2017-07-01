@@ -145,8 +145,12 @@ public class PlanetMovable : MonoBehaviour
             
         }
 
-        bool moving =rigid.velocity.magnitude>2;
-        animator.SetBool("moving", moving);
+        if (animator != null)
+        {
+            bool moving = rigid.velocity.magnitude > 2;
+            animator.SetBool("moving", moving);
+        }
+        
 
         //加上重力
         rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
@@ -154,7 +158,8 @@ public class PlanetMovable : MonoBehaviour
         //跳
         if (ladding)
         {
-            animator.SetBool("onAir", false);
+            if (animator != null)
+                animator.SetBool("onAir", false);
             Debug.DrawLine(transform.position, transform.position - transform.up,Color.green);
             if (doJump)
             {
@@ -162,7 +167,9 @@ public class PlanetMovable : MonoBehaviour
                     rigid.AddForce(jumpForce * -planetGravity, ForceMode.Acceleration);
                 else
                     rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
-                animator.SetBool("onAir", true);
+
+                if (animator != null)
+                    animator.SetBool("onAir", true);
 
                 doJump = false;
             }  
