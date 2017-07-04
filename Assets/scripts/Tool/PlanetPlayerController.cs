@@ -28,7 +28,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Vector3 previousPosistion;
     Vector3 previousGroundUp;
 
-    public bool firstPersonMode = false;
     public bool WorldMoveMode = false;
 
     // Use this for initialization
@@ -132,7 +131,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     //https://msdn.microsoft.com/zh-tw/library/14akc2c7.aspx
     void doDegreeLock(ref float h, ref float v)
     {
-        //鑜16個方向移動
+        //16個方向移動
         int lockPiece = 16;
         float snapDegree = 360.0f / lockPiece;
         float degree = Mathf.Rad2Deg * Mathf.Atan2(v, h);
@@ -160,13 +159,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         if (h != 0 || v != 0)
         {
-
-            if (firstPersonMode)
-            {
-                Vector3 controllForce = h * m_Cam.right + v * m_Cam.forward;
-                return controllForce;
-            }
-
             if (WorldMoveMode)
             {
                 Vector3 worldX = new Vector3(1, 0, 0);
@@ -185,8 +177,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
             //ThirdPersonMode
             {
-                //由camera向方計算出角色的移動方向
-                Vector3 controllForce = h * m_Cam.right + v * m_Cam.up;
+                Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
+                Vector3 controllForce = h * m_Cam.right + v * moveForword;
                 return controllForce;
             }
         }
