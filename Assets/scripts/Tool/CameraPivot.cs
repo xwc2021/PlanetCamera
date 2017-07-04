@@ -126,30 +126,35 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         transform.rotation = surfaceFollow * cameraTargetRot * pitch;
 
         //calculate yawFollow
-        if (autoYawFollow && doYawFollow)
+        if (autoYawFollow)
         {
-            //使用cameraForwardOnPlane和targetForward的夾角作為yawFollow的旋轉量
-            Quaternion final = sumSurfaceRot * cameraTargetRot * pitch;//使用sumSurfaceRot來計算!
-            Vector3 cameraForwardInWorld = final* Vector3.forward;
-            Vector3 planeNormal = myParent.up;
-            Vector3 cameraForwardOnPlane =Vector3.ProjectOnPlane(cameraForwardInWorld, planeNormal);
-            cameraForwardOnPlane.Normalize();
-            Vector3 targetForward = myParent.forward;
-          
-            Vector3 helpV=Vector3.Cross(cameraForwardOnPlane, targetForward);
-            float dotValue = Vector3.Dot(cameraForwardOnPlane, targetForward);
-            float sign = Vector3.Dot(helpV, planeNormal) > 0.0f ? 1.0f : -1.0f;
-            yawFollowDegree = Mathf.Acos(dotValue)*Mathf.Rad2Deg;
+            if (doYawFollow)
+            {
+                //使用cameraForwardOnPlane和targetForward的夾角作為yawFollow的旋轉量
+                Quaternion final = sumSurfaceRot * cameraTargetRot * pitch;//使用sumSurfaceRot來計算!
+                Vector3 cameraForwardInWorld = final * Vector3.forward;
+                Vector3 planeNormal = myParent.up;
+                Vector3 cameraForwardOnPlane = Vector3.ProjectOnPlane(cameraForwardInWorld, planeNormal);
+                cameraForwardOnPlane.Normalize();
+                Vector3 targetForward = myParent.forward;
 
-            //在限定的範圍內才作yawFollow
-            bool doAdjust = yawFollowDegree > yawFollowMin && yawFollowDegree < yawFollowMax;
-            autoYawFollowTurnDiff = doAdjust ? Quaternion.AngleAxis(sign * yawFollowDegree, recordParentInitUp): Quaternion.identity;
+                Vector3 helpV = Vector3.Cross(cameraForwardOnPlane, targetForward);
+                float dotValue = Vector3.Dot(cameraForwardOnPlane, targetForward);
+                float sign = Vector3.Dot(helpV, planeNormal) > 0.0f ? 1.0f : -1.0f;
+                yawFollowDegree = Mathf.Acos(dotValue) * Mathf.Rad2Deg;
 
-            //draw debug
-            Vector3 pPos = myParent.transform.position;
-            float scale = 5.0f;
-            Debug.DrawLine(pPos, pPos + scale * targetForward, Color.yellow);
-            Debug.DrawLine(pPos, pPos + scale * cameraForwardOnPlane, Color.blue);
+                //在限定的範圍內才作yawFollow
+                bool doAdjust = yawFollowDegree > yawFollowMin && yawFollowDegree < yawFollowMax;
+                autoYawFollowTurnDiff = doAdjust ? Quaternion.AngleAxis(sign * yawFollowDegree, recordParentInitUp) : Quaternion.identity;
+
+                //draw debug
+                Vector3 pPos = myParent.transform.position;
+                float scale = 5.0f;
+                Debug.DrawLine(pPos, pPos + scale * targetForward, Color.yellow);
+                Debug.DrawLine(pPos, pPos + scale * cameraForwardOnPlane, Color.blue);
+            }
+            else
+                autoYawFollowTurnDiff = Quaternion.identity;
         }
 
         if (firstPersonMode)
