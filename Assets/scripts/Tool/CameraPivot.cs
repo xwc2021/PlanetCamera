@@ -188,7 +188,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         Vector3 cameraCenterBottom = cameraPos + (rayCastTarget.forward - rayCastTarget.up * halfH) * c.nearClipPlane;
         //Debug.DrawLine(CAMERA.transform.position, cameraCenterBottom,Color.green);
 
-        float ep = 0.01f;
+        float ep = 0.1f;
         Vector3 from = player.position+player.up* ep;//從3D model的底部開始
         Vector3 dir = cameraCenterBottom - from;
         dir.Normalize();
@@ -206,16 +206,24 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
             if (underPlane)
             {
                 //待辦：這裡再發射第2次看有沒有碰到其他東西
-
-                print("exclude:underPlane diff=" + diff.magnitude);
-                return;
+                float offset = 0.1f;
+                from = hit.point+dir*offset;
+                if (Physics.Raycast(from, dir, out hit, rayCastR, layerMask))
+                {
+                    print("第2次");
+                }
+                else
+                {
+                    print("exclude:underPlane diff=" + diff.magnitude);
+                    return;
+                }     
             }
 
             distance = Vector3.Dot(hit.point - cameraPos, CAMERA.forward);
             float finalR=Mathf.Min(rayCastR - distance, R);
             finalR = Mathf.Max(finalR, cameraCollisionMinDistance);
             CAMERA.localPosition = new Vector3(0, 0, -finalR * RScale);
-            print("hit"+ finalR);
+             //print("hit"+ finalR);
         }
     }
 
