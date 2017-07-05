@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EndlessCorridorTriggerBox : MonoBehaviour {
 
+    static string playerName = "endless_corridor_snow";
     public EndlessCorridorManager ecManager;
     public EndlessCorridorHolder ec;
     public Transform borderLimit;
@@ -47,7 +48,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.name != "player")
+        if (other.name != playerName)
             return;
 
         if (!doRescale)
@@ -58,7 +59,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     void OnTriggerExit(Collider other)
     {
-        if (other.name != "player")
+        if (other.name != playerName)
             return;
 
         if (!doRescale)
@@ -83,7 +84,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name != "player")
+        if (other.name != playerName)
             return;
 
         //更新地板

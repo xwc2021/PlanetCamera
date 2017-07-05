@@ -8,9 +8,10 @@ using System;
 
 public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 {
-    static float rayCastR =10.0f;
+    public bool doCameraCollison = true;
+    float fixedR;
     static float cameraCollisionMinDistance = 1.25f;
-    public Transform rayCastTarget;
+    public Transform fakeCamera;
     public Transform player;
     public float yawFollowSpeed = 1.5f;
     public float rotateFollowSpeed = 5;
@@ -58,7 +59,10 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         CAMERA = transform.GetChild(0);
         c=CAMERA.GetComponent<Camera>();
         recordPos = transform.position;
-        R = (transform.position - CAMERA.position).magnitude;
+        R = Mathf.Abs(CAMERA.localPosition.z);
+
+        if (doCameraCollison)
+            fixedR = Mathf.Abs(fakeCamera.localPosition.z);
         recordParentInitUp = myParent.up;
 
         //記錄一開始的pitch值
@@ -182,29 +186,32 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
             //Endless Corrider Scene縮放player時所以也要跟著縮放R
             RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
             adjustR();
-            doCameraCollision();
+
+            if(doCameraCollison)
+                doCameraCollision();
         }
     }
 
     void doCameraCollision()
     {
         //camera碰撞
-        Vector3 cameraPos = rayCastTarget.position;
+        Vector3 cameraPos = fakeCamera.position;
         float halfFovRad = 0.5f * c.fieldOfView * Mathf.Deg2Rad;
         float halfH = Mathf.Tan(halfFovRad);
-        Vector3 cameraCenterBottom = cameraPos + (rayCastTarget.forward - rayCastTarget.up * halfH) * c.nearClipPlane;
+        Vector3 cameraCenterBottom = cameraPos + (fakeCamera.forward - fakeCamera.up * halfH) * c.nearClipPlane;
         //Debug.DrawLine(CAMERA.transform.position, cameraCenterBottom,Color.green);
 
         float ep = 0.1f;
         Vector3 from = player.position+player.up* ep;//從3D model的底部開始
         Vector3 dir = cameraCenterBottom - from;
+        float rayCastDistance = dir.magnitude;
         dir.Normalize();
 
         int layerMask = 1 << 10;
         RaycastHit hit;
         float distance = 0;
         Debug.DrawLine(from, cameraCenterBottom, Color.green);
-        if (Physics.Raycast(from, dir, out hit, rayCastR, layerMask))
+        if (Physics.Raycast(from, dir, out hit, rayCastDistance, layerMask))
         {
             Debug.DrawLine(hit.point, hit.point + hit.normal, Color.yellow);
             Vector3 diff = from - hit.point;
@@ -215,19 +222,19 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
                 //待辦：這裡再發射第2次看有沒有碰到其他東西
                 float offset = 0.1f;
                 from = hit.point+dir*offset;
-                if (Physics.Raycast(from, dir, out hit, rayCastR, layerMask))
+                if (Physics.Raycast(from, dir, out hit, rayCastDistance, layerMask))
                 {
                     print("第2次");
                 }
                 else
                 {
-                    print("exclude:underPlane diff=" + diff.magnitude);
+                    print("exclude:underPlane");
                     return;
                 }     
             }
 
             distance = Vector3.Dot(hit.point - cameraPos, CAMERA.forward);
-            float finalR=Mathf.Min(rayCastR - distance, R);
+            float finalR=Mathf.Min(fixedR - distance, R);
             finalR = Mathf.Max(finalR, cameraCollisionMinDistance);
             CAMERA.localPosition = new Vector3(0, 0, -finalR * RScale);
              //print("hit"+ finalR);
