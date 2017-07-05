@@ -142,6 +142,11 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
                 Vector3 planeNormal = myParent.up;
                 Vector3 cameraForwardOnPlane = Vector3.ProjectOnPlane(cameraForwardInWorld, planeNormal);
                 cameraForwardOnPlane.Normalize();
+
+                //camera繞過頭頂的情況
+                if (localNowPitchDegree > 90)
+                    cameraForwardOnPlane = -cameraForwardOnPlane;
+
                 Vector3 targetForward = myParent.forward;
 
                 Vector3 helpV = Vector3.Cross(cameraForwardOnPlane, targetForward);
@@ -174,6 +179,8 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
  
         if (!firstPersonMode)
         {
+            //Endless Corrider Scene縮放player時所以也要跟著縮放R
+            RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
             adjustR();
             doCameraCollision();
         }
@@ -233,7 +240,6 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         R += Rdiff * Rscale * Time.deltaTime;
         R = Mathf.Max(limitR, R);
 
-        RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
         CAMERA.localPosition = new Vector3(0, 0, -R * RScale);
         Debug.DrawLine(transform.position, CAMERA.position, Color.red);
     }
