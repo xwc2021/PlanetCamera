@@ -31,19 +31,19 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 
     public bool lockYaw = false;
 
-    public float RScale=1;
     float R;
 
+    public float RScale = 1;
     float targetRScale=1;
     public void resetTargetRScale(float s)
     {
         targetRScale = s;
     }
 
-    public void resetRScale(float s)
+    public void resetRScale()
     {
-        RScale = s;
-        targetRScale = s;
+        RScale = 1;
+        targetRScale = 1;
     }
 
     static public float rotateMaxBorader=240;

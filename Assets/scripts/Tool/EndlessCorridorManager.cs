@@ -94,7 +94,7 @@ public class EndlessCorridorManager : MonoBehaviour {
     {
 
         //player.transform.localScale = Vector3.one;
-        player.doScale(1.0f,false,false);
+        player.resetScale();
         player.transform.position = scaleValue * player.transform.position;
         Vector3 offset = -player.transform.position;
 
