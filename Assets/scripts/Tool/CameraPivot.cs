@@ -9,7 +9,7 @@ using System;
 public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 {
     static float rayCastR =10.0f;
-    static float cameraCollisionMinDistance =1.75f;
+    static float cameraCollisionMinDistance = 1.25f;
     public Transform rayCastTarget;
     public Transform player;
     public float yawFollowSpeed = 1.5f;
