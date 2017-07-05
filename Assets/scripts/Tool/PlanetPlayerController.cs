@@ -179,7 +179,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
             {
                 Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
                 Vector3 controllForce = h * m_Cam.right + v * moveForword;
-                return controllForce;
+                return controllForce.normalized;
             }
         }
 

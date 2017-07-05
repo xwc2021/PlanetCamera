@@ -8,6 +8,10 @@ using System;
 
 public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 {
+    static float rayCastR =10.0f;
+    static float cameraCollisionMinDistance =1.75f;
+    public Transform rayCastTarget;
+    public Transform player;
     public float yawFollowSpeed = 1.5f;
     public float rotateFollowSpeed = 5;
     public bool follow = true;
@@ -23,6 +27,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     Quaternion cameraTargetRot;
     Transform myParent;
     Transform CAMERA;
+    Camera c;
 
     public bool lockYaw = false;
 
@@ -51,6 +56,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         myParent = transform.parent;
         cameraTargetRot = myParent.rotation;
         CAMERA = transform.GetChild(0);
+        c=CAMERA.GetComponent<Camera>();
         recordPos = transform.position;
         R = (transform.position - CAMERA.position).magnitude;
         recordParentInitUp = myParent.up;
@@ -167,15 +173,61 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         }
  
         if (!firstPersonMode)
-        { 
-            float Rscale = Input.GetAxis("Mouse ScrollWheel");
-            R += Rdiff * Rscale * Time.deltaTime;
-            R = Mathf.Max(limitR, R);
-
-            RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
-            CAMERA.localPosition = new Vector3(0, 0, -R* RScale);
-            Debug.DrawLine(transform.position, CAMERA.position, Color.red);
+        {
+            adjustR();
+            doCameraCollision();
         }
+    }
+
+    void doCameraCollision()
+    {
+        //camera碰撞
+        Vector3 cameraPos = rayCastTarget.position;
+        float halfFovRad = 0.5f * c.fieldOfView * Mathf.Deg2Rad;
+        float halfH = Mathf.Tan(halfFovRad);
+        Vector3 cameraCenterBottom = cameraPos + (rayCastTarget.forward - rayCastTarget.up * halfH) * c.nearClipPlane;
+        //Debug.DrawLine(CAMERA.transform.position, cameraCenterBottom,Color.green);
+
+        float ep = 0.01f;
+        Vector3 from = player.position+player.up* ep;//從3D model的底部開始
+        Vector3 dir = cameraCenterBottom - from;
+        dir.Normalize();
+
+        int layerMask = 1 << 10;
+        RaycastHit hit;
+        float distance = 0;
+        Debug.DrawLine(from, cameraCenterBottom, Color.green);
+        if (Physics.Raycast(from, dir, out hit, rayCastR, layerMask))
+        {
+            Debug.DrawLine(hit.point, hit.point + hit.normal, Color.yellow);
+            Vector3 diff = from - hit.point;
+            bool underPlane = Vector3.Dot(diff, hit.normal)<0.0f;
+            //當player跳起後落地時，有可能穿過地板
+            if (underPlane)
+            {
+                //待辦：這裡再發射第2次看有沒有碰到其他東西
+
+                print("exclude:underPlane diff=" + diff.magnitude);
+                return;
+            }
+
+            distance = Vector3.Dot(hit.point - cameraPos, CAMERA.forward);
+            float finalR=Mathf.Min(rayCastR - distance, R);
+            finalR = Mathf.Max(finalR, cameraCollisionMinDistance);
+            CAMERA.localPosition = new Vector3(0, 0, -finalR * RScale);
+            print("hit"+ finalR);
+        }
+    }
+
+    void adjustR()
+    {
+        float Rscale = Input.GetAxis("Mouse ScrollWheel");
+        R += Rdiff * Rscale * Time.deltaTime;
+        R = Mathf.Max(limitR, R);
+
+        RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
+        CAMERA.localPosition = new Vector3(0, 0, -R * RScale);
+        Debug.DrawLine(transform.position, CAMERA.position, Color.red);
     }
 
     Quaternion temporarySurfaceRot = Quaternion.identity;

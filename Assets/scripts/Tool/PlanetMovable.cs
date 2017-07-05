@@ -104,7 +104,7 @@ public class PlanetMovable : MonoBehaviour
 
                 float distance = (hit.point - transform.position).magnitude;
             //如果距離小於某個值就判定是在地面上
-            if (distance < 0.25f)
+            if (distance < 0.5f)
             {
                 ladding = true;
                 //print("ladding");
@@ -115,9 +115,7 @@ public class PlanetMovable : MonoBehaviour
         if (moveController!=null)
         {
             Vector3 moveForce = moveController.getMoveForce();
-
-            moveForce.Normalize();
-            Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
+            //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
             //更新面向begin
             Vector3 forward2 = moveForce;
