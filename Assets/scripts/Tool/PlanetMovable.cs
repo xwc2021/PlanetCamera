@@ -31,7 +31,6 @@ public class PlanetMovable : MonoBehaviour
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
     public float gravityScale = 100f;
-    public bool useRayHitNormal = false;
     public bool firstPersonMode = false;
     public float jumpForce= 100f;
     public bool useUserDefinedJumpForce = false;
@@ -96,12 +95,8 @@ public class PlanetMovable : MonoBehaviour
 
         ladding = false;
         int layerMask = 1 << 10;
-        Vector3 adjustRefNormal = groundUp;
         if (Physics.Raycast(from, -groundUp, out hit, 5, layerMask))
         {
-            if (useRayHitNormal)
-                adjustRefNormal = hit.normal;
-
                 float distance = (hit.point - transform.position).magnitude;
             //如果距離小於某個值就判定是在地面上
             if (distance < 0.5f)
