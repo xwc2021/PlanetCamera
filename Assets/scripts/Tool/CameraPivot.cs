@@ -207,7 +207,8 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         float rayCastDistance = dir.magnitude;
         dir.Normalize();
 
-        int layerMask = 1 << 10;
+        // ground | block
+        int layerMask = 1 << 10 | 1 << 14;
         RaycastHit hit;
         float distance = 0;
         Debug.DrawLine(from, cameraCenterBottom, Color.green);
