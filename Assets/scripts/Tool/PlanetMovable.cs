@@ -118,10 +118,8 @@ public class PlanetMovable : MonoBehaviour
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
-            //改成用求2平面的交線(也就是用2個平面的法向量作外積)
-            //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
-            Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
-            moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+            //直接投影到平面上
+            moveForce=Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
 
             //更新面向begin
             Vector3 forward2 = moveForce;
