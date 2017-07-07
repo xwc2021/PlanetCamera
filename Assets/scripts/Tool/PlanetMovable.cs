@@ -31,7 +31,7 @@ public class PlanetMovable : MonoBehaviour
     public MonoBehaviour moveControllerSocket;
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
-    public float gravityScale = 100f;
+    public float gravityScale = 92;
     public bool firstPersonMode = false;
     public float jumpForce= 100f;
     public bool useUserDefinedJumpForce = false;
@@ -195,7 +195,7 @@ public class PlanetMovable : MonoBehaviour
                 doJump = false;
         }      
 
-        //print("rigid="+rigid.velocity.magnitude);
+        print("rigid="+rigid.velocity.magnitude);
 
         velocity = rigid.velocity.magnitude;
 
