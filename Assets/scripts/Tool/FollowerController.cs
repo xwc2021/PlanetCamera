@@ -20,6 +20,9 @@ public class FollowerController : MonoBehaviour, MoveController
             return Vector3.zero;
 
         Vector3 controllForce = diff;
+
+        controllForce = Vector3.ProjectOnPlane(controllForce, transform.up);
+        
         controllForce.Normalize();
 
         return controllForce;
