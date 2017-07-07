@@ -20,6 +20,7 @@ public interface MoveForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
+    static bool findMoveForceMethod1 = true;
     MoveForceMonitor moveForceMonitor;
     public MonoBehaviour moveForceMonitorSocket;
 
@@ -118,8 +119,19 @@ public class PlanetMovable : MonoBehaviour
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
-            //直接投影到平面上
-            moveForce=Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
+            //在plane.scene還是可以感覺到這2個方法的不同
+            if (findMoveForceMethod1)
+            {
+                //改成用求2平面的交線(也就是用2個平面的法向量作外積)
+                //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
+                Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
+                moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+            }
+            else //直接投影到平面上
+                moveForce =Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
+
+            //不再正規化moveForce
+            //當moveForce和所在平面平行時，力會最大
 
             //更新面向begin
             Vector3 forward2 = moveForce;
@@ -180,6 +192,6 @@ public class PlanetMovable : MonoBehaviour
         velocity = rigid.velocity.magnitude;
 
         //if (rigid.velocity.magnitude>0.01f)
-        //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
+        Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
 }
