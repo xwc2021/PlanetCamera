@@ -178,6 +178,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
             //ThirdPersonMode
             {
                 Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
+                Debug.DrawLine(transform.position, transform.position + moveForword, Color.yellow);
                 Vector3 controllForce = h * m_Cam.right + v * moveForword;
                 return controllForce.normalized;
             }

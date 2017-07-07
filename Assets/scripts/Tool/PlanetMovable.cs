@@ -122,10 +122,18 @@ public class PlanetMovable : MonoBehaviour
             //在plane.scene還是可以感覺到這2個方法的不同
             if (findMoveForceMethod1)
             {
+                //備註：即使是使用PlanetGravityGenerator
+                //OLD和投影到平面之後的moveForce還是可能不一樣
+                //因為PanetMovalbe有可能跑的比Camera快
+
                 //改成用求2平面的交線(也就是用2個平面的法向量作外積)
                 //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
                 Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
+                Vector3 OLD = moveForce;
                 moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+
+                Debug.DrawLine(transform.position, transform.position + moveForce, Color.blue);
+                Debug.DrawLine(transform.position, transform.position + OLD, Color.red);
             }
             else //直接投影到平面上
                 moveForce =Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
@@ -192,6 +200,6 @@ public class PlanetMovable : MonoBehaviour
         velocity = rigid.velocity.magnitude;
 
         //if (rigid.velocity.magnitude>0.01f)
-        Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
+        //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
 }
