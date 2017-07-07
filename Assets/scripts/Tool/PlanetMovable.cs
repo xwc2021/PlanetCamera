@@ -195,7 +195,7 @@ public class PlanetMovable : MonoBehaviour
                 doJump = false;
         }      
 
-        print("rigid="+rigid.velocity.magnitude);
+        //print("rigid="+rigid.velocity.magnitude);
 
         velocity = rigid.velocity.magnitude;
 
