@@ -34,6 +34,7 @@ public class PlanetMovable : MonoBehaviour
     public bool firstPersonMode = false;
     public float jumpForce= 100f;
     public bool useUserDefinedJumpForce = false;
+    static bool useRayHitNormal = true;
 
     Animator animator;
     // Use this for initialization
@@ -95,9 +96,13 @@ public class PlanetMovable : MonoBehaviour
 
         ladding = false;
         int layerMask = 1 << 10;
+        Vector3 adjustRefNormal = groundUp;
         if (Physics.Raycast(from, -groundUp, out hit, 5, layerMask))
         {
-                float distance = (hit.point - transform.position).magnitude;
+            if (useRayHitNormal)
+                adjustRefNormal = hit.normal;
+
+            float distance = (hit.point - transform.position).magnitude;
             //如果距離小於某個值就判定是在地面上
             if (distance < 0.5f)
             {
@@ -111,6 +116,11 @@ public class PlanetMovable : MonoBehaviour
         {
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
+
+            //改成用求2平面的交線(也就是用2個平面的法向量作外積)
+            //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
+            Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
+            moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
 
             //更新面向begin
             Vector3 forward2 = moveForce;
@@ -131,7 +141,7 @@ public class PlanetMovable : MonoBehaviour
 
         if (animator != null)
         {
-            bool moving = rigid.velocity.magnitude > 2;
+            bool moving = rigid.velocity.magnitude > 1;
             animator.SetBool("moving", moving);
         }
         
