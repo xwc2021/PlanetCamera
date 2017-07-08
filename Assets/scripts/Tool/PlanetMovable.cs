@@ -152,6 +152,7 @@ public class PlanetMovable : MonoBehaviour
                 Vector3 OLD = moveForce;
                 moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
 
+                Debug.DrawLine(transform.position, transform.position + adjustRefNormal, Color.black);
                 Debug.DrawLine(transform.position, transform.position + moveForce, Color.blue);
                 Debug.DrawLine(transform.position, transform.position + OLD, Color.red);
             }
