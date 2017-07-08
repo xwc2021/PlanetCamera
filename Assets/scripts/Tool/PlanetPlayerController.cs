@@ -5,7 +5,7 @@ using UnityEngine;
 
 public interface SurfaceFollowCameraBehavior
 {
-    void setAdjustRotate(bool doRotateFollow, Quaternion adjustRot);
+    void setSurfaceRotate(bool doRotateFollow, Quaternion adjustRot);
 }
 
 public interface MoveController
@@ -53,7 +53,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     {
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
-        //doAdjustByDiff();
 
         Vector2 hv = inputProxy.getHV();
         //followCameraBehavior.adjustCameraYaw(hv.x);
@@ -61,6 +60,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     void doAdjustByGroundUp()
     {
+        if (followCameraBehavior == null)
+            return;
+
         //如果位置有更新，就更新FlowPoint
         //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
 
@@ -81,51 +83,22 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
         //print("rotDegree=" + rotDegree);
-        if (rotDegree > Mathf.Epsilon && !float.IsNaN(rotDegree) && followCameraBehavior != null)
-        {
 
+        if (float.IsNaN(rotDegree))
+        {
+            print("IsNaN");
+            return;
+        }
+
+        float threshold = 0.1f;
+        if (rotDegree > threshold)
+        {
+            //print("rotDegree=" + rotDegree);
             Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
 
-            followCameraBehavior.setAdjustRotate(true, q);
+            followCameraBehavior.setSurfaceRotate(true, q);
             previousGroundUp = groundUp;//有轉動才更新
         }
-    }
-
-    void doAdjustByDiff()
-    {
-        //如果位置有更新，就更新FlowPoint
-        //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
-
-        Vector3 groundUp = planetMovable.getGroundUp();
-
-        Vector3 diffV = transform.position - previousPosistion;
-
-        Vector3 averageGroundUp = (groundUp + previousGroundUp) / 2;
-        Vector3 Z = Vector3.Cross(groundUp, diffV);
-        //Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
-        //Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
-        //Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
-
-        //算出2個frame之間在planet上移動的角度差
-        float cosValue = Vector3.Dot(previousGroundUp, groundUp);
-
-        //http://answers.unity3d.com/questions/778626/mathfacos-1-return-nan.html
-        //上面說Dot有可能會>1或<-1
-        cosValue = Mathf.Max(-1.0f, cosValue);
-        cosValue = Mathf.Min(1.0f, cosValue);
-
-        float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
-
-        //print("rotDegree=" + rotDegree);
-
-        if (rotDegree < Mathf.Epsilon && float.IsNaN(rotDegree) && followCameraBehavior != null)
-        {
-            Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
-            followCameraBehavior.setAdjustRotate(true, q);
-        }
-
-        previousPosistion = transform.position;
-        previousGroundUp = groundUp;
     }
 
     //https://msdn.microsoft.com/zh-tw/library/14akc2c7.aspx

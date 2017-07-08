@@ -256,7 +256,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     Quaternion sumSurfaceRot = Quaternion.identity;
     bool doSurfaceFollow = false;
 
-    void SurfaceFollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRotate)
+    void SurfaceFollowCameraBehavior.setSurfaceRotate(bool doRotateFollow, Quaternion adjustRotate)
     {
         sumSurfaceRot = adjustRotate* sumSurfaceRot;
         this.doSurfaceFollow = doRotateFollow;

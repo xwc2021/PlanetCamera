@@ -129,7 +129,7 @@ public class SpringArm : MonoBehaviour, SurfaceFollowCameraBehavior
         }  
     }
 
-    void SurfaceFollowCameraBehavior.setAdjustRotate(bool doRotateFollow, Quaternion adjustRot)
+    void SurfaceFollowCameraBehavior.setSurfaceRotate(bool doRotateFollow, Quaternion adjustRot)
     {
         throw new NotImplementedException();
     }

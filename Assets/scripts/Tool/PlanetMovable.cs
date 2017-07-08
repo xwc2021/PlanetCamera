@@ -56,6 +56,9 @@ public class PlanetMovable : MonoBehaviour
     bool doJump=false;
     private void Update()
     {
+        if (moveController == null)
+            return;
+
         //這邊要加上if (!doJump)的判斷，因為：
         //如果在|frame1|按下跳，其實會在|frame2|的Update裡才執行GetButtonDown檢查(在同個Frame裡FixedUpdate會先於Update執行)
         //這時GetButtonDown為true，但要等到|frame3|才會執行到fixedUPdate
