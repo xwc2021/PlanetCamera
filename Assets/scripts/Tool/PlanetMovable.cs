@@ -17,7 +17,7 @@ public interface GrounGravityGenerator
 
 public interface MoveForceMonitor
 {
-    float getMoveForceStrength();
+    float getMoveForceStrength(bool isOnAir);
 }
 
 public interface JumpForceMonitor
@@ -43,9 +43,11 @@ public class PlanetMovable : MonoBehaviour
 
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
-    public float gravityScale = 92;
+
+    static float gravityScale = 92;
+    static float gravityScaleOnAir = 40;
+
     public bool firstPersonMode = false;
-    public float jumpForce= 100f;
     public bool useUserDefinedJumpForce = false;
     static bool useRayHitNormal = true;
 
@@ -96,7 +98,7 @@ public class PlanetMovable : MonoBehaviour
 
     Vector3 groundUp;
     // Update is called once per frame
-    float velocity;
+    public float debugVelocity;
     void FixedUpdate()
     {
         groundUp = grounGravityGenerator.findGroundUp();  
@@ -173,7 +175,7 @@ public class PlanetMovable : MonoBehaviour
             //addForce就可以有疊加的效果
             //雪人的mass也要作相應的調整，不然會推不動骨牌
             if(moveForceMonitor!=null)
-                rigid.AddForce(moveForceMonitor.getMoveForceStrength() * moveForce, ForceMode.Acceleration);
+                rigid.AddForce(moveForceMonitor.getMoveForceStrength(!ladding) * moveForce, ForceMode.Acceleration);
             
         }
 
@@ -182,10 +184,14 @@ public class PlanetMovable : MonoBehaviour
             bool moving = rigid.velocity.magnitude > 0.1;
             animator.SetBool("moving", moving);
         }
-        
+
 
         //加上重力
-        rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
+        //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
+        if (ladding)
+            rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
+        else
+            rigid.AddForce(gravityScaleOnAir * planetGravity, ForceMode.Acceleration);
 
         //跳
         if (ladding)
@@ -210,11 +216,11 @@ public class PlanetMovable : MonoBehaviour
             //不然的話會一直持續到當ladding為true再進行跳躍
             if (doJump)
                 doJump = false;
-        }      
+        }
 
         //print("rigid="+rigid.velocity.magnitude);
 
-        velocity = rigid.velocity.magnitude;
+        debugVelocity = rigid.velocity.magnitude;
 
         //if (rigid.velocity.magnitude>0.01f)
         //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);

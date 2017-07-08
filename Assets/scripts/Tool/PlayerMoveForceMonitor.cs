@@ -5,14 +5,26 @@ using UnityEngine;
 public class PlayerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
 {
     public PlanetPlayerController planetPlayerController;
-    public float moveForceScaleLow = 80;
-    public float moveForceScaleHight = 110;
-    public float getMoveForceStrength()
+
+    static float moveForceScaleOnAir = 60;
+
+    static float moveForceScaleLow = 80;
+    static float moveForceScaleHight = 90;
+    public float getMoveForceStrength(bool isOnAir)
     {
-        //按住fire鈕才加速
-        if(planetPlayerController.holdFire())
-            return moveForceScaleHight;
+        if (!isOnAir)
+        {
+            //按住fire鈕才加速
+            if (planetPlayerController.holdFire())
+                return moveForceScaleHight;
+            else
+                return moveForceScaleLow;
+        }
         else
-            return moveForceScaleLow;
+        {
+            //如果在空中時的移動加速度和在地面時一樣，會感覺在空中偏快
+            return moveForceScaleOnAir;
+        }
+        
     }
 }
