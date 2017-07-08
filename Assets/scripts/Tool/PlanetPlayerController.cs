@@ -45,7 +45,10 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
             inputProxy = inputPorxySocket as InputProxy;
 
         if(m_Cam==null)
-            m_Cam = GetComponentInChildren<Camera>().transform;
+        {
+            Camera c = GetComponentInChildren<Camera>();
+            m_Cam = c!=null?c.transform:null;
+        } 
     }
 
 
@@ -150,6 +153,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
             //ThirdPersonMode
             {
+                if(m_Cam==null)
+                    return Vector3.zero;
+
                 Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
                 Debug.DrawLine(transform.position, transform.position + moveForword, Color.yellow);
                 Vector3 controllForce = h * m_Cam.right + v * moveForword;
