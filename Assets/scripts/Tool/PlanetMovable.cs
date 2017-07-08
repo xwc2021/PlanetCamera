@@ -6,6 +6,8 @@ public interface InputProxy
 {
     Vector2 getHV();
     bool pressJump();
+    bool pressFire();
+    bool holdFire();
 }
 
 public interface GrounGravityGenerator
@@ -15,8 +17,14 @@ public interface GrounGravityGenerator
 
 public interface MoveForceMonitor
 {
-    float getNowForceStrength();
+    float getMoveForceStrength();
 }
+
+public interface JumpForceMonitor
+{
+    float getJumpForceStrength();
+}
+
 
 public class PlanetMovable : MonoBehaviour
 {
@@ -24,11 +32,15 @@ public class PlanetMovable : MonoBehaviour
     MoveForceMonitor moveForceMonitor;
     public MonoBehaviour moveForceMonitorSocket;
 
+    JumpForceMonitor jumpForceMonitor;
+    public MonoBehaviour jumpForceMonitorSocket;
+
     GrounGravityGenerator grounGravityGenerator;
     public MonoBehaviour grounGravityGeneratorSocket;
 
     MoveController moveController;
     public MonoBehaviour moveControllerSocket;
+
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
     public float gravityScale = 92;
@@ -51,6 +63,9 @@ public class PlanetMovable : MonoBehaviour
 
         if (moveForceMonitorSocket != null)
             moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
+
+        if (jumpForceMonitorSocket != null)
+            jumpForceMonitor = jumpForceMonitorSocket as JumpForceMonitor;
     }
 
     bool doJump=false;
@@ -122,7 +137,7 @@ public class PlanetMovable : MonoBehaviour
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
-            //在plane.scene還是可以感覺到這2個方法的不同
+            //在場景plane.untiy還是可以感覺到這2個方法的不同
             if (findMoveForceMethod1)
             {
                 //備註：即使是使用PlanetGravityGenerator
@@ -157,7 +172,8 @@ public class PlanetMovable : MonoBehaviour
             //使用rigid.velocity的話，下面的重力就會失效
             //addForce就可以有疊加的效果
             //雪人的mass也要作相應的調整，不然會推不動骨牌
-            rigid.AddForce(moveForceMonitor.getNowForceStrength() * moveForce, ForceMode.Acceleration);
+            if(moveForceMonitor!=null)
+                rigid.AddForce(moveForceMonitor.getMoveForceStrength() * moveForce, ForceMode.Acceleration);
             
         }
 
@@ -179,10 +195,8 @@ public class PlanetMovable : MonoBehaviour
             Debug.DrawLine(transform.position, transform.position - transform.up,Color.green);
             if (doJump)
             {
-                if (useUserDefinedJumpForce)
-                    rigid.AddForce(jumpForce * -planetGravity, ForceMode.Acceleration);
-                else
-                    rigid.AddForce(20 * gravityScale * -planetGravity, ForceMode.Acceleration);
+                if(jumpForceMonitor!=null)
+                    rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -planetGravity, ForceMode.Acceleration);
 
                 if (animator != null)
                     animator.SetBool("onAir", true);

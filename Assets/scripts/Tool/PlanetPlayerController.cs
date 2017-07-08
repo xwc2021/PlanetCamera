@@ -28,8 +28,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Vector3 previousPosistion;
     Vector3 previousGroundUp;
 
-    public bool WorldMoveMode = false;
-
     // Use this for initialization
     void Start()
     {
@@ -135,32 +133,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         if (h != 0 || v != 0)
         {
-            if (WorldMoveMode)
-            {
-                Vector3 worldX = new Vector3(1, 0, 0);
-                Vector3 worldZ = new Vector3(0, 0, 1);
-                if(doDergeeLock)
-                    doDegreeLock(ref h, ref v);
+            if(m_Cam==null)
+                return Vector3.zero;
 
-                Vector3 controllForce = h * worldX + v * worldZ;
-
-                Vector3 from = transform.position;
-                Debug.DrawLine(from, from + controllForce, Color.red);
-
-                return controllForce;
-
-            }
-
-            //ThirdPersonMode
-            {
-                if(m_Cam==null)
-                    return Vector3.zero;
-
-                Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
-                Debug.DrawLine(transform.position, transform.position + moveForword, Color.yellow);
-                Vector3 controllForce = h * m_Cam.right + v * moveForword;
-                return controllForce.normalized;
-            }
+            Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
+            Debug.DrawLine(transform.position, transform.position + moveForword, Color.yellow);
+            Vector3 controllForce = h * m_Cam.right + v * moveForword;
+            return controllForce.normalized;
         }
 
         return Vector3.zero;
@@ -171,4 +150,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         return inputProxy.pressJump();
     }
 
+    public bool holdFire()
+    {
+        return inputProxy.holdFire();
+    }
+
+    public bool pressFire()
+    {
+        return inputProxy.pressFire();
+    }
 }

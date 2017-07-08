@@ -18,4 +18,13 @@ public class PCInput : MonoBehaviour,  InputProxy
         return new Vector2(h, v);
     }
 
+    public bool pressFire()
+    {
+        return CrossPlatformInputManager.GetButtonDown("Fire1");
+    }
+
+    public bool holdFire()
+    {
+        return CrossPlatformInputManager.GetButton("Fire1");
+    }
 }

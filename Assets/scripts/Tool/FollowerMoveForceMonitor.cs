@@ -10,7 +10,7 @@ public class FollowerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
     public float minForce = 120f;
     public float maxForce = 160f;
     public Transform target;
-    public float getNowForceStrength()
+    public float getMoveForceStrength()
     {
         float diff = (target.transform.position - this.transform.position).magnitude;
         float t = diff / (maxDist - minDist);

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ConstMoveForceMonitor : MonoBehaviour, MoveForceMonitor
 {
     public float moveForceScale = 110f;
-    public float getNowForceStrength()
+    public float getMoveForceStrength()
     {
         return moveForceScale;
     }

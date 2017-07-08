@@ -41,4 +41,14 @@ public class AndroidInput : MonoBehaviour, InputProxy
     {
         return false;
     }
+
+    public bool pressFire()
+    {
+        return false;
+    }
+
+    public bool holdFire()
+    {
+        return false;
+    }
 }
