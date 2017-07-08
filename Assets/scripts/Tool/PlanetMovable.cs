@@ -179,7 +179,7 @@ public class PlanetMovable : MonoBehaviour
 
         if (animator != null)
         {
-            bool moving = rigid.velocity.magnitude > 1;
+            bool moving = rigid.velocity.magnitude > 0.1;
             animator.SetBool("moving", moving);
         }
         
