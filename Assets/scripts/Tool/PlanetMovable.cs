@@ -275,12 +275,13 @@ public class PlanetMovable : MonoBehaviour
         float k = 1 - dot;
         k = Mathf.Max(k, 0.2f);
 
-        float strength = 150;
-        rigid.AddForce(f * k * strength, ForceMode.Acceleration);
+        float strength = 2.5f;
+        rigid.AddForce(f * k * strength, ForceMode.VelocityChange);
+        //rigid.AddForce(f * k * strength, ForceMode.Acceleration);
 
-        float strengthPerpendicularWall = rigid.velocity.magnitude<1.0?50:20;
+        float strengthPerpendicularWall = 1;
 
-        rigid.AddForce(wallNormal* strengthPerpendicularWall, ForceMode.Acceleration);
+        rigid.AddForce(wallNormal* strengthPerpendicularWall, ForceMode.VelocityChange);
         Debug.DrawRay(transform.position, 10 * f, Color.blue);
     }
 }

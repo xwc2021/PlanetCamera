@@ -35,7 +35,7 @@ public class FollowRigidBody : MonoBehaviour {
             ContactPoint cp = collision.contacts[0];
             Debug.DrawRay(cp.point, 10 * cp.normal, Color.red);
 
-            pm.rigid.AddForce(pm.getGroundUp() * 200, ForceMode.Acceleration);
+            pm.rigid.AddForce(pm.getGroundUp() * 5, ForceMode.VelocityChange);
         }
     }
 }
