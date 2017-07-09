@@ -236,12 +236,38 @@ public class PlanetMovable : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
+        upWhenCollision(collision);
+
         //況著牆移動
         addForceAlongWall(collision);
     }
 
     void OnCollisionExit(Collision collision)
     {
+    }
+
+    void upWhenCollision(Collision collision)
+    {
+        //只有layer是Block才作
+        bool isBlock = collision.gameObject.layer == 14;
+        if (!isBlock)
+            return;
+
+        if (!ladding)
+        { 
+            ContactPoint cp = collision.contacts[0];
+            Debug.DrawRay(cp.point, 10 * cp.normal, Color.red);
+
+            //screenshot/needUpWhenCollisionSituation.png
+            //發現有這2種情況需要addForce，無論那1種都相當於位在圓柱內
+            float r =Vector3.ProjectOnPlane(cp.point - transform.position, groundUp).magnitude;
+            print(r);
+            if (r < 0.6f)//比0.65小一點
+            {
+                print("翻越");
+                rigid.AddForce(getGroundUp() * 5, ForceMode.VelocityChange);
+            }
+        }
     }
 
     void addForceAlongWall(Collision collision)
