@@ -234,8 +234,6 @@ public class PlanetMovable : MonoBehaviour
         //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
 
-    bool isOnCollisionEnter = false;
-
     void OnCollisionStay(Collision collision)
     {
         //況著牆移動
@@ -244,26 +242,6 @@ public class PlanetMovable : MonoBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        isOnCollisionEnter = false;
-    }
-
-    void upWhenCollision(Collision collision)
-    {
-        //只有layer是Block才作
-        bool isBlock = collision.gameObject.layer == 14;
-        if (!isBlock)
-            return;
-
-        isOnCollisionEnter = true;
-
-        if (!ladding)
-        {
-            ContactPoint cp = collision.contacts[0];
-            Debug.DrawRay(cp.point, 10 * cp.normal, Color.red);
-
-            rigid.AddForce(groundUp * 100, ForceMode.Acceleration);
-            isOnCollisionEnter = true;
-        }
     }
 
     void addForceAlongWall(Collision collision)
@@ -299,6 +277,10 @@ public class PlanetMovable : MonoBehaviour
 
         float strength = 150;
         rigid.AddForce(f * k * strength, ForceMode.Acceleration);
+
+        float strengthPerpendicularWall = rigid.velocity.magnitude<1.0?50:20;
+
+        rigid.AddForce(wallNormal* strengthPerpendicularWall, ForceMode.Acceleration);
         Debug.DrawRay(transform.position, 10 * f, Color.blue);
     }
 }
