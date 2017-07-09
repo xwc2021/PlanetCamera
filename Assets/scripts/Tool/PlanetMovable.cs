@@ -94,7 +94,7 @@ public class PlanetMovable : MonoBehaviour
         return groundUp;
     }
 
-    bool ladding = false;
+    public bool ladding = false;
 
     Vector3 groundUp;
     // Update is called once per frame
@@ -142,19 +142,26 @@ public class PlanetMovable : MonoBehaviour
             //在場景plane.untiy還是可以感覺到這2個方法的不同
             if (findMoveForceMethod1)
             {
-                //備註：即使是使用PlanetGravityGenerator
-                //OLD和投影到平面之後的moveForce還是可能不一樣
-                //因為PanetMovalbe有可能跑的比Camera快
+                //為了修正這個問題
+                //https://www.youtube.com/watch?v=8EE8NlZz274
+                //不過這麼一來，原本可以順利滑過的case，也變的會卡住了
+                if (ladding)
+                {
+                    //備註：即使是使用PlanetGravityGenerator
+                    //OLD和投影到平面之後的moveForce還是可能不一樣
+                    //因為PanetMovalbe有可能跑的比Camera快
 
-                //改成用求2平面的交線(也就是用2個平面的法向量作外積)
-                //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
-                Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
-                Vector3 OLD = moveForce;
-                moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+                    //改成用求2平面的交線(也就是用2個平面的法向量作外積)
+                    //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
+                    Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
+                    Vector3 OLD = moveForce;
+                    moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
 
-                Debug.DrawLine(transform.position, transform.position + adjustRefNormal, Color.black);
-                Debug.DrawLine(transform.position, transform.position + moveForce, Color.blue);
-                Debug.DrawLine(transform.position, transform.position + OLD, Color.red);
+                    Debug.DrawLine(transform.position, transform.position + adjustRefNormal, Color.black);
+                    Debug.DrawLine(transform.position, transform.position + moveForce, Color.blue);
+                    Debug.DrawLine(transform.position, transform.position + OLD, Color.red);
+                }
+                
             }
             else //直接投影到平面上
                 moveForce =Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
@@ -225,5 +232,61 @@ public class PlanetMovable : MonoBehaviour
 
         //if (rigid.velocity.magnitude>0.01f)
         //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
+    }
+
+    bool isOnCollisionEnter = false;
+
+    void OnCollisionStay(Collision collision)
+    {
+        /*
+        if (!ladding)
+        {
+            rigid.AddForce(groundUp * 250, ForceMode.Acceleration);
+            isOnCollisionEnter = true;
+        }*/
+
+        //讓碰撞時移動更順暢
+        addForceWhenCollision(collision);
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        isOnCollisionEnter = false;
+    }
+
+    void addForceWhenCollision(Collision collision)
+    {
+        //在空中不作
+        if (!ladding)
+            return;
+
+        //只有layer是Block才作
+        bool isBlock = collision.gameObject.layer == 14;
+        if (!isBlock)
+            return;
+
+        ContactPoint cp = collision.contacts[0];
+
+        //cp.point在腳邊不作
+        float dotValue = Vector3.Dot(cp.point - transform.position, groundUp);
+        if (dotValue < 0.1)
+            return;
+        Debug.DrawRay(transform.position, 10 * cp.normal, Color.red);
+
+        Vector3 moveForward = transform.forward;
+        Vector3 wallNormal = Vector3.ProjectOnPlane(cp.normal, groundUp);
+
+        Debug.DrawRay(transform.position, wallNormal, Color.yellow);
+        Vector3 f = Vector3.ProjectOnPlane(moveForward, wallNormal);
+
+        //當moveForward和f接近平行時k值要小
+        //當moveForward和f接近垂直時k值要大
+        float dot = Vector3.Dot(moveForward, f);
+        float k = 1 - dot;
+        k = Mathf.Max(k, 0.2f);
+
+        float strength = 150;
+        rigid.AddForce(f * k * strength, ForceMode.Acceleration);
+        Debug.DrawRay(transform.position, 10 * f, Color.blue);
     }
 }
