@@ -279,9 +279,12 @@ public class PlanetMovable : MonoBehaviour
 
             //screenshot/needUpWhenCollisionSituation.png
             //發現有這2種情況需要addForce，無論那1種都相當於位在圓柱內
-            float r =Vector3.ProjectOnPlane(cp.point - transform.position, groundUp).magnitude;
-            print(r);
-            if (r < 0.6f)//比0.65小一點
+            Vector3 diff = cp.point - transform.position;
+            float r =Vector3.ProjectOnPlane(diff, groundUp).magnitude;
+            float h =Vector3.Dot(diff, groundUp);
+            //print("r="+r+" h="+h);
+            //h>1.2表示是因為往上跳撞的
+            if (r < 0.6f && h <1.2f)//比0.65小一點，比1.2低
             {
                 print("翻越");
                 rigid.AddForce(getGroundUp() * 5, ForceMode.VelocityChange);
