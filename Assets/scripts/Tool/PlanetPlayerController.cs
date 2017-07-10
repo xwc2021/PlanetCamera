@@ -41,11 +41,17 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (inputPorxySocket != null)
             inputProxy = inputPorxySocket as InputProxy;
 
-        if(m_Cam==null)
+        getCamera();
+    }
+
+    public void getCamera()
+    {
+        if (m_Cam == null)
         {
             Camera c = GetComponentInChildren<Camera>();
-            m_Cam = c!=null?c.transform:null;
-        } 
+            //在Multiplayer模式可能取不到，因為被disable掉了
+            m_Cam = c != null ? c.transform : null;
+        }
     }
 
 
