@@ -24,13 +24,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     public MonoBehaviour inputPorxySocket;
     public Transform m_Cam;
 
-    Vector3 previousPosistion;
     Vector3 previousGroundUp;
 
     // Use this for initialization
     void Awake()
     {
-        previousPosistion = transform.position;
         previousGroundUp = transform.up;
 
         if (followCameraBehaviorSocket != null)
@@ -59,9 +57,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     {
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
-
-        Vector2 hv = inputProxy.getHV();
-        //followCameraBehavior.adjustCameraYaw(hv.x);
     }
 
     void doAdjustByGroundUp()
