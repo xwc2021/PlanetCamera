@@ -7,8 +7,8 @@ public interface FactoryPlugin
     void doIt(GameObject gameObject);
 }
 
-public class CreatePrefab : MonoBehaviour {
-    public MonoBehaviour factoryPloginSocket;
+public class CreatePlayer : MonoBehaviour {
+    public MonoBehaviour[] factoryPloginSocket;
     public PlanetMovable source;
     public GravityGeneratorEnum gge = GravityGeneratorEnum.plane;
 	// Use this for initialization
@@ -16,12 +16,13 @@ public class CreatePrefab : MonoBehaviour {
         PlanetMovable pm=GameObject.Instantiate<PlanetMovable>(source,transform.position,transform.rotation);
         pm.ResetGravityGenetrator(gge);
 
-        FactoryPlugin fg = factoryPloginSocket as FactoryPlugin;
-        if (fg == null)
-            return;
-
-        fg.doIt(pm.gameObject);
-
+        int pluginSide = factoryPloginSocket.Length;
+        for (int i = 0; i < pluginSide; i++)
+        {
+            FactoryPlugin fg = factoryPloginSocket[i] as FactoryPlugin;
+            if (fg != null)
+                fg.doIt(pm.gameObject);
+        }
     }
 	
 	// Update is called once per frame

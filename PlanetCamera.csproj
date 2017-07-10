@@ -135,8 +135,10 @@
     <Compile Include="Assets\bear\Move.cs" />
     <Compile Include="Assets\scripts\Actor\Domino.cs" />
     <Compile Include="Assets\scripts\Actor\DominoSpwan.cs" />
+    <Compile Include="Assets\scripts\Factory\CreatePlayer.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\AddPlanet.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\AddScalable.cs" />
+    <Compile Include="Assets\scripts\Factoryplugin\CreateLinedUp.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\FourtyFiveDegree.cs" />
     <Compile Include="Assets\scripts\GravityGenerator\MeshGravityGenerator.cs" />
     <Compile Include="Assets\scripts\GravityGenerator\PlaneGravityGenerator.cs" />
@@ -153,7 +155,6 @@
     <Compile Include="Assets\scripts\Tool\CameraPivot.cs" />
     <Compile Include="Assets\scripts\Tool\ConstMoveForceMonitor.cs" />
     <Compile Include="Assets\scripts\Tool\CreateGravitySensor.cs" />
-    <Compile Include="Assets\scripts\Tool\CreatePrefab.cs" />
     <Compile Include="Assets\scripts\Tool\DrawAABB.cs" />
     <Compile Include="Assets\scripts\Tool\EndlessCorridorHolder.cs" />
     <Compile Include="Assets\scripts\Tool\EndlessCorridorManager.cs" />

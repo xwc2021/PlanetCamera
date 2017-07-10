@@ -15,6 +15,9 @@ public class FollowerController : MonoBehaviour, MoveController
 
     public Vector3 getMoveForce()
     {
+        if (followTarget == null)
+            return Vector3.zero;
+
         Vector3 diff = followTarget.position - transform.position; ;
         if (diff.magnitude < 0.5)
             return Vector3.zero;
