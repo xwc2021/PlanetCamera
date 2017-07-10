@@ -25,6 +25,7 @@ public interface JumpForceMonitor
     float getJumpForceStrength();
 }
 
+public enum GravityGeneratorEnum {plane,planet,mesh }
 
 public class PlanetMovable : MonoBehaviour
 {
@@ -35,9 +36,12 @@ public class PlanetMovable : MonoBehaviour
     JumpForceMonitor jumpForceMonitor;
     public MonoBehaviour jumpForceMonitorSocket;
 
+    public GravityGeneratorEnum ggEnum;
     GrounGravityGenerator grounGravityGenerator;
-    public MonoBehaviour grounGravityGeneratorSocket;
-
+    public PlaneGravityGenerator planeGravityGeneratorSocket;
+    public PlanetGravityGenerator planetGravityGeneratorSocket;
+    public MeshGravityGenerator meshGravityGeneratorSocket;
+    
     MoveController moveController;
     public MonoBehaviour moveControllerSocket;
 
@@ -55,10 +59,8 @@ public class PlanetMovable : MonoBehaviour
     // Use this for initialization
     void Start () {
 
+        ResetGravityGenetrator(ggEnum);
         animator = GetComponentInChildren<Animator>();
-
-        if (grounGravityGeneratorSocket != null)
-            grounGravityGenerator = grounGravityGeneratorSocket as GrounGravityGenerator;
 
         if (moveControllerSocket != null)
             moveController = moveControllerSocket as MoveController;
@@ -68,6 +70,23 @@ public class PlanetMovable : MonoBehaviour
 
         if (jumpForceMonitorSocket != null)
             jumpForceMonitor = jumpForceMonitorSocket as JumpForceMonitor;
+    }
+
+    public void ResetGravityGenetrator(GravityGeneratorEnum pggEnum)
+    {
+        ggEnum = pggEnum;
+        switch (ggEnum)
+        {
+            case GravityGeneratorEnum.plane:
+                grounGravityGenerator = planeGravityGeneratorSocket as GrounGravityGenerator;
+                break;
+            case GravityGeneratorEnum.planet:
+                grounGravityGenerator = planetGravityGeneratorSocket as GrounGravityGenerator;
+                break;
+            case GravityGeneratorEnum.mesh:
+                grounGravityGenerator = meshGravityGeneratorSocket as GrounGravityGenerator;
+                break;
+        }
     }
 
     bool doJump=false;

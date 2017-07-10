@@ -5,7 +5,6 @@ using UnityEngine;
 public class EndlessCorridorManager : MonoBehaviour {
 
     public EndlessCorridorHolder[] prefabList;
-    public Transform scaleCenter;
     public Scalable player;
     public CameraPivot flyCamara;
 

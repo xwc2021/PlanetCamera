@@ -4,6 +4,7 @@ webgl/
 obj/
 build/
 temp/
+PC/
 PlanetCamera_Data/
 PlanetCamera.exe
 Test.exe

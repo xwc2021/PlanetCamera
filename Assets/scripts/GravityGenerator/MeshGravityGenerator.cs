@@ -10,13 +10,6 @@ public class MeshGravityGenerator : MonoBehaviour, GrounGravityGenerator
     public float findingGravitySensorR = 4;
     public Transform findingGravitySphere=null;
 
-    // Use this for initialization
-    void Start()
-    {
-        if(findingGravitySphere!=null)
-            findingGravitySphere.localScale = new Vector3(findingGravitySensorR, findingGravitySensorR, findingGravitySensorR) * 2;
-    }
-
     Collider[] gs = new Collider[100];//大小看需求自己設定
     public Vector3 findGroundUp()
     {

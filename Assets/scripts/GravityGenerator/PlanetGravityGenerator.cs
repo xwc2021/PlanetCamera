@@ -8,10 +8,17 @@ public class PlanetGravityGenerator : MonoBehaviour, GrounGravityGenerator
 {
     public Transform laddingPlanet;
 
-    public void Start()
+    public void Awake()
     {
-        if(laddingPlanet==null)
-            laddingPlanet=GameObject.FindGameObjectsWithTag("nowPlanet")[0].transform;
+        if (laddingPlanet == null)
+        {
+            //因為還不知道multiplaer模式要怎麼設定laddingPlanet
+            GameObject gameObject = GameObject.FindGameObjectWithTag("nowPlanet");
+
+            if(gameObject!=null)
+                laddingPlanet = gameObject.transform;
+        }
+            
     }
 
     public Vector3 findGroundUp()

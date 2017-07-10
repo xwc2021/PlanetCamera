@@ -16,7 +16,6 @@ public interface MoveController
 
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
-
     public PlanetMovable planetMovable;
     SurfaceFollowCameraBehavior followCameraBehavior;
     public MonoBehaviour followCameraBehaviorSocket;
@@ -29,7 +28,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Vector3 previousGroundUp;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         previousPosistion = transform.position;
         previousGroundUp = transform.up;
