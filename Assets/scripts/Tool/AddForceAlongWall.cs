@@ -8,10 +8,8 @@ public class AddForceAlongWall : MonoBehaviour {
     void OnCollisionStay(Collision collision)
     {
         //況著牆移動
-       
-        //在空中不作
-        if (!pm.ladding)
-            return;
+
+        bool onAir = !pm.ladding;
 
         //只有layer是Block才作
         bool isBlock = collision.gameObject.layer == LayerDefined.Block;
@@ -39,7 +37,7 @@ public class AddForceAlongWall : MonoBehaviour {
         float k = 1 - dot;
         k = Mathf.Max(k, 0.2f);
 
-        float strength = 2.5f;
+        float strength = onAir?1.0f:2.5f;
         pm.rigid.AddForce(f * k * strength, ForceMode.VelocityChange);
         //rigid.AddForce(f * k * strength, ForceMode.Acceleration);
 
