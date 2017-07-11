@@ -132,7 +132,6 @@
     <Compile Include="Assets\Water\AnimateEmissive.cs" />
     <Compile Include="Assets\Water\AnimateWave.cs" />
     <Compile Include="Assets\Water\WaterRange.cs" />
-    <Compile Include="Assets\bear\Move.cs" />
     <Compile Include="Assets\scripts\Actor\Domino.cs" />
     <Compile Include="Assets\scripts\Actor\DominoSpwan.cs" />
     <Compile Include="Assets\scripts\AnimationState\BeforeJumpState.cs" />
