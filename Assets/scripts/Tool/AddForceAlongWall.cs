@@ -14,7 +14,7 @@ public class AddForceAlongWall : MonoBehaviour {
             return;
 
         //只有layer是Block才作
-        bool isBlock = collision.gameObject.layer == 14;
+        bool isBlock = collision.gameObject.layer == LayerDefined.Block;
         if (!isBlock)
             return;
 

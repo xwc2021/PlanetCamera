@@ -13,7 +13,7 @@ public class MeshGravityGenerator : MonoBehaviour, GrounGravityGenerator
     Collider[] gs = new Collider[100];//大小看需求自己設定
     public Vector3 findGroundUp()
     {
-        int layerMask = 1 << 11;
+        int layerMask = 1 << LayerDefined.GravitySensor;
         int overlapCount = Physics.OverlapSphereNonAlloc(transform.position, findingGravitySensorR, gs, layerMask);
         //Debug.DrawLine(transform.position, transform.position + groundUp * findingGravitySensorR);
 

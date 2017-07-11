@@ -150,8 +150,7 @@ public class PlanetMovable : MonoBehaviour
         Vector3 from = groundUp + transform.position;
 
         ladding = false;
-        //groud | block | canJump
-        int layerMask = 1 << 10 | 1 << 14 | 1 << 15;
+        int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.Block | 1 << LayerDefined.canJump;
         Vector3 adjustRefNormal = groundUp;
         if (Physics.Raycast(from, -groundUp, out hit, 5, layerMask))
         {
