@@ -54,13 +54,28 @@ public class PlanetMovable : MonoBehaviour
     public bool firstPersonMode = false;
     public bool useUserDefinedJumpForce = false;
     static bool useRayHitNormal = true;
+    
+    void setAnimatorInfo()
+    {
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+            return;
+        beforeJump = animator.GetBehaviour<BeforeJumpState>();
+        if (beforeJump == null)
+            return;
 
+        beforeJump.setRigid(rigid);
+        onAirHash = Animator.StringToHash("Base Layer.onAir");
+    }
+
+    int onAirHash;
     Animator animator;
+    BeforeJumpState beforeJump;
     // Use this for initialization
     void Start () {
 
         ResetGravityGenetrator(ggEnum);
-        animator = GetComponentInChildren<Animator>();
+        setAnimatorInfo();
 
         if (moveControllerSocket != null)
             moveController = moveControllerSocket as MoveController;
@@ -208,7 +223,7 @@ public class PlanetMovable : MonoBehaviour
 
         if (animator != null)
         {
-            bool moving = rigid.velocity.magnitude > 0.1;
+            bool moving = rigid.velocity.magnitude > 0.05;
             animator.SetBool("moving", moving);
         }
 
@@ -224,15 +239,23 @@ public class PlanetMovable : MonoBehaviour
         if (ladding)
         {
             if (animator != null)
-                animator.SetBool("onAir", false);
+            {
+                bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+                if (isOnAir)
+                    animator.SetBool("onAir", false);
+            } 
+
             Debug.DrawLine(transform.position, transform.position - transform.up,Color.green);
             if (doJump)
             {
-                if(jumpForceMonitor!=null)
-                    rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -planetGravity, ForceMode.Acceleration);
-
+                if (jumpForceMonitor != null)
+                {
+                    if(beforeJump!=null)
+                        beforeJump.setAcceleration(jumpForceMonitor.getJumpForceStrength() * -planetGravity);
+                }
+                    
                 if (animator != null)
-                    animator.SetBool("onAir", true);
+                    animator.SetBool("beforeJump", true);
 
                 doJump = false;
             }  

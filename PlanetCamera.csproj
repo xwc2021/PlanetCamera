@@ -135,6 +135,8 @@
     <Compile Include="Assets\bear\Move.cs" />
     <Compile Include="Assets\scripts\Actor\Domino.cs" />
     <Compile Include="Assets\scripts\Actor\DominoSpwan.cs" />
+    <Compile Include="Assets\scripts\AnimationState\BeforeJumpState.cs" />
+    <Compile Include="Assets\scripts\AnimationState\OnAirState.cs" />
     <Compile Include="Assets\scripts\Factory\CreatePlayer.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\AddPlanet.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\AddScalable.cs" />
