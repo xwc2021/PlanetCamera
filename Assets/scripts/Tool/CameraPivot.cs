@@ -10,7 +10,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 {
     public bool doCameraCollison = true;
     float fixedR;
-    static float cameraCollisionMinDistance = 1.25f;
+    public float cameraCollisionMinDistance = 1.0f;
     public Transform fakeCamera;
     public Transform player;
     public float yawFollowSpeed = 1.5f;
