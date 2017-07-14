@@ -8,8 +8,8 @@ public class AddPlanet : MonoBehaviour, FactoryPlugin
     public void doIt(GameObject gameObject)
     {
         Debug.Assert(laddingPlanet != null);
-        PlanetGravityGenerator pgg = gameObject.GetComponent<PlanetGravityGenerator>();
-        Debug.Assert(pgg != null);
-        pgg.laddingPlanet = laddingPlanet;
+        GravityDirectionMonitor gdm = gameObject.GetComponentInChildren<GravityDirectionMonitor>();
+        Debug.Assert(gdm != null);
+        gdm.setPlanet(laddingPlanet);
     }
 }

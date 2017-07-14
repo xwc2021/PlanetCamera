@@ -25,22 +25,17 @@ public interface JumpForceMonitor
     float getJumpForceStrength();
 }
 
-public enum GravityGeneratorEnum {plane,planet,mesh }
+
 
 public class PlanetMovable : MonoBehaviour
 {
-    static bool findMoveForceMethod1 = true;
+    GrounGravityGenerator grounGravityGenerator;
+    public GravityDirectionMonitor gravityDirectionMonitor;
     MoveForceMonitor moveForceMonitor;
     public MonoBehaviour moveForceMonitorSocket;
 
     JumpForceMonitor jumpForceMonitor;
     public MonoBehaviour jumpForceMonitorSocket;
-
-    public GravityGeneratorEnum ggEnum;
-    GrounGravityGenerator grounGravityGenerator;
-    public PlaneGravityGenerator planeGravityGeneratorSocket;
-    public PlanetGravityGenerator planetGravityGeneratorSocket;
-    public MeshGravityGenerator meshGravityGeneratorSocket;
     
     MoveController moveController;
     public MonoBehaviour moveControllerSocket;
@@ -53,7 +48,6 @@ public class PlanetMovable : MonoBehaviour
 
     public bool firstPersonMode = false;
     public bool useUserDefinedJumpForce = false;
-    static bool useRayHitNormal = true;
     
     void setAnimatorInfo()
     {
@@ -74,7 +68,6 @@ public class PlanetMovable : MonoBehaviour
     // Use this for initialization
     void Start () {
 
-        ResetGravityGenetrator(ggEnum);
         setAnimatorInfo();
 
         if (moveControllerSocket != null)
@@ -89,19 +82,7 @@ public class PlanetMovable : MonoBehaviour
 
     public void ResetGravityGenetrator(GravityGeneratorEnum pggEnum)
     {
-        ggEnum = pggEnum;
-        switch (ggEnum)
-        {
-            case GravityGeneratorEnum.plane:
-                grounGravityGenerator = planeGravityGeneratorSocket as GrounGravityGenerator;
-                break;
-            case GravityGeneratorEnum.planet:
-                grounGravityGenerator = planetGravityGeneratorSocket as GrounGravityGenerator;
-                break;
-            case GravityGeneratorEnum.mesh:
-                grounGravityGenerator = meshGravityGeneratorSocket as GrounGravityGenerator;
-                break;
-        }
+        gravityDirectionMonitor.ResetGravityGenerator(pggEnum);
     }
 
     bool doJump=false;
@@ -135,6 +116,7 @@ public class PlanetMovable : MonoBehaviour
     public float debugVelocity;
     void FixedUpdate()
     {
+        grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
         groundUp = grounGravityGenerator.findGroundUp();  
 
         //計算重力方向
@@ -154,7 +136,6 @@ public class PlanetMovable : MonoBehaviour
         Vector3 adjustRefNormal = groundUp;
         if (Physics.Raycast(from, -groundUp, out hit, 5, layerMask))
         {
-            if (useRayHitNormal)
                 adjustRefNormal = hit.normal;
 
             float distance = (hit.point - transform.position).magnitude;
@@ -172,35 +153,21 @@ public class PlanetMovable : MonoBehaviour
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
-            //在場景plane.untiy還是可以感覺到這2個方法的不同
-            if (findMoveForceMethod1)
+
+            //為了修正這個問題
+            //https://www.youtube.com/watch?v=8EE8NlZz274
+            //不過這麼一來，原本可以順利滑過的case，也變的會卡住了
+            if (ladding)
             {
-                //為了修正這個問題
-                //https://www.youtube.com/watch?v=8EE8NlZz274
-                //不過這麼一來，原本可以順利滑過的case，也變的會卡住了
-                if (ladding)
-                {
-                    //備註：即使是使用PlanetGravityGenerator
-                    //OLD和投影到平面之後的moveForce還是可能不一樣
-                    //因為PanetMovalbe有可能跑的比Camera快
 
-                    //改成用求2平面的交線(也就是用2個平面的法向量作外積)
-                    //其中1個平面就是地面，另一個平面則是和moveForce向量重疊的平面
-                    Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
-                    Vector3 OLD = moveForce;
-                    moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+                //2平面的交線(個平面的法向量作外積)
+                //Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
+                //moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
+                //moveForce.Normalize();
 
-                    Debug.DrawLine(transform.position, transform.position + adjustRefNormal, Color.black);
-                    Debug.DrawLine(transform.position, transform.position + moveForce, Color.blue);
-                    Debug.DrawLine(transform.position, transform.position + OLD, Color.red);
-                }
-                
+                moveForce=Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
+                moveForce.Normalize();
             }
-            else //直接投影到平面上
-                moveForce =Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
-
-            //不再正規化moveForce
-            //當moveForce和所在平面平行時，力會最大
 
             //更新面向begin
             Vector3 forward2 = moveForce;
