@@ -27,8 +27,12 @@ public class SlopeForceMonitor : MonoBehaviour {
         bool sameDir = dotValue > 0;
         float sign = sameDir ? -1 : 1;
 
-        //當上坡時 玩家沿著斜坡受的合力 = moveForceWithStrength-fAlongSlope + 摩擦力(moveForceWithStrength-fAlongSlope)
-        //當下坡時 玩家沿著斜坡受的合力 = moveForceWithStrength+fAlongSlope + 摩擦力(moveForceWithStrength+fAlongSlope)
+        //moveForceWithStrength可以拆成2個力
+        //和fAlongSlope同方向的力:moveForceWithStrengthALongSlop
+        //和fAlongSlope垂直的力:moveForceHorizontal
+        //moveForceWithStrength = moveForceWithStrengthALongSlop + moveForceHorizontal
+        //當上坡時, 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop-fAlongSlopeStrength - 摩擦力(moveForceWithStrengthALongSlop-fAlongSlopeStrength)
+        //當下坡時, 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop+fAlongSlopeStrength - 摩擦力(moveForceWithStrengthALongSlop+fAlongSlopeStrength)
         //所以才會發現上坡比較慢，下坡比較快
 
         //為了讓上坡下坡和在地面時差不多，只要抵消掉fAlongSlope這項就行了
