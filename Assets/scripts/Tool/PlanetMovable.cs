@@ -10,7 +10,7 @@ public interface InputProxy
     bool holdFire();
 }
 
-public interface GrounGravityGenerator
+public interface GroundGravityGenerator
 {
     Vector3 findGroundUp();
 }
@@ -29,7 +29,9 @@ public interface JumpForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
-    GrounGravityGenerator grounGravityGenerator;
+    public SlopeForceMonitor slopeForceMonitor;
+
+    GroundGravityGenerator grounGravityGenerator;
     public GravityDirectionMonitor gravityDirectionMonitor;
     MoveForceMonitor moveForceMonitor;
     public MonoBehaviour moveForceMonitorSocket;
@@ -163,7 +165,6 @@ public class PlanetMovable : MonoBehaviour
                 //2平面的交線(個平面的法向量作外積)
                 //Vector3 normalOfMoveForcePlane = Vector3.Cross(groundUp, moveForce);
                 //moveForce = Vector3.Cross(normalOfMoveForcePlane, adjustRefNormal);
-                //moveForce.Normalize();
 
                 moveForce=Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
                 moveForce.Normalize();
@@ -182,9 +183,17 @@ public class PlanetMovable : MonoBehaviour
             //使用rigid.velocity的話，下面的重力就會失效
             //addForce就可以有疊加的效果
             //雪人的mass也要作相應的調整，不然會推不動骨牌
-            if(moveForceMonitor!=null)
-                rigid.AddForce(moveForceMonitor.getMoveForceStrength(!ladding) * moveForce, ForceMode.Acceleration);
-            
+            if (moveForceMonitor != null)
+            {
+                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding) ;
+                Vector3 moveForceWithStrength = moveForceStrength * moveForce;
+                if (slopeForceMonitor != null && ladding)
+                {
+                        moveForceWithStrength=slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, getGravityForceStrength(), groundUp, adjustRefNormal);
+                }
+
+                rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
+            }
         }
 
         if (animator != null)
@@ -196,11 +205,8 @@ public class PlanetMovable : MonoBehaviour
 
         //加上重力
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
-        if (ladding)
-            rigid.AddForce(gravityScale * planetGravity, ForceMode.Acceleration);
-        else
-            rigid.AddForce(gravityScaleOnAir * planetGravity, ForceMode.Acceleration);
-
+        rigid.AddForce(getGravityForceStrength() * planetGravity, ForceMode.Acceleration);
+        
         //跳
         if (ladding)
         {
@@ -240,5 +246,13 @@ public class PlanetMovable : MonoBehaviour
 
         //if (rigid.velocity.magnitude>0.01f)
         //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
+    }
+
+    float getGravityForceStrength()
+    {
+        if (ladding)
+            return gravityScale;
+        else
+           return gravityScaleOnAir;
     }
 }

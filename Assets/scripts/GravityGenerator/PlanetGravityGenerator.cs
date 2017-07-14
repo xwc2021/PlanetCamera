@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //類球形星球專用
-public class PlanetGravityGenerator : MonoBehaviour, GrounGravityGenerator
+public class PlanetGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
     public Transform laddingPlanet;
 

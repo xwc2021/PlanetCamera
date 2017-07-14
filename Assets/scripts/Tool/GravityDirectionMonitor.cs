@@ -6,7 +6,7 @@ public enum GravityGeneratorEnum { plane, planet, mesh }
 public class GravityDirectionMonitor : MonoBehaviour {
 
     public GravityGeneratorEnum ggEnum;
-    GrounGravityGenerator grounGravityGenerator;
+    GroundGravityGenerator grounGravityGenerator;
     public PlaneGravityGenerator planeGravityGeneratorSocket;
     public PlanetGravityGenerator planetGravityGeneratorSocket;
     public MeshGravityGenerator meshGravityGeneratorSocket;
@@ -22,13 +22,13 @@ public class GravityDirectionMonitor : MonoBehaviour {
         switch (ggEnum)
         {
             case GravityGeneratorEnum.plane:
-                grounGravityGenerator = planeGravityGeneratorSocket as GrounGravityGenerator;
+                grounGravityGenerator = planeGravityGeneratorSocket as GroundGravityGenerator;
                 break;
             case GravityGeneratorEnum.planet:
-                grounGravityGenerator = planetGravityGeneratorSocket as GrounGravityGenerator;
+                grounGravityGenerator = planetGravityGeneratorSocket as GroundGravityGenerator;
                 break;
             case GravityGeneratorEnum.mesh:
-                grounGravityGenerator = meshGravityGeneratorSocket as GrounGravityGenerator;
+                grounGravityGenerator = meshGravityGeneratorSocket as GroundGravityGenerator;
                 break;
         }
     }
@@ -38,7 +38,7 @@ public class GravityDirectionMonitor : MonoBehaviour {
         planetGravityGeneratorSocket.laddingPlanet = planet;
     }
 
-    public GrounGravityGenerator getGravityGenerator()
+    public GroundGravityGenerator getGravityGenerator()
     {
         return grounGravityGenerator;
     }

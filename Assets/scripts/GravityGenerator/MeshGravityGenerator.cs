@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //非球圓形星球：像是Donuts、Knot
-public class MeshGravityGenerator : MonoBehaviour, GrounGravityGenerator
+public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
     public bool averageSG = true;
     public float findingGravitySensorR = 4;
