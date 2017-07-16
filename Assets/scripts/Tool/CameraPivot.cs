@@ -116,7 +116,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
             recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
             
             float diff = (old - recordPos).magnitude;
-            print(diff);
+            //print(diff);
             if(autoYawFollow)
                 doYawFollow = diff > doYawFollowDiff;//超過門檻值才作
 

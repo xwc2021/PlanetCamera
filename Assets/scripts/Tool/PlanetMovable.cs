@@ -168,6 +168,7 @@ public class PlanetMovable : MonoBehaviour
 
                 moveForce=Vector3.ProjectOnPlane(moveForce, adjustRefNormal);
                 moveForce.Normalize();
+                Debug.DrawRay(transform.position+transform.up, moveForce*5, Color.blue);
             }
 
             //更新面向begin

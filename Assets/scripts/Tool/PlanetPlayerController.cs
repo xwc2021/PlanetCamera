@@ -136,6 +136,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
             if(m_Cam==null)
                 return Vector3.zero;
 
+            if (doDergeeLock)
+                doDegreeLock(ref h, ref v);
+
             Vector3 moveForword = Vector3.Cross(m_Cam.right, transform.up);
             Vector3 controllForce = h * m_Cam.right + v * moveForword;
             return controllForce.normalized;

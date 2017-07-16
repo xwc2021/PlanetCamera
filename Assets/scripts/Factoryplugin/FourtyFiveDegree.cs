@@ -8,8 +8,11 @@ public class FourtyFiveDegree : MonoBehaviour,FactoryPlugin {
     {
         gameObject.transform.rotation = Quaternion.Euler(0, 45, 0);
         CameraPivot cameraPivot = gameObject.GetComponentInChildren<CameraPivot>();
-
         Debug.Assert(cameraPivot != null);
         cameraPivot.lockYaw = true;
+
+        PlanetPlayerController ppc = gameObject.GetComponent<PlanetPlayerController>();
+        Debug.Assert(ppc != null);
+        ppc.doDergeeLock = true;
     }
 }
