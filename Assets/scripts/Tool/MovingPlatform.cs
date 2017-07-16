@@ -7,9 +7,9 @@ public class MovingPlatform : MonoBehaviour {
     Vector3 localRight;
 	// Use this for initialization
 	void Start () {
-        recordPos = transform.localPosition;
-        localRight=transform.InverseTransformDirection(transform.right);
-	}
+        recordPos = transform.position;
+
+    }
 	
     public float MoveSpin=10f;
     // Update is called once per frame
@@ -20,6 +20,25 @@ public class MovingPlatform : MonoBehaviour {
         float factor = 2.0f* Mathf.PI / periodTime;
 
         float moveLen = MoveSpin * Mathf.Sin(Time.time*factor);
-        transform.localPosition = recordPos + localRight * moveLen;
+
+        transform.position = Vector3.Lerp(transform.position, recordPos + transform.right * moveLen,Time.fixedDeltaTime);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        other.transform.parent = transform;
+ 
+        SetCameraPivot setCameraPivot= other.gameObject.GetComponent<SetCameraPivot>();
+        if (setCameraPivot != null)
+           setCameraPivot.setFollowHighSpeed(true);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        other.transform.parent = null;
+
+        SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
+        if (setCameraPivot != null)
+           setCameraPivot.setFollowHighSpeed(false);
     }
 }

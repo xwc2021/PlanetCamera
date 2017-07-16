@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.Plugins", "PlanetCamera.Plugins.csproj", "{9C24C2EC-745C-D917-D7CE-458B998FA298}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera", "PlanetCamera.csproj", "{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.Plugins", "PlanetCamera.Plugins.csproj", "{9C24C2EC-745C-D917-D7CE-458B998FA298}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.Editor", "PlanetCamera.Editor.csproj", "{1ED08AD7-D60B-2D21-9B82-42875813A152}"
 EndProject
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C24C2EC-745C-D917-D7CE-458B998FA298}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1ED08AD7-D60B-2D21-9B82-42875813A152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1ED08AD7-D60B-2D21-9B82-42875813A152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1ED08AD7-D60B-2D21-9B82-42875813A152}.Release|Any CPU.ActiveCfg = Release|Any CPU

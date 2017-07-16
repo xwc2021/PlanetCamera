@@ -72,6 +72,8 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         //還是得在doScale裡鎖scale的增加值
         if (flyAway)
             transform.parent = null;
+
+        toSpeed = posFollowSpeed;
     }
 
     public void resetRecordPos(Vector3 v,float scaleR)
@@ -90,19 +92,36 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         localNowPitchDegree = newPitchDegree;
     }
 
+    public void setFollowHighSpeed(bool b)
+    {
+        if (b)
+        {
+            toSpeed = 100;
+        }
+        else
+        {
+            toSpeed = 5;
+        }
+            
+    }
+
+    float toSpeed;
     void LateUpdate() {
 
         if (follow)
         {
+            posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
+
             Vector3 old = recordPos;
             recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
             
             float diff = (old - recordPos).magnitude;
-            //print(diff);
+            print(diff);
             if(autoYawFollow)
-                doYawFollow = (diff > doYawFollowDiff) ? true : false;//超過門檻值才作
+                doYawFollow = diff > doYawFollowDiff;//超過門檻值才作
 
-            transform.position = recordPos;
+            if(diff>0.0001f)
+                transform.position = recordPos;
         }     
 
         //pitch旋轉
