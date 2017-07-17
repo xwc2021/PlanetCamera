@@ -15,6 +15,7 @@ public class SlopeForceMonitor : MonoBehaviour {
         return f;
     }
 
+    public float maxForceLimit = 120;
     public Vector3 modifyMoveForce(Vector3 moveForce,float moveForceStrength, float GravityForceStrength, Vector3 groundUp, Vector3 SlopeUp)
     {
         Vector3 fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
@@ -43,6 +44,8 @@ public class SlopeForceMonitor : MonoBehaviour {
         //Vector3 finalMoveForce = moveForceWithStrength + sign * fAlongSlope;
         Vector3 finalMoveForce = moveForceWithStrength + sign * fAlongSlope.magnitude* moveForceWithStrengthALongSlop.normalized;
 
+        float limitSpeed =Mathf.Min(finalMoveForce.magnitude, maxForceLimit);
+        finalMoveForce = finalMoveForce.normalized * limitSpeed;
 
         //Debug.DrawRay(transform.position , SlopeUp, Color.yellow);
         //Debug.DrawRay(transform.position, fAlongSlope, Color.red);
