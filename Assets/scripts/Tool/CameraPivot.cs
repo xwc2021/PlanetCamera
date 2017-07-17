@@ -95,14 +95,9 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     public void setFollowHighSpeed(bool b)
     {
         if (b)
-        {
             toSpeed = 100;
-        }
         else
-        {
-            toSpeed = 5;
-        }
-            
+            toSpeed = 5;     
     }
 
     float toSpeed;
