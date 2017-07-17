@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityStandardAssets.CrossPlatformInput;
 
 public interface InputProxy
@@ -72,6 +73,7 @@ public class PlanetMovable : MonoBehaviour
     // Use this for initialization
     void Start () {
 
+        contactPointList = new List<ContactPoint[]>();
         setAnimatorInfo();
 
         if (moveControllerSocket != null)
@@ -92,6 +94,9 @@ public class PlanetMovable : MonoBehaviour
     bool doJump=false;
     private void Update()
     {
+        //判定有沒有接觸
+        contact = isContact();
+
         if (moveController == null)
             return;
 
@@ -113,16 +118,22 @@ public class PlanetMovable : MonoBehaviour
         return groundUp;
     }
 
+    //https://docs.unity3d.com/Manual/ExecutionOrder.html
+    List<ContactPoint[]> contactPointList;
+    public bool contact;
+    public bool isHit=false;
     public bool ladding = false;
     public bool maybeStick = false;
     static float maybeStcikThreshold = -0.05f;
-    static float isHitDistance = 0.1f;
-
+    static float isHitDistance = 0.2f;
+    static float rayCastDistance = 2;
     Vector3 groundUp;
     // Update is called once per frame
     public float debugVelocity;
     void FixedUpdate()
     {
+        contactPointList.Clear();
+
         grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
         groundUp = grounGravityGenerator.findGroundUp();  
 
@@ -139,11 +150,11 @@ public class PlanetMovable : MonoBehaviour
         //https://www.youtube.com/watch?v=Cq_Wh8o96sc
         //往後退一步，下斜坡不卡住(因為在交界處有可能紅色射線已經打中斜坡)
         Vector3 from = transform.forward * backOffset + groundUp + transform.position;
-        Debug.DrawRay(from, groundUp*2 , Color.red);
-        bool isHit = false;
+        Debug.DrawRay(from, -groundUp*2 , Color.red);
+        isHit = false;
         int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.Block | 1 << LayerDefined.canJump;
         Vector3 planeNormal = groundUp;
-        if (Physics.Raycast(from, -groundUp, out hit, 5, layerMask))
+        if (Physics.Raycast(from, -groundUp, out hit, rayCastDistance, layerMask))
         {
             Vector3 diff = hit.point - transform.position;
             float height = Vector3.Dot(diff, groundUp);
@@ -167,8 +178,8 @@ public class PlanetMovable : MonoBehaviour
         maybeStick = false;
         Vector3 planeNormalPredict = groundUp;
         from = transform.forward* detectForwardOffset + groundUp + transform.position;
-        Debug.DrawRay(from, groundUp * 2, Color.green);
-        if (Physics.Raycast(from, -groundUp, out hit, 5, layerMask))
+        Debug.DrawRay(from, -groundUp * 2, Color.green);
+        if (Physics.Raycast(from, -groundUp, out hit, rayCastDistance, layerMask))
             planeNormalPredict = hit.normal;
         //Debug.DrawRay(hit.point, planeNormalPredict * 5, Color.yellow);
         if (moveController!=null)
@@ -293,32 +304,36 @@ public class PlanetMovable : MonoBehaviour
            return gravityScaleOnAir;
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        contact = false;
-    }
-
-    public bool contact;
     void OnCollisionStay(Collision collision)
     {
         bool isGround = collision.gameObject.layer == LayerDefined.ground;
         bool isBlock = collision.gameObject.layer == LayerDefined.Block;
         bool isCanJump = collision.gameObject.layer == LayerDefined.canJump;
 
-        contact = false;
         if (isGround || isBlock || isCanJump)
         {
-            ContactPoint[] cp = collision.contacts;
+            //有可能同時碰到2個以上的物件，所以先收集起來
+            contactPointList.Add(collision.contacts);
+        }
+    }
+
+    bool isContact()
+    {
+        int listCount = contactPointList.Count;
+        for (int x = 0; x < listCount; x++)
+        {
+            ContactPoint[] cp = contactPointList[x];
             for (int i = 0; i < cp.Length; i++)
             {
                 Vector3 diif = cp[i].point - transform.position;
                 float height = Vector3.Dot(groundUp, diif);
                 if (height < 0.15f)
                 {
-                    contact = true;
-                    return;
+                    return true;
                 }
             }
+
         }
+        return false;
     }
 }
