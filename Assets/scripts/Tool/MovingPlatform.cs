@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour {
     Vector3 recordPos;
-    Vector3 localRight;
 	// Use this for initialization
 	void Start () {
         recordPos = transform.position;
-
     }
 	
     public float MoveSpin=10f;
