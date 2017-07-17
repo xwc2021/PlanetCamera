@@ -159,15 +159,38 @@ public class PlanetMovable : MonoBehaviour
     {
         int layerMask = 1 << LayerDefined.Block;
         RaycastHit hit;
-        Vector3 from = groundUp + transform.position;
-        //Debug.DrawRay(from, -groundUp * 2, Color.green);
+        
         isHitWall = false;
         wallNormal = Vector3.zero;
-        if (Physics.Raycast(from, transform.forward, out hit, rayCastDistanceToWall, layerMask))
+
+        float SphereR = 0.24f;
+        float forwardToWall=0.5f;
+        float leftRightTowall = 0.2f;
+        float []rayCastDistanceToWall = { forwardToWall, forwardToWall, forwardToWall, leftRightTowall, leftRightTowall };
+
+
+        float heightThreshold = 0.1f;
+        float[] height = { 0.25f, 0.6f, 1.2f,0.6f,0.6f };
+        Vector3[] dir = { transform.forward, transform.forward, transform.forward, transform.right, -transform.right };
+        for (int i = 0; i < 5; i++)
         {
-            isHitWall = true;
-            wallNormal = hit.normal;
-        }
+            Vector3 from = groundUp * height[i] + transform.position;
+            Debug.DrawRay(from, dir[i]* rayCastDistanceToWall[i], Color.green);
+            if (Physics.SphereCast(from, SphereR, dir[i], out hit, rayCastDistanceToWall[i], layerMask))
+            {
+                float h = Vector3.Dot(hit.point - transform.position, groundUp);
+                
+                //高過才算
+                if (h > heightThreshold)
+                {
+                    isHitWall = true;
+                    wallNormal = hit.normal;
+                    Debug.DrawRay(hit.point, hit.normal * 2, Color.red);
+                    Debug.DrawRay(from, transform.forward, Color.yellow);
+                    return;
+                }
+            }
+        }  
     }
 
     void setNewMoveForceAlongWall(Vector3 wallNormal, ref Vector3 moveForce,out bool isSetNewValueAlongWall)
@@ -179,9 +202,7 @@ public class PlanetMovable : MonoBehaviour
         float dotValue = Vector3.Dot(moveForce, wallNormal);
 
         Vector3 newMoveForce = Vector3.ProjectOnPlane(moveForce, wallNormal);
-
-        Vector3 test = Vector3.ProjectOnPlane(Vector3.up, -Vector3.up);
-
+        //如果移動的方向和wallNormal接近垂直，newMoveForce就可能變的很短
         isSetNewValueAlongWall = newMoveForce.magnitude > 0.01f;
         if(isSetNewValueAlongWall)
             moveForce = newMoveForce;
@@ -198,7 +219,6 @@ public class PlanetMovable : MonoBehaviour
     static float maybeStcikThreshold = -0.05f;
     static float isHitDistance = 0.2f;
     static float rayCastDistanceToGround = 2;
-    static float rayCastDistanceToWall = 1.5f;
     Vector3 groundUp;
     // Update is called once per frame
     public float debugVelocity;
@@ -230,6 +250,7 @@ public class PlanetMovable : MonoBehaviour
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
+            isSetNewValueAlongWall = false;
             //在地面才作
             if (ladding)
             {
