@@ -191,6 +191,8 @@ public class PlanetMovable : MonoBehaviour
             //在地面才作
             if (ladding)
             {
+                moveForce = Vector3.ProjectOnPlane(moveForce, planeNormal);
+
                 if (avoidStickTool != null)
                 {
                     avoidStickTool.alongSlopeOrGround(ref moveForce, planeNormal, gravityDir);

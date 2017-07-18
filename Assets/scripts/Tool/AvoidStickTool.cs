@@ -8,9 +8,9 @@ public class AvoidStickTool : MonoBehaviour {
     public bool addForceOnAir;
     public bool addForceMaybeStick;
     public bool addForcePushWall;
-    static float maybeStcikThreshold = -0.05f;
+    public float maybeStickValue = -0.35f;
     public float detectForwardOffset = 0.2f;
-    
+
     //防止在空中卡住
     void OnCollisionStay(Collision collision)
     {
@@ -62,30 +62,23 @@ public class AvoidStickTool : MonoBehaviour {
 
     public void alongSlopeOrGround(ref Vector3 moveForce, Vector3 planeNormal, Vector3 gravityDir)
     {
-        Vector3 moveForceAlongPlane = Vector3.ProjectOnPlane(moveForce, planeNormal);
-
+        addForceMaybeStick = false;
         //預測斜坡normal
         Vector3 planeNormalPredict;
         getGroundNormalPredict(out planeNormalPredict);
 
-        float dotValue = Vector3.Dot(moveForceAlongPlane, planeNormalPredict);
-        //如果斜坡對PlanetMovalbe存在反作用力的話，就順著斜坡移動
-        if (dotValue < maybeStcikThreshold)
+        //如果斜坡對PlanetMovalbe存在反作用力夠大的話，就順著斜坡移動
+        float dotValue = Vector3.Dot(moveForce.normalized, planeNormalPredict);
+        if (dotValue < maybeStickValue)
         {
+            print("maybeStick");
             moveForce = Vector3.ProjectOnPlane(moveForce, planeNormalPredict);
 
             //幫忙推一把
             pm.rigid.AddForce(-gravityDir, ForceMode.VelocityChange);
             addForceMaybeStick = true;
-        }
-        else
-        {
-            addForceMaybeStick = false;
-            moveForce = moveForceAlongPlane;
-        }     
+        }   
     }
-
-
 
     void getHitWallNormal(out Vector3 wallNormal, out bool isHitWall)
     {
