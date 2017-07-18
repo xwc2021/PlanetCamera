@@ -24,9 +24,10 @@ public class AvoidStickTool : MonoBehaviour {
         if (pm.ladding)
             return;
 
-        //只有layer是Block才作
+        //只有layer是Block、canJump才作
         bool isBlock = collision.gameObject.layer == LayerDefined.Block;
-        if (!isBlock)
+        bool isCanJump = collision.gameObject.layer == LayerDefined.canJump;
+        if (!(isBlock || isCanJump) )
             return;
 
         Vector3 groundUp = pm.getGroundUp();
@@ -57,7 +58,10 @@ public class AvoidStickTool : MonoBehaviour {
         Vector3 from = transform.forward * detectForwardOffset + groundUp + transform.position;
         //Debug.DrawRay(from, -groundUp * 2, Color.green);
         if (Physics.Raycast(from, -groundUp, out hit, PlanetMovable.rayCastDistanceToGround, layerMask))
+        {
             planeNormalPredict = hit.normal;
+            //Debug.DrawRay(hit.point, hit.normal * 5, Color.green);
+        }
     }
 
     public void alongSlopeOrGround(ref Vector3 moveForce, Vector3 planeNormal, Vector3 gravityDir)
@@ -67,8 +71,12 @@ public class AvoidStickTool : MonoBehaviour {
         Vector3 planeNormalPredict;
         getGroundNormalPredict(out planeNormalPredict);
 
+        //要取分量，不然如果玩家不是斜著上坡，算出來的dotValue會改變
+        Vector3 N = Vector3.Cross(pm.getGroundUp(), planeNormalPredict);
+        Vector3 partMoveForceAlongSlope =Vector3.ProjectOnPlane(moveForce, N);
+
         //如果斜坡對PlanetMovalbe存在反作用力夠大的話，就順著斜坡移動
-        float dotValue = Vector3.Dot(moveForce.normalized, planeNormalPredict);
+        float dotValue = Vector3.Dot(partMoveForceAlongSlope.normalized, planeNormalPredict);
         if (dotValue < maybeStickValue)
         {
             print("maybeStick");
