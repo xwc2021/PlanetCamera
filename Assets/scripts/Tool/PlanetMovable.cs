@@ -30,6 +30,7 @@ public interface JumpForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
+    public AvoidStickTool avoidStickTool;
     public SlopeForceMonitor slopeForceMonitor;
 
     GroundGravityGenerator grounGravityGenerator;
@@ -51,8 +52,25 @@ public class PlanetMovable : MonoBehaviour
 
     public bool firstPersonMode = false;
     public bool useUserDefinedJumpForce = false;
-    public float detectForwardOffset = 0.2f;
+    
     public float backOffset = -0.1f;
+
+    int onAirHash;
+    Animator animator;
+    BeforeJumpState beforeJump;
+
+    //https://docs.unity3d.com/Manual/ExecutionOrder.html
+    List<ContactPoint[]> contactPointList;
+    public bool contact;
+    public bool isHit = false;
+    public bool ladding = false;
+
+    static float isHitDistance = 0.2f;
+    public static float rayCastDistanceToGround = 2;
+    Vector3 groundUp;
+    // Update is called once per frame
+    public float debugVelocity;
+    Vector3 wallNormal;
 
     void setAnimatorInfo()
     {
@@ -67,9 +85,6 @@ public class PlanetMovable : MonoBehaviour
         onAirHash = Animator.StringToHash("Base Layer.onAir");
     }
 
-    int onAirHash;
-    Animator animator;
-    BeforeJumpState beforeJump;
     // Use this for initialization
     void Start () {
 
@@ -144,85 +159,6 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
-    private void getGroundNormalPredict(out Vector3 planeNormalPredict)
-    {
-        int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.Block;
-        RaycastHit hit;
-        planeNormalPredict = groundUp;
-        Vector3 from = transform.forward * detectForwardOffset + groundUp + transform.position;
-        //Debug.DrawRay(from, -groundUp * 2, Color.green);
-        if (Physics.Raycast(from, -groundUp, out hit, rayCastDistanceToGround, layerMask))
-            planeNormalPredict = hit.normal;
-    }
-
-    private void getHitWallNormal(out Vector3 wallNormal,out bool isHitWall)
-    {
-        int layerMask = 1 << LayerDefined.Block;
-        RaycastHit hit;
-        
-        isHitWall = false;
-        wallNormal = Vector3.zero;
-
-        float SphereR = 0.24f;
-        float forwardToWall=0.5f;
-        float leftRightTowall = 0.2f;
-        float []rayCastDistanceToWall = { forwardToWall, forwardToWall, forwardToWall, leftRightTowall, leftRightTowall };
-
-
-        float heightThreshold = 0.1f;
-        float[] height = { 0.25f, 0.6f, 1.2f,0.6f,0.6f };
-        Vector3[] dir = { transform.forward, transform.forward, transform.forward, transform.right, -transform.right };
-        for (int i = 0; i < 5; i++)
-        {
-            Vector3 from = groundUp * height[i] + transform.position;
-            Debug.DrawRay(from, dir[i]* rayCastDistanceToWall[i], Color.green);
-            if (Physics.SphereCast(from, SphereR, dir[i], out hit, rayCastDistanceToWall[i], layerMask))
-            {
-                float h = Vector3.Dot(hit.point - transform.position, groundUp);
-                
-                //高過才算
-                if (h > heightThreshold)
-                {
-                    isHitWall = true;
-                    wallNormal = hit.normal;
-                    Debug.DrawRay(hit.point, hit.normal * 2, Color.red);
-                    Debug.DrawRay(from, transform.forward, Color.yellow);
-                    return;
-                }
-            }
-        }  
-    }
-
-    void setNewMoveForceAlongWall(Vector3 wallNormal, ref Vector3 moveForce,out bool isSetNewValueAlongWall)
-    {
-        bool onAir = !ladding;
-
-        wallNormal = Vector3.ProjectOnPlane(wallNormal, groundUp);
-        Debug.DrawRay(transform.position, wallNormal, Color.red);
-        float dotValue = Vector3.Dot(moveForce, wallNormal);
-
-        Vector3 newMoveForce = Vector3.ProjectOnPlane(moveForce, wallNormal);
-        //如果移動的方向和wallNormal接近垂直，newMoveForce就可能變的很短
-        isSetNewValueAlongWall = newMoveForce.magnitude > 0.01f;
-        if(isSetNewValueAlongWall)
-            moveForce = newMoveForce;
-    }
-
-    //https://docs.unity3d.com/Manual/ExecutionOrder.html
-    List<ContactPoint[]> contactPointList;
-    public bool isSetNewValueAlongWall;
-    public bool isHitWall;
-    public bool contact;
-    public bool isHit=false;
-    public bool ladding = false;
-    public bool maybeStick = false;
-    static float maybeStcikThreshold = -0.05f;
-    static float isHitDistance = 0.2f;
-    static float rayCastDistanceToGround = 2;
-    Vector3 groundUp;
-    // Update is called once per frame
-    public float debugVelocity;
-    Vector3 wallNormal;
     void FixedUpdate()
     {
         contactPointList.Clear();
@@ -243,41 +179,26 @@ public class PlanetMovable : MonoBehaviour
 
         //如果只用contact判定，下坡時可能contact為false
         ladding = contact || isHit;
-       
-        maybeStick = false;
+
+        if (avoidStickTool != null)
+            avoidStickTool.resetVariable();
+
         if (moveController!=null)
         {
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
-            isSetNewValueAlongWall = false;
             //在地面才作
             if (ladding)
             {
-                Vector3 moveForceAlongPlane = Vector3.ProjectOnPlane(moveForce, planeNormal);
-
-                //預測斜坡normal
-                Vector3 planeNormalPredict;
-                getGroundNormalPredict(out planeNormalPredict);
-
-                float dotValue =Vector3.Dot(moveForceAlongPlane, planeNormalPredict);
-                //如果斜坡對PlanetMovalbe存在反作用力的話，就順著斜坡移動
-                if (dotValue < maybeStcikThreshold)
+                if (avoidStickTool != null)
                 {
-                    maybeStick = true;
-                    moveForce = Vector3.ProjectOnPlane(moveForce, planeNormalPredict);
+                    avoidStickTool.alongSlopeOrGround(ref moveForce, planeNormal, gravityDir);
+                    avoidStickTool.setNewMoveForceAlongWall(ref moveForce);
                 }
-                else
-                    moveForce = moveForceAlongPlane;
-
-                
-                getHitWallNormal(out wallNormal, out isHitWall);
-
-                if (isHitWall)
-                    setNewMoveForceAlongWall(wallNormal, ref moveForce,out isSetNewValueAlongWall);
 
                 moveForce.Normalize();
-                Debug.DrawRay(transform.position+transform.up, moveForce*5, Color.blue);
+                Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
             }
 
             //更新面向begin
@@ -315,14 +236,6 @@ public class PlanetMovable : MonoBehaviour
         //加上重力
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         rigid.AddForce(getGravityForceStrength() * gravityDir, ForceMode.Acceleration);
-
-        //幫忙推一把
-        if(maybeStick)
-            rigid.AddForce(-gravityDir, ForceMode.VelocityChange);
-
-        float strength = 0.5f;
-        if(isHitWall && isSetNewValueAlongWall)
-            rigid.AddForce(wallNormal* strength, ForceMode.VelocityChange);
 
         //跳
         if (ladding)
