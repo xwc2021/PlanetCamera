@@ -144,6 +144,10 @@ public class AvoidStickTool : MonoBehaviour {
         Debug.DrawRay(transform.position, wallNormal, Color.red);
         float dotValue = Vector3.Dot(moveForce, wallNormal);
 
+        //離開牆(其實有下面的AddForce不加這也沒差)
+        if (Vector3.Dot(moveForce.normalized, wallNormal) > 0)
+           return;
+
         Vector3 newMoveForce = Vector3.ProjectOnPlane(moveForce, wallNormal);
         //如果移動的方向和wallNormal接近垂直，newMoveForce就可能變的很短
         bool isSetNewValueAlongWall = newMoveForce.magnitude > 0.01f;
