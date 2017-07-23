@@ -10,7 +10,7 @@ public class PlayerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
     public float moveForceScaleOnAirHight = 60;
 
     public float moveForceScaleLow = 80;
-    public float moveForceScaleHight = 90;
+    public float moveForceScaleHight = 85;
     public float getMoveForceStrength(bool isOnAir)
     {
         if (!isOnAir)

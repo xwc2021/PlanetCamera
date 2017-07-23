@@ -37,7 +37,10 @@ public class QuestionBox : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other)
-    {
+    { 
+        if (other.tag != "player")
+            return;
+
         originalBoxAnimator.SetBool("doScale", true);
         useTimer = true;
     }
