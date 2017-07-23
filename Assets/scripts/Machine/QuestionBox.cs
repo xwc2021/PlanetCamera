@@ -7,7 +7,7 @@ public class QuestionBox : MonoBehaviour {
     bool doOnce = false;
     bool useTimer = false;
     float nowTime = 0;
-    public float usefulTime = 0.5f;
+    public float usefulTime = 0.25f;
     Transform originalBoxTransform;
     public Animator originalBoxAnimator;
     public MeshRenderer originalBox;
