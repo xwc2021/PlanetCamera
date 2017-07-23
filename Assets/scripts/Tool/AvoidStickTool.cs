@@ -24,10 +24,11 @@ public class AvoidStickTool : MonoBehaviour {
         if (pm.ladding)
             return;
 
-        //只有layer是Block、canJump才作
+        //只有這些layer才作
+        bool isGround = collision.gameObject.layer == LayerDefined.ground;
         bool isBlock = collision.gameObject.layer == LayerDefined.Block;
         bool isCanJump = collision.gameObject.layer == LayerDefined.canJump;
-        if (!(isBlock || isCanJump) )
+        if (!(isGround || isBlock || isCanJump) )
             return;
 
         Vector3 groundUp = pm.getGroundUp();
