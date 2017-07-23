@@ -56,6 +56,8 @@ public class PlanetMovable : MonoBehaviour
     public float backOffset = -0.1f;
 
     int onAirHash;
+    int beforeJumpHash;
+    int running2BeforeJump;
     Animator animator;
     BeforeJumpState beforeJump;
 
@@ -83,6 +85,8 @@ public class PlanetMovable : MonoBehaviour
 
         beforeJump.setRigid(rigid);
         onAirHash = Animator.StringToHash("Base Layer.onAir");
+        beforeJumpHash = Animator.StringToHash("Base Layer.beforeJump");
+        running2BeforeJump = Animator.StringToHash("Base Layer.running -> Base Layer.beforeJump");
     }
 
     // Use this for initialization
@@ -159,6 +163,25 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
+    //避免因為動作過渡和演出beforeJump而造成在空中起跳
+    bool isFreezeMove()
+    {
+        if (animator != null)
+        {
+            if (animator.IsInTransition(0))
+            {
+                AnimatorTransitionInfo tInfo = animator.GetAnimatorTransitionInfo(0);
+                if (running2BeforeJump == tInfo.fullPathHash)
+                    return true;
+                
+            }
+
+            return beforeJumpHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+        }  
+        else
+            return false;
+    }
+
     void FixedUpdate()
     {
         contactPointList.Clear();
@@ -183,7 +206,11 @@ public class PlanetMovable : MonoBehaviour
         if (avoidStickTool != null)
             avoidStickTool.resetVariable();
 
-        if (moveController!=null)
+        bool isFreeze = isFreezeMove();
+        if (isFreeze)
+            rigid.velocity = Vector3.zero;
+
+        if (moveController!=null && !isFreeze)
         {
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
