@@ -15,6 +15,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     static float bigger_scaleA = 2.0f;
     static float bigger_scaleB = 1.0f;
 
+    //localRatio到A是0，到B是1
     float scaleA;
     float scaleB;
 
@@ -79,7 +80,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
             print("放大修正");
         }
         else if (playerScale < 0.91f)
-            other.transform.localScale = Vector3.one;
+            ecManager.player.resetScale();
     }
 
     private void OnTriggerEnter(Collider other)
