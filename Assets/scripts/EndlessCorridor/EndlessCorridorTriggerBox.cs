@@ -66,6 +66,8 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
         if (!doRescale)
             return;
 
+        ecManager.player.setCameraFollowHighSpeed(false);
+
         float playerScale = other.transform.localScale.y;
         if (playerScale < 0.6f)
         {
@@ -93,6 +95,8 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
         if (!doRescale)
             return;
+
+        ecManager.player.setCameraFollowHighSpeed(true);
 
         float localRatio = getLocalRatio(other);
         if (localRatio < 0.5)//變小
