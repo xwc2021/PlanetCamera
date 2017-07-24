@@ -214,7 +214,7 @@ public class PlanetMovable : MonoBehaviour
         {
             if (!ladding)
             {
-                bool isReach = Mathf.Abs(measuringJumpHeight.height - normalHeight) < 0.0001f;
+                bool isReach = Mathf.Abs(measuringJumpHeight.height - normalHeight) < 0.01f;
                 bool over = measuringJumpHeight.height > normalHeight;
                 isReachTargetHeight = isReach || over;
             }
@@ -227,8 +227,11 @@ public class PlanetMovable : MonoBehaviour
         {
             if (!isReachTargetHeight)
             {
-                float k = 1;
-                rigid.AddForce(k*-gravityDir, ForceMode.VelocityChange);
+                float diff =normalHeight - measuringJumpHeight.height;
+                float speed = diff>0.1f?5:100;
+                Vector3 targetPos = transform.position+transform.up * (diff);
+                transform.position = Vector3.Lerp(transform.position, targetPos, speed*Time.fixedDeltaTime);
+
                 return true;
             }
         }
@@ -314,7 +317,8 @@ public class PlanetMovable : MonoBehaviour
                 if (jumpForceMonitor != null)
                 {
                     rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
-                    rigid.AddForce(15 * touchWallNormal, ForceMode.VelocityChange);
+                    float s = 20;
+                    rigid.AddForce( 20* touchWallNormal, ForceMode.VelocityChange);
                 }
                 doJump = false;
             }
