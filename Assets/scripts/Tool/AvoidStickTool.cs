@@ -73,7 +73,7 @@ public class AvoidStickTool : MonoBehaviour {
         getGroundNormalPredict(out planeNormalPredict);
 
         //要取分量，不然如果玩家不是斜著上坡，算出來的dotValue會改變
-        Vector3 N = Vector3.Cross(pm.getGroundUp(), planeNormalPredict);
+        Vector3 N = Vector3.Cross(planeNormal, planeNormalPredict);
         Vector3 partMoveForceAlongSlope =Vector3.ProjectOnPlane(moveForce, N);
 
         //如果斜坡對PlanetMovalbe存在反作用力夠大的話，就順著斜坡移動
