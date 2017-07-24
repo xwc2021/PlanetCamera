@@ -61,6 +61,7 @@ public class PlanetMovable : MonoBehaviour
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
     List<ContactPoint[]> contactPointList;
     public bool contact;
+    public bool touchWall;
     public bool isHit = false;
     public bool ladding = false;
 
@@ -106,6 +107,7 @@ public class PlanetMovable : MonoBehaviour
     {
         //判定有沒有接觸
         contact = isContact();
+        touchWall =isTouchWall();
 
         if (moveController == null)
             return;
@@ -234,7 +236,19 @@ public class PlanetMovable : MonoBehaviour
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         rigid.AddForce(getGravityForceStrength() * gravityDir, ForceMode.Acceleration);
 
-        //跳
+        processJump(gravityDir);
+        processLadding();
+
+        //print("rigid="+rigid.velocity.magnitude);
+
+        debugVelocity = rigid.velocity.magnitude;
+
+        //if (rigid.velocity.magnitude>0.01f)
+        //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
+    }
+
+    void processLadding()
+    {
         if (ladding)
         {
             if (animator != null)
@@ -242,21 +256,42 @@ public class PlanetMovable : MonoBehaviour
                 bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
                 if (isOnAir)
                     animator.SetBool("onAir", false);
-            } 
+            }
+        }
+    }
 
-            Debug.DrawLine(transform.position, transform.position - transform.up,Color.green);
+    private void processJump(Vector3 gravityDir)
+    {
+        //jump from wall
+        if (!ladding && touchWall)
+        {
+            if (doJump)
+            {
+                if (jumpForceMonitor != null)
+                {
+                    rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
+                    rigid.AddForce(15 * touchWallNormal, ForceMode.VelocityChange);
+                }
+                doJump = false;
+            }
+        }
+
+        //跳
+        if (ladding)
+        {
+            Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
             if (doJump)
             {
                 if (jumpForceMonitor != null)
                 {
                     rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
                 }
-                    
+
                 if (animator != null)
                     animator.SetBool("doJump", true);
 
                 doJump = false;
-            }  
+            }
         }
         else
         {
@@ -265,13 +300,6 @@ public class PlanetMovable : MonoBehaviour
             if (doJump)
                 doJump = false;
         }
-
-        //print("rigid="+rigid.velocity.magnitude);
-
-        debugVelocity = rigid.velocity.magnitude;
-
-        //if (rigid.velocity.magnitude>0.01f)
-        //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
 
     float getGravityForceStrength()
@@ -307,6 +335,28 @@ public class PlanetMovable : MonoBehaviour
                 float height = Vector3.Dot(groundUp, diif);
                 if (height < 0.15f)
                 {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    Vector3 touchWallNormal;
+    bool isTouchWall()
+    {
+        int listCount = contactPointList.Count;
+        for (int x = 0; x < listCount; x++)
+        {
+            ContactPoint[] cp = contactPointList[x];
+            for (int i = 0; i < cp.Length; i++)
+            {
+                Vector3 diif = cp[i].point - transform.position;
+                float height = Vector3.Dot(groundUp, diif);
+                if (height > 0.15f && height < 1.0f)
+                {
+                    touchWallNormal = cp[i].normal;
                     return true;
                 }
             }

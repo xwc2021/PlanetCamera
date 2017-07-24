@@ -14,7 +14,8 @@ public class AvoidStickTool : MonoBehaviour {
     //防止在空中卡住
     void OnCollisionStay(Collision collision)
     {
-        avoidStickOnAir(collision);
+        //當玩家moveForceScaleOnAir設成20，摩擦力已經小到在空中撞到物件不會卡住
+        //avoidStickOnAir(collision);
     }
 
     void avoidStickOnAir(Collision collision)
@@ -41,7 +42,6 @@ public class AvoidStickTool : MonoBehaviour {
 
         float strengthPerpendicularWall = 0.5f;
         pm.rigid.AddForce(wallNormal * strengthPerpendicularWall, ForceMode.VelocityChange);
-
         addForceOnAir = true;
     }
 
