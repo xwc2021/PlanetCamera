@@ -30,6 +30,11 @@ public interface JumpForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
+    //這2個數值就是用MasuringJumpHeight量出來的QQ
+    public float normalHeight = 3.350325f;
+    public float turboHeight = 4.04285f;
+
+    public MeasuringJumpHeight measuringJumpHeight;
     public AvoidStickTool avoidStickTool;
     public SlopeForceMonitor slopeForceMonitor;
 
@@ -64,6 +69,8 @@ public class PlanetMovable : MonoBehaviour
     public bool touchWall;
     public bool isHit = false;
     public bool ladding = false;
+    public bool isReachTargetHeight = true;
+    public bool isWaitToTargetHeight = false;
 
     static float isHitDistance = 0.2f;
     public static float rayCastDistanceToGround = 2;
@@ -177,10 +184,64 @@ public class PlanetMovable : MonoBehaviour
         //如果只用contact判定，下坡時可能contact為false
         ladding = contact || isHit;
 
+        processMove(planeNormal, gravityDir);
+
+        if (animator != null)
+        {
+            bool moving = rigid.velocity.magnitude > 0.05;
+            animator.SetBool("moving", moving);
+        }
+
+        testReachTargetHeight();
+
+        isWaitToTargetHeight = waitToTargetHeight(gravityDir);
+        if (isWaitToTargetHeight) 
+            return;
+
+        //加上重力
+        //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
+        rigid.AddForce(getGravityForceStrength() * gravityDir, ForceMode.Acceleration);
+
+        processJump(gravityDir);
+        processLadding();
+
+        debugVelocity = rigid.velocity.magnitude;
+    }
+
+    void testReachTargetHeight()
+    {
+        if (!isReachTargetHeight)
+        {
+            if (!ladding)
+            {
+                bool isReach = Mathf.Abs(measuringJumpHeight.height - normalHeight) < 0.0001f;
+                bool over = measuringJumpHeight.height > normalHeight;
+                isReachTargetHeight = isReach || over;
+            }
+        }
+    }
+
+    bool waitToTargetHeight(Vector3 gravityDir)
+    {
+        if (!ladding && touchWall)
+        {
+            if (!isReachTargetHeight)
+            {
+                float k = 1;
+                rigid.AddForce(k*-gravityDir, ForceMode.VelocityChange);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void processMove(Vector3 planeNormal,Vector3 gravityDir)
+    {
         if (avoidStickTool != null)
             avoidStickTool.resetVariable();
 
-        if (moveController!=null)
+        if (moveController != null)
         {
             Vector3 moveForce = moveController.getMoveForce();
             //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
@@ -210,41 +271,20 @@ public class PlanetMovable : MonoBehaviour
             }
             //更新面向end
 
-            //使用rigid.velocity的話，下面的重力就會失效
             //addForce就可以有疊加的效果
             //雪人的mass也要作相應的調整，不然會推不動骨牌
             if (moveForceMonitor != null)
             {
-                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding) ;
+                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding);
                 Vector3 moveForceWithStrength = moveForceStrength * moveForce;
                 if (slopeForceMonitor != null && ladding)
                 {
-                        moveForceWithStrength=slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, getGravityForceStrength(), groundUp, planeNormal);
+                    moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, getGravityForceStrength(), groundUp, planeNormal);
                 }
 
                 rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
             }
         }
-
-        if (animator != null)
-        {
-            bool moving = rigid.velocity.magnitude > 0.05;
-            animator.SetBool("moving", moving);
-        }
-
-        //加上重力
-        //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
-        rigid.AddForce(getGravityForceStrength() * gravityDir, ForceMode.Acceleration);
-
-        processJump(gravityDir);
-        processLadding();
-
-        //print("rigid="+rigid.velocity.magnitude);
-
-        debugVelocity = rigid.velocity.magnitude;
-
-        //if (rigid.velocity.magnitude>0.01f)
-        //Debug.DrawLine(transform.position, transform.position + rigid.velocity*10/ rigid.velocity.magnitude, Color.blue);
     }
 
     void processLadding()
@@ -255,7 +295,11 @@ public class PlanetMovable : MonoBehaviour
             {
                 bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
                 if (isOnAir)
+                {
                     animator.SetBool("onAir", false);
+                    if (measuringJumpHeight != null)
+                        measuringJumpHeight.stopRecord();
+                }       
             }
         }
     }
@@ -284,6 +328,10 @@ public class PlanetMovable : MonoBehaviour
             {
                 if (jumpForceMonitor != null)
                 {
+                    if (measuringJumpHeight != null)
+                        measuringJumpHeight.startRecord();
+
+                    isReachTargetHeight = false;
                     rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
                 }
 
