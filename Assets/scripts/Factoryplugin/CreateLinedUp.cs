@@ -25,10 +25,8 @@ public class CreateLinedUp : MonoBehaviour,FactoryPlugin {
                 fg.doIt(pm.gameObject);
 
             FollowerController fc = pm.gameObject.GetComponent<FollowerController>();
-            FollowerMoveForceMonitor fmfm = pm.gameObject.GetComponent<FollowerMoveForceMonitor>();
 
             fc.followTarget = target;
-            fmfm.followTarget = target;
 
             target = pm.transform.Find("followTarget");
         }

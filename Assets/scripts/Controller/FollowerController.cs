@@ -15,7 +15,7 @@ public class FollowerController : MonoBehaviour, MoveController
 
     bool MoveController.doTurbo()
     {
-        return false;
+        return true;
     }
 
     Vector3 MoveController.getMoveForce()
