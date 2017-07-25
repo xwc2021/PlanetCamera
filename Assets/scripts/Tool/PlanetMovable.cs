@@ -64,8 +64,9 @@ public class PlanetMovable : MonoBehaviour
     Animator animator;
 
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
-    List<ContactPoint[]> contactPointList;
-    public bool contact;
+    List<ContactPoint[]> contactPointGround;
+    List<ContactPoint[]> contactPointWall;
+    public bool contactGround;
     public bool touchWall;
     public bool isHit = false;
     public bool ladding = false;
@@ -91,7 +92,8 @@ public class PlanetMovable : MonoBehaviour
     // Use this for initialization
     void Start () {
 
-        contactPointList = new List<ContactPoint[]>();
+        contactPointGround = new List<ContactPoint[]>();
+        contactPointWall= new List<ContactPoint[]>();
         setAnimatorInfo();
 
         if (moveControllerSocket != null)
@@ -113,7 +115,7 @@ public class PlanetMovable : MonoBehaviour
     private void Update()
     {
         //判定有沒有接觸
-        contact = isContact();
+        contactGround = isContactGround();
         touchWall =isTouchWall();
 
         if (moveController == null)
@@ -145,7 +147,7 @@ public class PlanetMovable : MonoBehaviour
         Vector3 from = transform.forward * backOffset + groundUp + transform.position;
         //Debug.DrawRay(from, -groundUp*2 , Color.red);
         isHit = false;
-        int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.Block | 1 << LayerDefined.canJump;
+        int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.groundNotBlockCamera;
         planeNormal = groundUp;
         if (Physics.Raycast(from, -groundUp, out hit, rayCastDistanceToGround, layerMask))
         {
@@ -165,7 +167,9 @@ public class PlanetMovable : MonoBehaviour
 
     void FixedUpdate()
     {
-        contactPointList.Clear();
+        //清空
+        contactPointGround.Clear();
+        contactPointWall.Clear();
 
         //計算重力方向
         grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
@@ -182,7 +186,7 @@ public class PlanetMovable : MonoBehaviour
         getGroundNormalNow(out planeNormal, out isHit);
 
         //如果只用contact判定，下坡時可能contact為false
-        ladding = contact || isHit;
+        ladding = contactGround || isHit;
 
         processMove(planeNormal, gravityDir);
 
@@ -192,11 +196,13 @@ public class PlanetMovable : MonoBehaviour
             animator.SetBool("moving", moving);
         }
 
+        /*
         testReachTargetHeight();
 
         isWaitToTargetHeight = waitToTargetHeight(gravityDir);
         if (isWaitToTargetHeight) 
             return;
+        */
 
         //加上重力
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
@@ -241,9 +247,6 @@ public class PlanetMovable : MonoBehaviour
 
     void processMove(Vector3 planeNormal,Vector3 gravityDir)
     {
-        if (avoidStickTool != null)
-            avoidStickTool.resetVariable();
-
         if (moveController != null)
         {
             Vector3 moveForce = moveController.getMoveForce();
@@ -257,7 +260,6 @@ public class PlanetMovable : MonoBehaviour
                 if (avoidStickTool != null)
                 {
                     avoidStickTool.alongSlopeOrGround(ref moveForce, planeNormal, gravityDir);
-                    avoidStickTool.setNewMoveForceAlongWall(ref moveForce);
                 }
 
                 moveForce.Normalize();
@@ -318,7 +320,7 @@ public class PlanetMovable : MonoBehaviour
                 {
                     rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
                     float s = 20;
-                    rigid.AddForce( 20* touchWallNormal, ForceMode.VelocityChange);
+                    rigid.AddForce( s * touchWallNormal, ForceMode.VelocityChange);
                 }
                 doJump = false;
             }
@@ -364,23 +366,30 @@ public class PlanetMovable : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        bool isGround = collision.gameObject.layer == LayerDefined.ground;
-        bool isBlock = collision.gameObject.layer == LayerDefined.Block;
-        bool isCanJump = collision.gameObject.layer == LayerDefined.canJump;
+        bool ground = collision.gameObject.layer == LayerDefined.ground;
+        bool groundNotBlockCamera = collision.gameObject.layer == LayerDefined.groundNotBlockCamera;
 
-        if (isGround || isBlock || isCanJump)
+        if (ground || groundNotBlockCamera)
         {
             //有可能同時碰到2個以上的物件，所以先收集起來
-            contactPointList.Add(collision.contacts);
+            contactPointGround.Add(collision.contacts);
+        }
+
+        bool wall = collision.gameObject.layer == LayerDefined.wall;
+        bool wallNotBlockCamera = collision.gameObject.layer == LayerDefined.wallNotBlockCamera;
+        if (wall | wallNotBlockCamera)
+        {
+            //有可能同時碰到2個以上的物件，所以先收集起來
+            contactPointWall.Add(collision.contacts);
         }
     }
 
-    bool isContact()
+    bool isContactGround()
     {
-        int listCount = contactPointList.Count;
+        int listCount = contactPointGround.Count;
         for (int x = 0; x < listCount; x++)
         {
-            ContactPoint[] cp = contactPointList[x];
+            ContactPoint[] cp = contactPointGround[x];
             for (int i = 0; i < cp.Length; i++)
             {
                 Vector3 diif = cp[i].point - transform.position;
@@ -398,10 +407,10 @@ public class PlanetMovable : MonoBehaviour
     Vector3 touchWallNormal;
     bool isTouchWall()
     {
-        int listCount = contactPointList.Count;
+        int listCount = contactPointWall.Count;
         for (int x = 0; x < listCount; x++)
         {
-            ContactPoint[] cp = contactPointList[x];
+            ContactPoint[] cp = contactPointWall[x];
             for (int i = 0; i < cp.Length; i++)
             {
                 Vector3 diif = cp[i].point - transform.position;
