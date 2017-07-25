@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
+public class CharacterMoveForceMonitor : MonoBehaviour, MoveForceMonitor
 {
     public string name="";
     public float jumpForceLow = 1500;

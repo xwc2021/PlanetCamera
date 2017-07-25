@@ -6,14 +6,14 @@ using UnityEngine;
 
 public enum GroundType { Normal,NormalLowGravity, Ice, Seesaw }
 
-public class PlayerMoveForceRepository : MonoBehaviour,MoveForceMonitor, MoveForceSelector
+public class CharacterMoveForceRepository : MonoBehaviour,MoveForceMonitor, MoveForceSelector
 {
     MoveForceMonitor moveForceMonitor;
     public GroundType groundType = GroundType.Normal;
-    public PlayerMoveForceMonitor normal;
-    public PlayerMoveForceMonitor iceSkating;
-    public PlayerMoveForceMonitor seesaw;
-    public PlayerMoveForceMonitor normalLowGravity;//可以用來防止卡斜坡(斜度不能太大)
+    public CharacterMoveForceMonitor normal;
+    public CharacterMoveForceMonitor iceSkating;
+    public CharacterMoveForceMonitor seesaw;
+    public CharacterMoveForceMonitor normalLowGravity;//可以用來防止卡斜坡(斜度不能太大)
 
     void MoveForceSelector.resetByGroundType(GroundType gType,Rigidbody rigid)
     {
