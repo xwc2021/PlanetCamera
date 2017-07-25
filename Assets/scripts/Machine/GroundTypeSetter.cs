@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GroundToggle : MonoBehaviour {
+public class GroundTypeSetter : MonoBehaviour {
 
-    public enum GroundType {Ice,Seeswa }
-
+    
     public GroundType groundType = GroundType.Ice;
 
     private void OnTriggerEnter(Collider other)
@@ -14,16 +13,7 @@ public class GroundToggle : MonoBehaviour {
         if (pm == null)
             return;
 
-        switch (groundType)
-        {
-            case GroundType.Ice:
-                pm.enableIceSkating();
-                break;
-
-            case GroundType.Seeswa:
-                pm.enableSeesaw();
-                break;
-        } 
+        pm.resetGroundType(groundType);
     }
 
     private void OnTriggerExit(Collider other)
@@ -32,6 +22,6 @@ public class GroundToggle : MonoBehaviour {
         if (pm == null)
             return;
 
-        pm.enableNormal();
+        pm.resetGroundType(GroundType.Normal);
     }
 }

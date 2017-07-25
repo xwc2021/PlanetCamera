@@ -6,24 +6,24 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class PCInput : MonoBehaviour,  InputProxy
 {
-    public bool pressJump()
+    bool InputProxy.pressJump()
     {
         return CrossPlatformInputManager.GetButtonDown("Jump");
     }
 
-    public Vector2 getHV()
+    Vector2 InputProxy.getHV()
     {
         float h = CrossPlatformInputManager.GetAxis("Horizontal");
         float v = CrossPlatformInputManager.GetAxis("Vertical");
         return new Vector2(h, v);
     }
 
-    public bool pressFire()
+    bool InputProxy.pressFire()
     {
         return CrossPlatformInputManager.GetButtonDown("Fire1");
     }
 
-    public bool holdFire()
+    bool InputProxy.holdFire()
     {
         return CrossPlatformInputManager.GetButton("Fire1");
     }

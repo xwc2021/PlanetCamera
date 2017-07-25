@@ -10,7 +10,7 @@ public class FollowerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
     public float minForce = 120f;
     public float maxForce = 160f;
     public Transform followTarget;
-    public float getMoveForceStrength(bool isOnAir)
+    float MoveForceMonitor.getMoveForceStrength(bool isOnAir, bool isTurble)
     {
         if (followTarget == null)
             return 0;
@@ -20,22 +20,17 @@ public class FollowerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
         return Mathf.Lerp(minForce, maxForce, t);
     }
 
-    public float getGravityForceStrength(bool isOnAir)
+    float MoveForceMonitor.getGravityForceStrength(bool isOnAir)
     {
         return 0;
     }
 
-    public void enableNormal(Rigidbody rigid)
+    float MoveForceMonitor.getJumpForceStrength(bool isTurble)
     {
         throw new NotImplementedException();
     }
 
-    public void enableIceSkating(Rigidbody rigid)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void enableSeesaw(Rigidbody rigid)
+    void MoveForceMonitor.setRigidbodyParamter(Rigidbody rigid)
     {
         throw new NotImplementedException();
     }

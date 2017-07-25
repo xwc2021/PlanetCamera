@@ -8,12 +8,17 @@ public class FollowerController : MonoBehaviour, MoveController
 
     public Transform followTarget;
 
-    public bool doJump()
+    bool MoveController.doJump()
     {
         return false;
     }
 
-    public Vector3 getMoveForce()
+    bool MoveController.doTurbo()
+    {
+        return false;
+    }
+
+    Vector3 MoveController.getMoveForce()
     {
         if (followTarget == null)
             return Vector3.zero;
@@ -25,7 +30,7 @@ public class FollowerController : MonoBehaviour, MoveController
         Vector3 controllForce = diff;
 
         controllForce = Vector3.ProjectOnPlane(controllForce, transform.up);
-        
+
         controllForce.Normalize();
 
         return controllForce;

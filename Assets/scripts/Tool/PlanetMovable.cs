@@ -16,18 +16,17 @@ public interface GroundGravityGenerator
     Vector3 findGroundUp();
 }
 
-public interface MoveForceMonitor
+public interface MoveForceSelector
 {
-    float getMoveForceStrength(bool isOnAir);
-    float getGravityForceStrength(bool isOnAir);
-    void enableNormal(Rigidbody rigid);
-    void enableIceSkating(Rigidbody rigid);
-    void enableSeesaw(Rigidbody rigid);
+    void resetByGroundType(GroundType groundType, Rigidbody rigid);
 }
 
-public interface JumpForceMonitor
+public interface MoveForceMonitor
 {
-    float getJumpForceStrength();
+    float getMoveForceStrength(bool isOnAir, bool isTurble);
+    float getGravityForceStrength(bool isOnAir);
+    float getJumpForceStrength(bool isTurble);
+    void setRigidbodyParamter(Rigidbody rigid);
 }
 
 
@@ -39,19 +38,18 @@ public class PlanetMovable : MonoBehaviour
 
     GroundGravityGenerator grounGravityGenerator;
     public GravityDirectionMonitor gravityDirectionMonitor;
+
+    MoveForceSelector moveForceSelector;
+    public MonoBehaviour moveForceSelectorSocket;
+
     MoveForceMonitor moveForceMonitor;
     public MonoBehaviour moveForceMonitorSocket;
 
-    JumpForceMonitor jumpForceMonitor;
-    public MonoBehaviour jumpForceMonitorSocket;
-    
     MoveController moveController;
     public MonoBehaviour moveControllerSocket;
 
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
-
-
 
     public bool firstPersonMode = false;
     public bool useUserDefinedJumpForce = false;
@@ -72,10 +70,9 @@ public class PlanetMovable : MonoBehaviour
     static float isHitDistance = 0.2f;
     public static float rayCastDistanceToGround = 2;
     Vector3 groundUp;
-    // Update is called once per frame
-    public float debugVelocity;
     Vector3 wallNormal;
-
+    public float debugVelocity;
+   
     void setAnimatorInfo()
     {
         animator = GetComponentInChildren<Animator>();
@@ -86,7 +83,7 @@ public class PlanetMovable : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
 
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall= new List<ContactPoint[]>();
@@ -98,8 +95,12 @@ public class PlanetMovable : MonoBehaviour
         if (moveForceMonitorSocket != null)
             moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
 
-        if (jumpForceMonitorSocket != null)
-            jumpForceMonitor = jumpForceMonitorSocket as JumpForceMonitor;
+        if (moveForceSelectorSocket != null)
+        {
+            moveForceSelector = moveForceSelectorSocket as MoveForceSelector;
+            moveForceSelector.resetByGroundType(GroundType.Normal, rigid);
+        }
+           
     }
 
     public void ResetGravityGenetrator(GravityGeneratorEnum pggEnum)
@@ -184,7 +185,11 @@ public class PlanetMovable : MonoBehaviour
         //如果只用contact判定，下坡時可能contact為false
         ladding = contactGround || isHit;
 
-        processMove(planeNormal, gravityDir);
+        bool isTurble = false;
+        if(moveController!=null)
+            isTurble=moveController.doTurbo();
+
+        processMove(planeNormal, gravityDir,isTurble);
 
         if (animator != null)
         {
@@ -205,13 +210,13 @@ public class PlanetMovable : MonoBehaviour
         if(moveForceMonitor!=null)
             rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
 
-        processJump(gravityDir);
+        processJump(gravityDir, isTurble);
         processLadding();
 
         debugVelocity = rigid.velocity.magnitude;
     }
 
-    void processMove(Vector3 planeNormal,Vector3 gravityDir)
+    void processMove(Vector3 planeNormal,Vector3 gravityDir,bool isTurble)
     {
         if (moveController != null)
         {
@@ -241,7 +246,7 @@ public class PlanetMovable : MonoBehaviour
             //雪人的mass也要作相應的調整，不然會推不動骨牌
             if (moveForceMonitor != null)
             {
-                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding);
+                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding,isTurble);
                 Vector3 moveForceWithStrength = moveForceStrength * moveForce;
                 if (slopeForceMonitor != null && ladding)
                 {
@@ -270,16 +275,16 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
-    private void processJump(Vector3 gravityDir)
+    private void processJump(Vector3 gravityDir,bool isTurble)
     {
         //jump from wall
         if (!ladding && touchWall)
         {
             if (doJump)
             {
-                if (jumpForceMonitor != null)
+                if (moveForceMonitor != null)
                 {
-                    rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
+                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
                     float s = 20;
                     rigid.AddForce( s * touchWallNormal, ForceMode.VelocityChange);
                 }
@@ -293,12 +298,12 @@ public class PlanetMovable : MonoBehaviour
             Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
             if (doJump)
             {
-                if (jumpForceMonitor != null)
+                if (moveForceMonitor != null)
                 {
                     if (measuringJumpHeight != null)
                         measuringJumpHeight.startRecord();
 
-                    rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
+                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
                 }
 
                 if (animator != null)
@@ -378,18 +383,9 @@ public class PlanetMovable : MonoBehaviour
         return false;
     }
 
-    public void enableNormal()
+    public void resetGroundType(GroundType groundType)
     {
-        moveForceMonitor.enableNormal(rigid);
-    }
-
-    public void enableIceSkating()
-    {
-        moveForceMonitor.enableIceSkating(rigid);
-    }
-
-    public void enableSeesaw()
-    {
-        moveForceMonitor.enableSeesaw(rigid);
+        if(moveForceSelector!=null)
+            moveForceSelector.resetByGroundType(groundType,rigid);
     }
 }

@@ -12,6 +12,7 @@ public interface MoveController
 {
     Vector3 getMoveForce();
     bool doJump();
+    bool doTurbo();
 }
 
 public class PlanetPlayerController : MonoBehaviour, MoveController
@@ -124,7 +125,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     }
 
     public bool doDergeeLock = false;
-    public Vector3 getMoveForce()
+    Vector3 MoveController.getMoveForce()
     {
         //取得輸入
         Vector2 hv = inputProxy.getHV();
@@ -147,18 +148,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         return Vector3.zero;
     }
 
-    public bool doJump()
+    bool MoveController.doJump()
     {
         return inputProxy.pressJump();
     }
 
-    public bool holdFire()
+    bool MoveController.doTurbo()
     {
         return inputProxy.holdFire();
-    }
-
-    public bool pressFire()
-    {
-        return inputProxy.pressFire();
     }
 }

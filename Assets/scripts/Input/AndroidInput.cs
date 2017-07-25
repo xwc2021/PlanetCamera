@@ -5,11 +5,6 @@ using UnityEngine;
 
 public class AndroidInput : MonoBehaviour, InputProxy
 {
-    public Vector2 getHV()
-    {
-        return doAndroidInput();
-    }
-
     Vector2 memoryPos;
     Vector2 nowInput;
     Vector2 doAndroidInput()
@@ -37,17 +32,22 @@ public class AndroidInput : MonoBehaviour, InputProxy
 
     }
 
-    public bool pressJump()
+    Vector2 InputProxy.getHV()
+    {
+        return doAndroidInput();
+    }
+
+    bool InputProxy.pressJump()
     {
         return false;
     }
 
-    public bool pressFire()
+    bool InputProxy.pressFire()
     {
         return false;
     }
 
-    public bool holdFire()
+    bool InputProxy.holdFire()
     {
         return false;
     }

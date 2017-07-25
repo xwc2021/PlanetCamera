@@ -227,7 +227,6 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         //Debug.DrawLine(from, cameraCenterBottom, Color.green);
         if (Physics.Raycast(from, dir, out hit, rayCastDistance, layerMask))
         {
-            print(hit.collider.name);
             //Debug.DrawRay(hit.point,  hit.normal, Color.red);
             //Debug.DrawRay(hit.point + hit.normal, 0.25f*hit.normal, Color.green);
             Vector3 diff = from - hit.point;
