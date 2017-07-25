@@ -52,7 +52,7 @@ public class PlanetMovable : MonoBehaviour
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
 
-    static float gravityScale = 92;
+    static float gravityScale = 10;
     static float gravityScaleOnAir = 40;
 
     public bool firstPersonMode = false;
