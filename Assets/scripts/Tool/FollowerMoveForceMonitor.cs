@@ -24,4 +24,19 @@ public class FollowerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
     {
         return 0;
     }
+
+    public void enableNormal(Rigidbody rigid)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void enableIceSkating(Rigidbody rigid)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void enableSeesaw(Rigidbody rigid)
+    {
+        throw new NotImplementedException();
+    }
 }

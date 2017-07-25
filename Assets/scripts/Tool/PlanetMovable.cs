@@ -20,6 +20,9 @@ public interface MoveForceMonitor
 {
     float getMoveForceStrength(bool isOnAir);
     float getGravityForceStrength(bool isOnAir);
+    void enableNormal(Rigidbody rigid);
+    void enableIceSkating(Rigidbody rigid);
+    void enableSeesaw(Rigidbody rigid);
 }
 
 public interface JumpForceMonitor
@@ -375,13 +378,18 @@ public class PlanetMovable : MonoBehaviour
         return false;
     }
 
-    public void enableNormalRigid()
+    public void enableNormal()
     {
-        rigid.drag =4;
+        moveForceMonitor.enableNormal(rigid);
     }
 
-    public void enableIceSkatingRigid()
+    public void enableIceSkating()
     {
-        rigid.drag = 1.1f;
+        moveForceMonitor.enableIceSkating(rigid);
+    }
+
+    public void enableSeesaw()
+    {
+        moveForceMonitor.enableSeesaw(rigid);
     }
 }
