@@ -19,4 +19,9 @@ public class FollowerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
         float t = diff / (maxDist - minDist);
         return Mathf.Lerp(minForce, maxForce, t);
     }
+
+    public float getGravityForceStrength(bool isOnAir)
+    {
+        return 0;
+    }
 }

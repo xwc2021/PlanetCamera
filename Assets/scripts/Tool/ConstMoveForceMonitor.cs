@@ -10,4 +10,9 @@ public class ConstMoveForceMonitor : MonoBehaviour, MoveForceMonitor
     {
         return moveForceScale;
     }
+
+    public float getGravityForceStrength(bool isOnAir)
+    {
+        return 0;
+    }
 }

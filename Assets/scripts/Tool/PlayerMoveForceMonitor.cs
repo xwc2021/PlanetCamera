@@ -9,8 +9,12 @@ public class PlayerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
     public float moveForceScaleOnAirLow = 20;
     public float moveForceScaleOnAirHight = 20;
 
-    public float moveForceScaleLow = 20;
-    public float moveForceScaleHight = 35;
+    public float moveForceScaleLow = 30;
+    public float moveForceScaleHight = 45;
+
+    public float gravityScale = 40;
+    public float gravityScaleOnAir = 40;
+
     public float getMoveForceStrength(bool isOnAir)
     {
         if (!isOnAir)
@@ -30,5 +34,13 @@ public class PlayerMoveForceMonitor : MonoBehaviour, MoveForceMonitor
                 return moveForceScaleOnAirLow;
         }
         
+    }
+
+    public float getGravityForceStrength(bool isOnAir)
+    {
+        if (isOnAir)
+            return gravityScaleOnAir;
+        else
+            return gravityScale;
     }
 }

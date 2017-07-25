@@ -19,6 +19,7 @@ public interface GroundGravityGenerator
 public interface MoveForceMonitor
 {
     float getMoveForceStrength(bool isOnAir);
+    float getGravityForceStrength(bool isOnAir);
 }
 
 public interface JumpForceMonitor
@@ -30,12 +31,7 @@ public interface JumpForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
-    //這2個數值就是用MasuringJumpHeight量出來的QQ
-    public float normalHeight = 3.350325f;
-    public float turboHeight = 4.04285f;
-
     public MeasuringJumpHeight measuringJumpHeight;
-    public AvoidStickTool avoidStickTool;
     public SlopeForceMonitor slopeForceMonitor;
 
     GroundGravityGenerator grounGravityGenerator;
@@ -52,8 +48,7 @@ public class PlanetMovable : MonoBehaviour
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
 
-    static float gravityScale = 10;
-    static float gravityScaleOnAir = 40;
+
 
     public bool firstPersonMode = false;
     public bool useUserDefinedJumpForce = false;
@@ -70,8 +65,6 @@ public class PlanetMovable : MonoBehaviour
     public bool touchWall;
     public bool isHit = false;
     public bool ladding = false;
-    public bool isReachTargetHeight = true;
-    public bool isWaitToTargetHeight = false;
 
     static float isHitDistance = 0.2f;
     public static float rayCastDistanceToGround = 2;
@@ -206,43 +199,13 @@ public class PlanetMovable : MonoBehaviour
 
         //加上重力
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
-        rigid.AddForce(getGravityForceStrength() * gravityDir, ForceMode.Acceleration);
+        if(moveForceMonitor!=null)
+            rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
 
         processJump(gravityDir);
         processLadding();
 
         debugVelocity = rigid.velocity.magnitude;
-    }
-
-    void testReachTargetHeight()
-    {
-        if (!isReachTargetHeight)
-        {
-            if (!ladding)
-            {
-                bool isReach = Mathf.Abs(measuringJumpHeight.height - normalHeight) < 0.01f;
-                bool over = measuringJumpHeight.height > normalHeight;
-                isReachTargetHeight = isReach || over;
-            }
-        }
-    }
-
-    bool waitToTargetHeight(Vector3 gravityDir)
-    {
-        if (!ladding && touchWall)
-        {
-            if (!isReachTargetHeight)
-            {
-                float diff =normalHeight - measuringJumpHeight.height;
-                float speed = diff>0.1f?5:100;
-                Vector3 targetPos = transform.position+transform.up * (diff);
-                transform.position = Vector3.Lerp(transform.position, targetPos, speed*Time.fixedDeltaTime);
-
-                return true;
-            }
-        }
-
-        return false;
     }
 
     void processMove(Vector3 planeNormal,Vector3 gravityDir)
@@ -256,11 +219,6 @@ public class PlanetMovable : MonoBehaviour
             if (ladding)
             {
                 moveForce = Vector3.ProjectOnPlane(moveForce, planeNormal);
-
-                if (avoidStickTool != null)
-                {
-                    avoidStickTool.alongSlopeOrGround(ref moveForce, planeNormal, gravityDir);
-                }
 
                 moveForce.Normalize();
                 Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
@@ -284,7 +242,7 @@ public class PlanetMovable : MonoBehaviour
                 Vector3 moveForceWithStrength = moveForceStrength * moveForce;
                 if (slopeForceMonitor != null && ladding)
                 {
-                    moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, getGravityForceStrength(), groundUp, planeNormal);
+                    moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
                 }
 
                 rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
@@ -337,7 +295,6 @@ public class PlanetMovable : MonoBehaviour
                     if (measuringJumpHeight != null)
                         measuringJumpHeight.startRecord();
 
-                    isReachTargetHeight = false;
                     rigid.AddForce(jumpForceMonitor.getJumpForceStrength() * -gravityDir, ForceMode.Acceleration);
                 }
 
@@ -354,14 +311,6 @@ public class PlanetMovable : MonoBehaviour
             if (doJump)
                 doJump = false;
         }
-    }
-
-    float getGravityForceStrength()
-    {
-        if (ladding)
-            return gravityScale;
-        else
-           return gravityScaleOnAir;
     }
 
     void OnCollisionStay(Collision collision)
@@ -433,6 +382,6 @@ public class PlanetMovable : MonoBehaviour
 
     public void enableIceSkatingRigid()
     {
-        rigid.drag = 0.5f;
+        rigid.drag = 1.1f;
     }
 }
