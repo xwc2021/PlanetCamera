@@ -425,4 +425,14 @@ public class PlanetMovable : MonoBehaviour
         }
         return false;
     }
+
+    public void enableNormalRigid()
+    {
+        rigid.drag =4;
+    }
+
+    public void enableIceSkatingRigid()
+    {
+        rigid.drag = 0.5f;
+    }
 }

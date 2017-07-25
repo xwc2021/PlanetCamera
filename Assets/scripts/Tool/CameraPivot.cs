@@ -227,7 +227,9 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         //Debug.DrawLine(from, cameraCenterBottom, Color.green);
         if (Physics.Raycast(from, dir, out hit, rayCastDistance, layerMask))
         {
-            //Debug.DrawLine(hit.point, hit.point + hit.normal, Color.yellow);
+            print(hit.collider.name);
+            //Debug.DrawRay(hit.point,  hit.normal, Color.red);
+            //Debug.DrawRay(hit.point + hit.normal, 0.25f*hit.normal, Color.green);
             Vector3 diff = from - hit.point;
             bool underPlane = Vector3.Dot(diff, hit.normal)<0.0f;
             //當player跳起後落地時，有可能穿過地板
