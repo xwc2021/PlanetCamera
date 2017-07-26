@@ -111,21 +111,5 @@ public class MovingPlatform : MonoBehaviour {
         }       
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        other.transform.parent = transform;
- 
-        SetCameraPivot setCameraPivot= other.gameObject.GetComponent<SetCameraPivot>();
-        if (setCameraPivot != null)
-           setCameraPivot.setFollowHighSpeed(true);
-    }
 
-    void OnTriggerExit(Collider other)
-    {
-        other.transform.parent = null;
-
-        SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
-        if (setCameraPivot != null)
-           setCameraPivot.setFollowHighSpeed(false);
-    }
 }

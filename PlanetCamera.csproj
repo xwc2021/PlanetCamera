@@ -165,13 +165,16 @@
     <Compile Include="Assets\scripts\help\PeekDefaultPhysicsMaterail.cs" />
     <Compile Include="Assets\scripts\Input\AndroidInput.cs" />
     <Compile Include="Assets\scripts\Input\PCInput.cs" />
+    <Compile Include="Assets\scripts\Machine\DoRotation.cs" />
     <Compile Include="Assets\scripts\Machine\GroundTypeSetter.cs" />
     <Compile Include="Assets\scripts\Machine\MovingPlatform.cs" />
     <Compile Include="Assets\scripts\Machine\QuestionBox.cs" />
+    <Compile Include="Assets\scripts\Machine\SetParent.cs" />
     <Compile Include="Assets\scripts\MoveForceMonitor\CharacterMoveForceMonitor.cs" />
     <Compile Include="Assets\scripts\MoveForceMonitor\CharacterMoveForceRepository.cs" />
     <Compile Include="Assets\scripts\Shared\DS.cs" />
     <Compile Include="Assets\scripts\Shared\LayerDefined.cs" />
+    <Compile Include="Assets\scripts\Shared\TagDefined.cs" />
     <Compile Include="Assets\scripts\Test\TestOnCollisionEnterPrintCollision.cs" />
     <Compile Include="Assets\scripts\Test\TestOnCollisionEnterPrintSelf.cs" />
     <Compile Include="Assets\scripts\Test\TestRotationAxis.cs" />
