@@ -168,6 +168,7 @@
     <Compile Include="Assets\scripts\Machine\DoRotation.cs" />
     <Compile Include="Assets\scripts\Machine\GroundTypeSetter.cs" />
     <Compile Include="Assets\scripts\Machine\MovingPlatform.cs" />
+    <Compile Include="Assets\scripts\Machine\PosFollow.cs" />
     <Compile Include="Assets\scripts\Machine\QuestionBox.cs" />
     <Compile Include="Assets\scripts\Machine\SetParent.cs" />
     <Compile Include="Assets\scripts\MoveForceMonitor\CharacterMoveForceMonitor.cs" />
