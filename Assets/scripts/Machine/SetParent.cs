@@ -5,11 +5,12 @@ using UnityEngine;
 public class SetParent : MonoBehaviour {
 
     
+    
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag != TagDefined.player)
-            return;
+        if(!TagDefined.canOnMovableSet(other.gameObject.tag))
+             return;
 
         other.transform.parent = transform;
 
@@ -20,7 +21,7 @@ public class SetParent : MonoBehaviour {
 
     void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag != TagDefined.player)
+        if (!TagDefined.canOnMovableSet(other.gameObject.tag))
             return;
 
         other.transform.parent = null;
