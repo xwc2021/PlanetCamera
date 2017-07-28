@@ -5,7 +5,7 @@ using System;
 
 public class FollowerController : MonoBehaviour, MoveController
 {
-
+    public PlanetMovable planetMovable;
     public Transform followTarget;
 
     bool MoveController.doJump()
@@ -34,5 +34,16 @@ public class FollowerController : MonoBehaviour, MoveController
         controllForce.Normalize();
 
         return controllForce;
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 planeNormal, gravityDir;
+        planetMovable.gravitySetup(out gravityDir);
+        planetMovable.dataSetup(out planeNormal);
+
+        planetMovable.processGravity(gravityDir);
+        planetMovable.processMoving(planeNormal, gravityDir);
+
     }
 }

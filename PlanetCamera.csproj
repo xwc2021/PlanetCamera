@@ -183,7 +183,6 @@
     <Compile Include="Assets\scripts\Test\TestRotationAxis.cs" />
     <Compile Include="Assets\scripts\Test\TestRotationEularAngle.cs" />
     <Compile Include="Assets\scripts\Tool\AvatarSync.cs" />
-    <Compile Include="Assets\scripts\Tool\AvoidStickTool.cs" />
     <Compile Include="Assets\scripts\Tool\CameraPivot.cs" />
     <Compile Include="Assets\scripts\Tool\DrawAABB.cs" />
     <Compile Include="Assets\scripts\Tool\MirrorCamera.cs" />
@@ -191,6 +190,7 @@
     <Compile Include="Assets\scripts\Tool\PlanetMovable.cs" />
     <Compile Include="Assets\scripts\Tool\SetCameraPivot.cs" />
     <Compile Include="Assets\scripts\Tool\SlopeForceMonitor.cs" />
+    <Compile Include="Assets\scripts\Tool\UsingAnimator.cs" />
     <Compile Include="Assets\test\NormalMapAxis.cs" />
     <Compile Include="Assets\test\PeekGeo.cs" />
     <Compile Include="Assets\test\RotateByAxis.cs" />

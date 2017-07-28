@@ -50,10 +50,7 @@ public class PlanetMovable : MonoBehaviour
 
     public Rigidbody rigid;
     public float rotationSpeed = 6f;
-
     public bool firstPersonMode = false;
-    public bool useUserDefinedJumpForce = false;
-    
     public float backOffset = -0.1f;
 
     int onAirHash;
@@ -62,16 +59,16 @@ public class PlanetMovable : MonoBehaviour
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
     List<ContactPoint[]> contactPointGround;
     List<ContactPoint[]> contactPointWall;
-    public bool contactGround;
-    public bool touchWall;
-    public bool isHit = false;
-    public bool ladding = false;
+    bool contactGround;
+    bool touchWall;
+    bool isHit = false;
+    bool ladding = false;
+    bool isTurble=false;
 
-    static float isHitDistance = 0.2f;
-    public static float rayCastDistanceToGround = 2;
+    static readonly float isHitDistance = 0.2f;
+    public static readonly float rayCastDistanceToGround = 2;
     Vector3 groundUp;
     Vector3 wallNormal;
-    public float debugVelocity;
    
     void setAnimatorInfo()
     {
@@ -108,6 +105,24 @@ public class PlanetMovable : MonoBehaviour
         gravityDirectionMonitor.ResetGravityGenerator(pggEnum);
     }
 
+    private void FixedUpdate()
+    {
+        if (moveController == null)
+        {
+            Vector3 planeNormal, gravityDir;
+            gravitySetup(out gravityDir);
+            dataSetup(out planeNormal);
+
+            processGravity(gravityDir);
+        }
+
+        if (animator != null)
+        {
+            bool moving = rigid.velocity.magnitude > 0.05;
+            animator.SetBool("moving", moving);
+        }
+    }
+
     bool doJump=false;
     private void Update()
     {
@@ -128,12 +143,6 @@ public class PlanetMovable : MonoBehaviour
         //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
         if (!doJump)
             doJump = moveController.doJump();
-    }
-
-
-    public Vector3 getGroundUp()
-    {
-        return groundUp;
     }
 
     private void getGroundNormalNow(out Vector3 planeNormal,out bool isHit)
@@ -159,165 +168,6 @@ public class PlanetMovable : MonoBehaviour
             {
                 isHit = true;
             }   
-        }
-    }
-
-    void FixedUpdate()
-    {
-        //清空
-        contactPointGround.Clear();
-        contactPointWall.Clear();
-
-        //計算重力方向
-        grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
-        groundUp = grounGravityGenerator.findGroundUp();  
-        Vector3 gravityDir = -groundUp;
-
-        //設定面向
-        Vector3 forward = Vector3.Cross(transform.right, groundUp);
-        Quaternion targetRotation = Quaternion.LookRotation(forward, groundUp);
-        transform.rotation = targetRotation;
-
-        //判定是否擊中平面
-        Vector3 planeNormal;
-        getGroundNormalNow(out planeNormal, out isHit);
-
-        //如果只用contact判定，下坡時可能contact為false
-        ladding = contactGround || isHit;
-
-        bool isTurble = false;
-        if(moveController!=null)
-            isTurble=moveController.doTurbo();
-
-        processMove(planeNormal, gravityDir,isTurble);
-
-        if (animator != null)
-        {
-            bool moving = rigid.velocity.magnitude > 0.05;
-            animator.SetBool("moving", moving);
-        }
-
-        /*
-        testReachTargetHeight();
-
-        isWaitToTargetHeight = waitToTargetHeight(gravityDir);
-        if (isWaitToTargetHeight) 
-            return;
-        */
-
-        //加上重力
-        //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
-        if(moveForceMonitor!=null)
-            rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
-
-        processJump(gravityDir, isTurble);
-        processLadding();
-
-        debugVelocity = rigid.velocity.magnitude;
-    }
-
-    void processMove(Vector3 planeNormal,Vector3 gravityDir,bool isTurble)
-    {
-        if (moveController != null)
-        {
-            Vector3 moveForce = moveController.getMoveForce();
-            //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
-
-            //在地面才作
-            if (ladding)
-            {
-                moveForce = Vector3.ProjectOnPlane(moveForce, planeNormal);
-
-                moveForce.Normalize();
-                Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
-            }
-
-            //更新面向begin
-            Vector3 forward2 = moveForce;
-            if (forward2 != Vector3.zero && !firstPersonMode)
-            {
-                Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
-                Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
-                transform.rotation = newRot;
-            }
-            //更新面向end
-
-            //addForce就可以有疊加的效果
-            //雪人的mass也要作相應的調整，不然會推不動骨牌
-            if (moveForceMonitor != null)
-            {
-                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding,isTurble);
-                Vector3 moveForceWithStrength = moveForceStrength * moveForce;
-                if (slopeForceMonitor != null && ladding)
-                {
-                    moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
-                }
-
-                rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
-            }
-        }
-    }
-
-    void processLadding()
-    {
-        if (ladding)
-        {
-            if (animator != null)
-            {
-                bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-                if (isOnAir)
-                {
-                    animator.SetBool("onAir", false);
-                    if (measuringJumpHeight != null)
-                        measuringJumpHeight.stopRecord();
-                }       
-            }
-        }
-    }
-
-    private void processJump(Vector3 gravityDir,bool isTurble)
-    {
-        //jump from wall
-        if (!ladding && touchWall)
-        {
-            if (doJump)
-            {
-                if (moveForceMonitor != null)
-                {
-                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-                    float s = 20;
-                    rigid.AddForce( s * touchWallNormal, ForceMode.VelocityChange);
-                }
-                doJump = false;
-            }
-        }
-
-        //跳
-        if (ladding)
-        {
-            Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
-            if (doJump)
-            {
-                if (moveForceMonitor != null)
-                {
-                    if (measuringJumpHeight != null)
-                        measuringJumpHeight.startRecord();
-
-                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-                }
-
-                if (animator != null)
-                    animator.SetBool("doJump", true);
-
-                doJump = false;
-            }
-        }
-        else
-        {
-            //不是ladding時按下doJump，也要把doJump設為false
-            //不然的話會一直持續到當ladding為true再進行跳躍
-            if (doJump)
-                doJump = false;
         }
     }
 
@@ -381,6 +231,161 @@ public class PlanetMovable : MonoBehaviour
 
         }
         return false;
+    }
+
+    public void gravitySetup(out Vector3 gravityDir)
+    {
+        //計算重力方向
+        grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
+        groundUp = grounGravityGenerator.findGroundUp();
+        gravityDir = -groundUp;
+    }
+
+    public void dataSetup(out Vector3 planeNormal)
+    {
+        //清空
+        contactPointGround.Clear();
+        contactPointWall.Clear();
+
+        //設定面向
+        Vector3 forward = Vector3.Cross(transform.right, groundUp);
+        Quaternion targetRotation = Quaternion.LookRotation(forward, groundUp);
+        transform.rotation = targetRotation;
+
+        //判定是否擊中平面
+        getGroundNormalNow(out planeNormal, out isHit);
+
+        //如果只用contact判定，下坡時可能contact為false
+        ladding = contactGround || isHit;
+
+        isTurble = false;
+        if(moveController!=null)
+            isTurble = moveController.doTurbo();
+    }
+
+    public void processGravity(Vector3 gravityDir)
+    {
+        //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
+        if (moveForceMonitor != null)
+        {
+            rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
+            //Debug.DrawRay(transform.position, gravityDir, Color.green);
+        } 
+    }
+
+    public void processMoving(Vector3 planeNormal,Vector3 gravityDir)
+    {
+        if (moveController != null)
+        {
+            Vector3 moveForce = moveController.getMoveForce();
+            //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
+
+            //在地面才作
+            if (ladding)
+            {
+                moveForce = Vector3.ProjectOnPlane(moveForce, planeNormal);
+
+                moveForce.Normalize();
+                Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
+            }
+
+            //更新面向begin
+            Vector3 forward2 = moveForce;
+            if (forward2 != Vector3.zero && !firstPersonMode)
+            {
+                Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
+                Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
+                transform.rotation = newRot;
+            }
+            //更新面向end
+
+            //addForce就可以有疊加的效果
+            //雪人的mass也要作相應的調整，不然會推不動骨牌
+            if (moveForceMonitor != null)
+            {
+                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding,isTurble);
+                Vector3 moveForceWithStrength = moveForceStrength * moveForce;
+                if (slopeForceMonitor != null && ladding)
+                {
+                    moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
+                }
+
+                rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
+            }
+        }
+    }
+
+    public void processLadding()
+    {
+        if (ladding)
+        {
+            if (animator != null)
+            {
+                bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+                if (isOnAir)
+                {
+                    animator.SetBool("onAir", false);
+                    if (measuringJumpHeight != null)
+                        measuringJumpHeight.stopRecord();
+                }       
+            }
+        }
+    }
+
+    public void processWallJump(Vector3 gravityDir)
+    {
+        //jump from wall
+        if (!ladding && touchWall)
+        {
+            if (doJump)
+            {
+                if (moveForceMonitor != null)
+                {
+                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
+                    float s = 20;
+                    rigid.AddForce(s * touchWallNormal, ForceMode.VelocityChange);
+                }
+                doJump = false;
+            }
+        }
+    }
+
+    public void processJump(Vector3 gravityDir)
+    {
+        
+
+        //跳
+        if (ladding)
+        {
+            Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
+            if (doJump)
+            {
+                if (moveForceMonitor != null)
+                {
+                    if (measuringJumpHeight != null)
+                        measuringJumpHeight.startRecord();
+
+                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
+                }
+
+                if (animator != null)
+                    animator.SetBool("doJump", true);
+
+                doJump = false;
+            }
+        }
+        else
+        {
+            //不是ladding時按下doJump，也要把doJump設為false
+            //不然的話會一直持續到當ladding為true再進行跳躍
+            if (doJump)
+                doJump = false;
+        }
+    }
+
+    public Vector3 getGroundUp()
+    {
+        return groundUp;
     }
 
     public void resetGroundType(GroundType groundType)

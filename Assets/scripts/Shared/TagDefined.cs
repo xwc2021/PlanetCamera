@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class TagDefined : MonoBehaviour {
 
-    public static string player = "player";
-    public static string npc = "npc";
-    public static string monster = "monster";
+    public static readonly string player = "player";
+    public static readonly string npc = "npc";
+    public static readonly string monster = "monster";
 
     public static bool canOnMovableSet(string tag)
     {
