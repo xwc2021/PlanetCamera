@@ -49,7 +49,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag != TagDefined.player)
+        if (other.gameObject.tag != TagDefined.Player)
             return;
 
         if (!doRescale)
@@ -60,7 +60,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag != TagDefined.player)
+        if (other.gameObject.tag != TagDefined.Player)
             return;
 
         if (!doRescale)
@@ -87,7 +87,7 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag != TagDefined.player)
+        if (other.gameObject.tag != TagDefined.Player)
             return;
 
         //更新地板
