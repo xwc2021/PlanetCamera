@@ -36,7 +36,6 @@ public class PlanetMovable : MonoBehaviour
     public MeasuringJumpHeight measuringJumpHeight;
     public SlopeForceMonitor slopeForceMonitor;
 
-    GroundGravityGenerator grounGravityGenerator;
     public GravityDirectionMonitor gravityDirectionMonitor;
 
     MoveForceSelector moveForceSelector;
@@ -84,6 +83,8 @@ public class PlanetMovable : MonoBehaviour
     // Use this for initialization
     void Awake () {
 
+        Debug.Assert(moveForceMonitorSocket != null);
+
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall= new List<ContactPoint[]>();
         setAnimatorInfo();
@@ -91,8 +92,7 @@ public class PlanetMovable : MonoBehaviour
         if (moveControllerSocket != null)
             moveController = moveControllerSocket as MoveController;
 
-        if (moveForceMonitorSocket != null)
-            moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
+        moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
 
         if (moveForceSelectorSocket != null)
         {
@@ -109,13 +109,6 @@ public class PlanetMovable : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (moveController == null)
-        {
-            gravitySetup();
-            dataSetup();
-            processGravity();
-        }
-
         if (animator != null)
         {
             bool moving = rigid.velocity.magnitude > 0.05;
@@ -236,8 +229,7 @@ public class PlanetMovable : MonoBehaviour
     public void gravitySetup()
     {
         //計算重力方向
-        grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
-        groundUp = grounGravityGenerator.findGroundUp();
+        groundUp = gravityDirectionMonitor.findGroundUp();
         gravityDir = -groundUp;
     }
 
@@ -266,11 +258,8 @@ public class PlanetMovable : MonoBehaviour
     public void processGravity()
     {
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
-        if (moveForceMonitor != null)
-        {
-            rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
-            //Debug.DrawRay(transform.position, gravityDir, Color.green);
-        } 
+        rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
+        //Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
     public void processMoving()
@@ -299,19 +288,15 @@ public class PlanetMovable : MonoBehaviour
             }
             //更新面向end
 
-            //addForce就可以有疊加的效果
-            //雪人的mass也要作相應的調整，不然會推不動骨牌
-            if (moveForceMonitor != null)
+            //addForce可以有疊加的效果
+            float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding, isTurble);
+            Vector3 moveForceWithStrength = moveForceStrength * moveForce;
+            if (slopeForceMonitor != null && ladding)
             {
-                float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding,isTurble);
-                Vector3 moveForceWithStrength = moveForceStrength * moveForce;
-                if (slopeForceMonitor != null && ladding)
-                {
-                    moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
-                }
-
-                rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
+                moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
             }
+
+            rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
         }
     }
 
@@ -339,12 +324,9 @@ public class PlanetMovable : MonoBehaviour
         {
             if (doJump)
             {
-                if (moveForceMonitor != null)
-                {
-                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-                    float s = 20;
-                    rigid.AddForce(s * touchWallNormal, ForceMode.VelocityChange);
-                }
+                rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
+                float s = 20;
+                rigid.AddForce(s * touchWallNormal, ForceMode.VelocityChange);
                 doJump = false;
             }
         }
@@ -352,21 +334,16 @@ public class PlanetMovable : MonoBehaviour
 
     public void processJump()
     {
-        
-
         //跳
         if (ladding)
         {
             Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
             if (doJump)
             {
-                if (moveForceMonitor != null)
-                {
-                    if (measuringJumpHeight != null)
-                        measuringJumpHeight.startRecord();
+                if (measuringJumpHeight != null)
+                    measuringJumpHeight.startRecord();
 
-                    rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-                }
+                rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
 
                 if (animator != null)
                     animator.SetBool("doJump", true);

@@ -38,8 +38,8 @@ public class GravityDirectionMonitor : MonoBehaviour {
         planetGravityGeneratorSocket.laddingPlanet = planet;
     }
 
-    public GroundGravityGenerator getGravityGenerator()
+    public Vector3 findGroundUp()
     {
-        return grounGravityGenerator;
+        return grounGravityGenerator.findGroundUp();
     }
 }
