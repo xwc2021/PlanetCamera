@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterMoveForceMonitor : MonoBehaviour, MoveForceMonitor
+public class MoveForceSetting : MonoBehaviour, MoveForceParameter
 {
     public string name="";
     public float jumpForceLow = 1500;
@@ -20,7 +20,7 @@ public class CharacterMoveForceMonitor : MonoBehaviour, MoveForceMonitor
 
     public float drag = 4;
 
-    float MoveForceMonitor.getMoveForceStrength(bool isOnAir,bool isTurbo)
+    float MoveForceParameter.getMoveForceStrength(bool isOnAir,bool isTurbo)
     {
         if (!isOnAir)
         {
@@ -41,7 +41,7 @@ public class CharacterMoveForceMonitor : MonoBehaviour, MoveForceMonitor
         
     }
 
-    float MoveForceMonitor.getGravityForceStrength(bool isOnAir)
+    float MoveForceParameter.getGravityForceStrength(bool isOnAir)
     {
         if (isOnAir)
             return gravityOnAir;
@@ -49,7 +49,7 @@ public class CharacterMoveForceMonitor : MonoBehaviour, MoveForceMonitor
             return gravity;
     }
 
-    float MoveForceMonitor.getJumpForceStrength(bool isTurbe)
+    float MoveForceParameter.getJumpForceStrength(bool isTurbe)
     {
         //按住fire鈕才加速
         if (isTurbe)
@@ -58,7 +58,7 @@ public class CharacterMoveForceMonitor : MonoBehaviour, MoveForceMonitor
             return jumpForceLow;
     }
 
-    void MoveForceMonitor.setRigidbodyParamter(Rigidbody rigid)
+    void MoveForceParameter.setRigidbodyParamter(Rigidbody rigid)
     {
         rigid.drag = drag;
     }

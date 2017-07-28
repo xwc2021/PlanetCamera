@@ -174,8 +174,8 @@
     <Compile Include="Assets\scripts\Machine\PosFollow.cs" />
     <Compile Include="Assets\scripts\Machine\QuestionBox.cs" />
     <Compile Include="Assets\scripts\Machine\SetParent.cs" />
-    <Compile Include="Assets\scripts\MoveForceMonitor\CharacterMoveForceMonitor.cs" />
-    <Compile Include="Assets\scripts\MoveForceMonitor\CharacterMoveForceRepository.cs" />
+    <Compile Include="Assets\scripts\MoveForceMonitor\MoveForceParameterRepository.cs" />
+    <Compile Include="Assets\scripts\MoveForceMonitor\MoveForceSetting.cs" />
     <Compile Include="Assets\scripts\Shared\DS.cs" />
     <Compile Include="Assets\scripts\Shared\LayerDefined.cs" />
     <Compile Include="Assets\scripts\Shared\TagDefined.cs" />

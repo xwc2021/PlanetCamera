@@ -16,7 +16,7 @@ public interface GroundGravityGenerator
     Vector3 findGroundUp();
 }
 
-public interface MoveForceMonitor
+public interface MoveForceParameter
 {
     float getMoveForceStrength(bool isOnAir, bool isTurble);
     float getGravityForceStrength(bool isOnAir);
@@ -32,7 +32,7 @@ public class PlanetMovable : MonoBehaviour
     public SlopeForceMonitor slopeForceMonitor;
 
     public GravityDirectionMonitor gravityDirectionMonitor;
-    public CharacterMoveForceRepository characterMoveForceRepository;
+    public MoveForceParameterRepository moveForceParameterRepository;
 
     MoveController moveController;
     public MonoBehaviour moveControllerSocket;
@@ -66,8 +66,8 @@ public class PlanetMovable : MonoBehaviour
     void Awake () {
 
         rigid = GetComponent<Rigidbody>();
-        Debug.Assert(characterMoveForceRepository != null);
-        characterMoveForceRepository.resetGroundType(GroundType.Normal, rigid);
+        Debug.Assert(moveForceParameterRepository != null);
+        moveForceParameterRepository.resetGroundType(GroundType.Normal, rigid);
 
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall= new List<ContactPoint[]>();
@@ -206,9 +206,9 @@ public class PlanetMovable : MonoBehaviour
 
     public void executeGravityForce()
     {
-        MoveForceMonitor moveForceMonitor = characterMoveForceRepository.getMoveForceMonitor();
+        MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
-        rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
+        rigid.AddForce(moveForceParameter.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
         //Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
@@ -242,12 +242,12 @@ public class PlanetMovable : MonoBehaviour
         //更新面向end
 
         //addForce可以有疊加的效果
-        MoveForceMonitor moveForceMonitor = characterMoveForceRepository.getMoveForceMonitor();
-        float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding, isTurble);
+        MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
+        float moveForceStrength = moveForceParameter.getMoveForceStrength(!ladding, isTurble);
         Vector3 moveForceWithStrength = moveForceStrength * moveForce;
         if (slopeForceMonitor != null && ladding)
         {
-            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
+            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceParameter.getGravityForceStrength(!ladding), groundUp, planeNormal);
         }
 
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
@@ -255,8 +255,8 @@ public class PlanetMovable : MonoBehaviour
 
     public void executeJump()
     {
-        MoveForceMonitor moveForceMonitor = characterMoveForceRepository.getMoveForceMonitor();
-        rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
+        MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
+        rigid.AddForce(moveForceParameter.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
     }
 
     public Vector3 GravityDir
@@ -286,6 +286,6 @@ public class PlanetMovable : MonoBehaviour
 
     public void resetGroundType(GroundType groundType)
     {
-        characterMoveForceRepository.resetGroundType(groundType,rigid);
+        moveForceParameterRepository.resetGroundType(groundType,rigid);
     }
 }

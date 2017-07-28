@@ -6,14 +6,14 @@ using UnityEngine;
 
 public enum GroundType { Normal,NormalLowGravity, Ice, Seesaw }
 
-public class CharacterMoveForceRepository : MonoBehaviour
+public class MoveForceParameterRepository : MonoBehaviour
 {
-    MoveForceMonitor moveForceMonitor;
+    MoveForceParameter moveForceMonitor;
     public GroundType groundType = GroundType.Normal;
-    public CharacterMoveForceMonitor normal;
-    public CharacterMoveForceMonitor iceSkating;
-    public CharacterMoveForceMonitor seesaw;
-    public CharacterMoveForceMonitor normalLowGravity;//可以用來防止卡斜坡(斜度不能太大)
+    public MoveForceSetting normal;
+    public MoveForceSetting iceSkating;
+    public MoveForceSetting seesaw;
+    public MoveForceSetting normalLowGravity;//可以用來防止卡斜坡(斜度不能太大)
 
     public void resetGroundType(GroundType gType,Rigidbody rigid)
     {
@@ -21,23 +21,23 @@ public class CharacterMoveForceRepository : MonoBehaviour
         switch (groundType)
         {
             case GroundType.Normal:
-                moveForceMonitor = normal as MoveForceMonitor;
+                moveForceMonitor = normal as MoveForceParameter;
                 break;
             case GroundType.NormalLowGravity:
-                moveForceMonitor = normalLowGravity as MoveForceMonitor;
+                moveForceMonitor = normalLowGravity as MoveForceParameter;
                 break;
             case GroundType.Ice:
-                moveForceMonitor = iceSkating as MoveForceMonitor;
+                moveForceMonitor = iceSkating as MoveForceParameter;
                 break;
             case GroundType.Seesaw:
-                moveForceMonitor = seesaw as MoveForceMonitor;
+                moveForceMonitor = seesaw as MoveForceParameter;
                 break;
         }
 
         moveForceMonitor.setRigidbodyParamter(rigid);
     }
 
-    public MoveForceMonitor getMoveForceMonitor()
+    public MoveForceParameter getMoveForceParameter()
     {
         return moveForceMonitor;
     }
