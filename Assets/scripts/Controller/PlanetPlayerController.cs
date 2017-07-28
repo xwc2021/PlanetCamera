@@ -11,12 +11,14 @@ public interface SurfaceFollowCameraBehavior
 public interface MoveController
 {
     Vector3 getMoveForce();
-    bool doJump();
     bool doTurbo();
 }
 
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Animator))]
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
+    public MeasuringJumpHeight measuringJumpHeight;
     public PlanetMovable planetMovable;
     SurfaceFollowCameraBehavior followCameraBehavior;
     public MonoBehaviour followCameraBehaviorSocket;
@@ -24,9 +26,12 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     InputProxy inputProxy;
     public MonoBehaviour inputPorxySocket;
     public Transform m_Cam;
+    Rigidbody rigid;
+    Animator animator;
+    int onAirHash;
 
     Vector3 previousGroundUp;
-
+    bool doJump = false;
     // Use this for initialization
     void Awake()
     {
@@ -39,6 +44,10 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         if (inputPorxySocket != null)
             inputProxy = inputPorxySocket as InputProxy;
+ 
+        rigid = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+        onAirHash = Animator.StringToHash("Base Layer.onAir");
 
         getCamera();
     }
@@ -55,14 +64,78 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     void FixedUpdate()
     {
-        planetMovable.gravitySetup();
-        planetMovable.dataSetup();
+        planetMovable.setupGravity();
+        planetMovable.setupRequireData();
 
-        planetMovable.processGravity();
-        planetMovable.processMoving();
-        planetMovable.processWallJump();
-        planetMovable.processJump();
-        planetMovable.processLadding();
+        planetMovable.executeGravityForce();
+        planetMovable.executeMoving();
+
+        bool moving = rigid.velocity.magnitude > 0.05;
+        animator.SetBool("moving", moving);
+
+        processWallJump();
+        processJump();
+        processLadding();
+    }
+
+    void processWallJump()
+    {
+        //jump from wall
+        if (!planetMovable.Ladding && planetMovable.TouchWall)
+        {
+            if (doJump)
+            {
+                planetMovable.executeJump();
+                float s = 20;
+                rigid.AddForce(s * planetMovable.TouchWallNormal, ForceMode.VelocityChange);
+                doJump = false;
+            }
+        }
+    }
+
+    void processJump()
+    {
+        //跳
+        if (planetMovable.Ladding)
+        {
+            Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
+            if (doJump)
+            {
+                if (measuringJumpHeight != null)
+                    measuringJumpHeight.startRecord();
+
+                planetMovable.executeJump();
+
+                if (animator != null)
+                    animator.SetBool("doJump", true);
+
+                doJump = false;
+            }
+        }
+        else
+        {
+            //不是ladding時按下doJump，也要把doJump設為false
+            //不然的話會一直持續到當ladding為true再進行跳躍
+            if (doJump)
+                doJump = false;
+        }
+    }
+
+    void processLadding()
+    {
+        if (planetMovable.Ladding)
+        {
+            if (animator != null)
+            {
+                bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+                if (isOnAir)
+                {
+                    animator.SetBool("onAir", false);
+                    if (measuringJumpHeight != null)
+                        measuringJumpHeight.stopRecord();
+                }
+            }
+        }
     }
 
 
@@ -70,6 +143,17 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     {
         if (adjustCameraWhenMove)
             doAdjustByGroundUp();
+
+        //這邊要加上if (!doJump)的判斷，因為：
+        //如果在|frame1|按下跳，其實會在|frame2|的Update裡才執行GetButtonDown檢查(在同個Frame裡FixedUpdate會先於Update執行)
+        //這時GetButtonDown為true，但要等到|frame3|才會執行到fixedUPdate
+        //如果|frame3|裡沒有fixedUpdate，接著還是會執行Update，這時GetButtonDown檢查已經變成false了
+        //所以到|frame4|時執行fixedUpdate還是不會跳
+
+        // |frame1| |frame2||frame3||frame4|
+        //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
+        if (!doJump)
+            doJump = inputProxy.pressJump();
     }
 
     void doAdjustByGroundUp()
@@ -80,7 +164,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         //如果位置有更新，就更新FlowPoint
         //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
 
-        Vector3 groundUp = planetMovable.getGroundUp();
+        Vector3 groundUp = planetMovable.GroundUp;
 
         Vector3 Z = Vector3.Cross(previousGroundUp, groundUp);
         //Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
@@ -158,11 +242,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         }
 
         return Vector3.zero;
-    }
-
-    bool MoveController.doJump()
-    {
-        return inputProxy.pressJump();
     }
 
     bool MoveController.doTurbo()

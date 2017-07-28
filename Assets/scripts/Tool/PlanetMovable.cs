@@ -33,7 +33,6 @@ public interface MoveForceMonitor
 
 public class PlanetMovable : MonoBehaviour
 {
-    public MeasuringJumpHeight measuringJumpHeight;
     public SlopeForceMonitor slopeForceMonitor;
 
     public GravityDirectionMonitor gravityDirectionMonitor;
@@ -52,8 +51,8 @@ public class PlanetMovable : MonoBehaviour
     public bool firstPersonMode = false;
     public float backOffset = -0.1f;
 
-    int onAirHash;
-    Animator animator;
+    
+    
 
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
     List<ContactPoint[]> contactPointGround;
@@ -70,15 +69,7 @@ public class PlanetMovable : MonoBehaviour
     Vector3 gravityDir;
     Vector3 planeNormal;
     Vector3 wallNormal;
-   
-    void setAnimatorInfo()
-    {
-        animator = GetComponentInChildren<Animator>();
-        if (animator == null)
-            return;
-
-        onAirHash = Animator.StringToHash("Base Layer.onAir");
-    }
+  
 
     // Use this for initialization
     void Awake () {
@@ -87,7 +78,6 @@ public class PlanetMovable : MonoBehaviour
 
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall= new List<ContactPoint[]>();
-        setAnimatorInfo();
 
         if (moveControllerSocket != null)
             moveController = moveControllerSocket as MoveController;
@@ -107,16 +97,6 @@ public class PlanetMovable : MonoBehaviour
         gravityDirectionMonitor.ResetGravityGenerator(pggEnum);
     }
 
-    private void FixedUpdate()
-    {
-        if (animator != null)
-        {
-            bool moving = rigid.velocity.magnitude > 0.05;
-            animator.SetBool("moving", moving);
-        }
-    }
-
-    bool doJump=false;
     private void Update()
     {
         //判定有沒有接觸
@@ -125,17 +105,6 @@ public class PlanetMovable : MonoBehaviour
 
         if (moveController == null)
             return;
-
-        //這邊要加上if (!doJump)的判斷，因為：
-        //如果在|frame1|按下跳，其實會在|frame2|的Update裡才執行GetButtonDown檢查(在同個Frame裡FixedUpdate會先於Update執行)
-        //這時GetButtonDown為true，但要等到|frame3|才會執行到fixedUPdate
-        //如果|frame3|裡沒有fixedUpdate，接著還是會執行Update，這時GetButtonDown檢查已經變成false了
-        //所以到|frame4|時執行fixedUpdate還是不會跳
-
-        // |frame1| |frame2||frame3||frame4|
-        //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
-        if (!doJump)
-            doJump = moveController.doJump();
     }
 
     private void getGroundNormalNow(out bool isHit)
@@ -226,14 +195,14 @@ public class PlanetMovable : MonoBehaviour
         return false;
     }
 
-    public void gravitySetup()
+    public void setupGravity()
     {
         //計算重力方向
         groundUp = gravityDirectionMonitor.findGroundUp();
         gravityDir = -groundUp;
     }
 
-    public void dataSetup()
+    public void setupRequireData()
     {
         //清空
         contactPointGround.Clear();
@@ -255,14 +224,14 @@ public class PlanetMovable : MonoBehaviour
             isTurble = moveController.doTurbo();
     }
 
-    public void processGravity()
+    public void executeGravityForce()
     {
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
         //Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
-    public void processMoving()
+    public void executeMoving()
     {
         if (moveController != null)
         {
@@ -300,69 +269,34 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
-    public void processLadding()
+    public void executeJump()
     {
-        if (ladding)
-        {
-            if (animator != null)
-            {
-                bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-                if (isOnAir)
-                {
-                    animator.SetBool("onAir", false);
-                    if (measuringJumpHeight != null)
-                        measuringJumpHeight.stopRecord();
-                }       
-            }
-        }
+        rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
     }
 
-    public void processWallJump()
+    public Vector3 GravityDir
     {
-        //jump from wall
-        if (!ladding && touchWall)
-        {
-            if (doJump)
-            {
-                rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-                float s = 20;
-                rigid.AddForce(s * touchWallNormal, ForceMode.VelocityChange);
-                doJump = false;
-            }
-        }
+        get { return gravityDir; }
     }
 
-    public void processJump()
+    public Vector3 GroundUp
     {
-        //跳
-        if (ladding)
-        {
-            Debug.DrawLine(transform.position, transform.position - transform.up, Color.green);
-            if (doJump)
-            {
-                if (measuringJumpHeight != null)
-                    measuringJumpHeight.startRecord();
-
-                rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-
-                if (animator != null)
-                    animator.SetBool("doJump", true);
-
-                doJump = false;
-            }
-        }
-        else
-        {
-            //不是ladding時按下doJump，也要把doJump設為false
-            //不然的話會一直持續到當ladding為true再進行跳躍
-            if (doJump)
-                doJump = false;
-        }
+        get { return groundUp; }
     }
 
-    public Vector3 getGroundUp()
+    public Vector3 TouchWallNormal
     {
-        return groundUp;
+        get { return touchWallNormal; }
+    }
+
+    public bool Ladding
+    {
+        get{return ladding;}
+    }
+
+    public bool TouchWall
+    {
+        get { return touchWall; }
     }
 
     public void resetGroundType(GroundType groundType)

@@ -7,8 +7,8 @@ public class StandingController : MonoBehaviour {
     public PlanetMovable planetMovable;
     private void FixedUpdate()
     {
-        planetMovable.gravitySetup();
-        planetMovable.dataSetup();
-        planetMovable.processGravity();
+        planetMovable.setupGravity();
+        planetMovable.setupRequireData();
+        planetMovable.executeGravityForce();
     }
 }

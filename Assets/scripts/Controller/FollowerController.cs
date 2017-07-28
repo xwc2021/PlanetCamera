@@ -3,14 +3,19 @@ using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using System;
 
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Animator))]
 public class FollowerController : MonoBehaviour, MoveController
 {
     public PlanetMovable planetMovable;
     public Transform followTarget;
+    Rigidbody rigid;
+    Animator animator;
 
-    bool MoveController.doJump()
+    private void Awake()
     {
-        return false;
+        rigid = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     bool MoveController.doTurbo()
@@ -38,10 +43,13 @@ public class FollowerController : MonoBehaviour, MoveController
 
     private void FixedUpdate()
     {
-        planetMovable.gravitySetup();
-        planetMovable.dataSetup();
+        planetMovable.setupGravity();
+        planetMovable.setupRequireData();
 
-        planetMovable.processGravity();
-        planetMovable.processMoving();
+        planetMovable.executeGravityForce();
+        planetMovable.executeMoving();
+
+        bool moving = rigid.velocity.magnitude > 0.05;
+        animator.SetBool("moving", moving);
     }
 }
