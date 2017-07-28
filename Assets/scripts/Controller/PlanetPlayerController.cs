@@ -55,14 +55,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     void FixedUpdate()
     {
-        Vector3 planeNormal, gravityDir;
-        planetMovable.gravitySetup(out gravityDir);
-        planetMovable.dataSetup(out planeNormal);
+        planetMovable.gravitySetup();
+        planetMovable.dataSetup();
 
-        planetMovable.processGravity(gravityDir);
-        planetMovable.processMoving(planeNormal, gravityDir);
-        planetMovable.processJump(gravityDir);
-        planetMovable.processWallJump(gravityDir);
+        planetMovable.processGravity();
+        planetMovable.processMoving();
+        planetMovable.processWallJump();
+        planetMovable.processJump();
         planetMovable.processLadding();
     }
 

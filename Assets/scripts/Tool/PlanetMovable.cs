@@ -68,6 +68,8 @@ public class PlanetMovable : MonoBehaviour
     static readonly float isHitDistance = 0.2f;
     public static readonly float rayCastDistanceToGround = 2;
     Vector3 groundUp;
+    Vector3 gravityDir;
+    Vector3 planeNormal;
     Vector3 wallNormal;
    
     void setAnimatorInfo()
@@ -109,11 +111,9 @@ public class PlanetMovable : MonoBehaviour
     {
         if (moveController == null)
         {
-            Vector3 planeNormal, gravityDir;
-            gravitySetup(out gravityDir);
-            dataSetup(out planeNormal);
-
-            processGravity(gravityDir);
+            gravitySetup();
+            dataSetup();
+            processGravity();
         }
 
         if (animator != null)
@@ -145,7 +145,7 @@ public class PlanetMovable : MonoBehaviour
             doJump = moveController.doJump();
     }
 
-    private void getGroundNormalNow(out Vector3 planeNormal,out bool isHit)
+    private void getGroundNormalNow(out bool isHit)
     {
         RaycastHit hit;
         //https://www.youtube.com/watch?v=Cq_Wh8o96sc
@@ -233,7 +233,7 @@ public class PlanetMovable : MonoBehaviour
         return false;
     }
 
-    public void gravitySetup(out Vector3 gravityDir)
+    public void gravitySetup()
     {
         //計算重力方向
         grounGravityGenerator = gravityDirectionMonitor.getGravityGenerator();
@@ -241,7 +241,7 @@ public class PlanetMovable : MonoBehaviour
         gravityDir = -groundUp;
     }
 
-    public void dataSetup(out Vector3 planeNormal)
+    public void dataSetup()
     {
         //清空
         contactPointGround.Clear();
@@ -253,7 +253,7 @@ public class PlanetMovable : MonoBehaviour
         transform.rotation = targetRotation;
 
         //判定是否擊中平面
-        getGroundNormalNow(out planeNormal, out isHit);
+        getGroundNormalNow(out isHit);
 
         //如果只用contact判定，下坡時可能contact為false
         ladding = contactGround || isHit;
@@ -263,7 +263,7 @@ public class PlanetMovable : MonoBehaviour
             isTurble = moveController.doTurbo();
     }
 
-    public void processGravity(Vector3 gravityDir)
+    public void processGravity()
     {
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         if (moveForceMonitor != null)
@@ -273,7 +273,7 @@ public class PlanetMovable : MonoBehaviour
         } 
     }
 
-    public void processMoving(Vector3 planeNormal,Vector3 gravityDir)
+    public void processMoving()
     {
         if (moveController != null)
         {
@@ -332,7 +332,7 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
-    public void processWallJump(Vector3 gravityDir)
+    public void processWallJump()
     {
         //jump from wall
         if (!ladding && touchWall)
@@ -350,7 +350,7 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
-    public void processJump(Vector3 gravityDir)
+    public void processJump()
     {
         
 
