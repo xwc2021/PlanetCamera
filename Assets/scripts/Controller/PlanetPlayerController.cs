@@ -14,6 +14,7 @@ public interface MoveController
     bool doTurbo();
 }
 
+[DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 public class PlanetPlayerController : MonoBehaviour, MoveController

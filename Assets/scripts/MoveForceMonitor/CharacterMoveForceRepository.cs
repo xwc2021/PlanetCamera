@@ -6,7 +6,7 @@ using UnityEngine;
 
 public enum GroundType { Normal,NormalLowGravity, Ice, Seesaw }
 
-public class CharacterMoveForceRepository : MonoBehaviour,MoveForceMonitor, MoveForceSelector
+public class CharacterMoveForceRepository : MonoBehaviour
 {
     MoveForceMonitor moveForceMonitor;
     public GroundType groundType = GroundType.Normal;
@@ -15,7 +15,7 @@ public class CharacterMoveForceRepository : MonoBehaviour,MoveForceMonitor, Move
     public CharacterMoveForceMonitor seesaw;
     public CharacterMoveForceMonitor normalLowGravity;//可以用來防止卡斜坡(斜度不能太大)
 
-    void MoveForceSelector.resetByGroundType(GroundType gType,Rigidbody rigid)
+    public void resetGroundType(GroundType gType,Rigidbody rigid)
     {
         groundType = gType;
         switch (groundType)
@@ -37,23 +37,8 @@ public class CharacterMoveForceRepository : MonoBehaviour,MoveForceMonitor, Move
         moveForceMonitor.setRigidbodyParamter(rigid);
     }
 
-    float MoveForceMonitor.getGravityForceStrength(bool isOnAir)
+    public MoveForceMonitor getMoveForceMonitor()
     {
-        return moveForceMonitor.getGravityForceStrength(isOnAir);
-    }
-
-    float MoveForceMonitor.getJumpForceStrength(bool isTurble)
-    {
-        return moveForceMonitor.getJumpForceStrength(isTurble);
-    }
-
-    float MoveForceMonitor.getMoveForceStrength(bool isOnAir, bool isTurble)
-    {
-        return moveForceMonitor.getMoveForceStrength(isOnAir, isTurble);
-    }
-
-    void MoveForceMonitor.setRigidbodyParamter(Rigidbody rigid)
-    {
-        moveForceMonitor.setRigidbodyParamter(rigid);
+        return moveForceMonitor;
     }
 }

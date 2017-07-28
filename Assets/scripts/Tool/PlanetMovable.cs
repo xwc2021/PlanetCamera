@@ -16,11 +16,6 @@ public interface GroundGravityGenerator
     Vector3 findGroundUp();
 }
 
-public interface MoveForceSelector
-{
-    void resetByGroundType(GroundType groundType, Rigidbody rigid);
-}
-
 public interface MoveForceMonitor
 {
     float getMoveForceStrength(bool isOnAir, bool isTurble);
@@ -30,23 +25,19 @@ public interface MoveForceMonitor
 }
 
 
-
+[DisallowMultipleComponent]
+[RequireComponent(typeof(Rigidbody))]
 public class PlanetMovable : MonoBehaviour
 {
     public SlopeForceMonitor slopeForceMonitor;
 
     public GravityDirectionMonitor gravityDirectionMonitor;
-
-    MoveForceSelector moveForceSelector;
-    public MonoBehaviour moveForceSelectorSocket;
-
-    MoveForceMonitor moveForceMonitor;
-    public MonoBehaviour moveForceMonitorSocket;
+    public CharacterMoveForceRepository characterMoveForceRepository;
 
     MoveController moveController;
     public MonoBehaviour moveControllerSocket;
 
-    public Rigidbody rigid;
+    Rigidbody rigid;
     public float rotationSpeed = 6f;
     public bool firstPersonMode = false;
     public float backOffset = -0.1f;
@@ -74,22 +65,16 @@ public class PlanetMovable : MonoBehaviour
     // Use this for initialization
     void Awake () {
 
-        Debug.Assert(moveForceMonitorSocket != null);
+        rigid = GetComponent<Rigidbody>();
+        Debug.Assert(characterMoveForceRepository != null);
+        characterMoveForceRepository.resetGroundType(GroundType.Normal, rigid);
 
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall= new List<ContactPoint[]>();
 
-        if (moveControllerSocket != null)
-            moveController = moveControllerSocket as MoveController;
-
-        moveForceMonitor = moveForceMonitorSocket as MoveForceMonitor;
-
-        if (moveForceSelectorSocket != null)
-        {
-            moveForceSelector = moveForceSelectorSocket as MoveForceSelector;
-            moveForceSelector.resetByGroundType(GroundType.Normal, rigid);
-        }
-           
+        Debug.Assert(moveControllerSocket != null);
+        moveController = moveControllerSocket as MoveController;
+        Debug.Assert(moveController != null);
     }
 
     public void ResetGravityGenetrator(GravityGeneratorEnum pggEnum)
@@ -101,10 +86,7 @@ public class PlanetMovable : MonoBehaviour
     {
         //判定有沒有接觸
         contactGround = isContactGround();
-        touchWall =isTouchWall();
-
-        if (moveController == null)
-            return;
+        touchWall =isTouchWall(); 
     }
 
     private void getGroundNormalNow(out bool isHit)
@@ -219,13 +201,12 @@ public class PlanetMovable : MonoBehaviour
         //如果只用contact判定，下坡時可能contact為false
         ladding = contactGround || isHit;
 
-        isTurble = false;
-        if(moveController!=null)
-            isTurble = moveController.doTurbo();
+        isTurble = moveController.doTurbo();
     }
 
     public void executeGravityForce()
     {
+        MoveForceMonitor moveForceMonitor = characterMoveForceRepository.getMoveForceMonitor();
         //如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         rigid.AddForce(moveForceMonitor.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
         //Debug.DrawRay(transform.position, gravityDir, Color.green);
@@ -233,44 +214,48 @@ public class PlanetMovable : MonoBehaviour
 
     public void executeMoving()
     {
-        if (moveController != null)
+        Vector3 moveForce = moveController.getMoveForce();
+        //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
+
+        if (moveForce == Vector3.zero)
         {
-            Vector3 moveForce = moveController.getMoveForce();
-            //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
-
-            //在地面才作
-            if (ladding)
-            {
-                moveForce = Vector3.ProjectOnPlane(moveForce, planeNormal);
-
-                moveForce.Normalize();
-                Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
-            }
-
-            //更新面向begin
-            Vector3 forward2 = moveForce;
-            if (forward2 != Vector3.zero && !firstPersonMode)
-            {
-                Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
-                Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
-                transform.rotation = newRot;
-            }
-            //更新面向end
-
-            //addForce可以有疊加的效果
-            float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding, isTurble);
-            Vector3 moveForceWithStrength = moveForceStrength * moveForce;
-            if (slopeForceMonitor != null && ladding)
-            {
-                moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
-            }
-
-            rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
+            return;
         }
+
+        //在地面才作
+        if (ladding)
+        {
+            moveForce = Vector3.ProjectOnPlane(moveForce, planeNormal);
+
+            moveForce.Normalize();
+            Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
+        }
+
+        //更新面向begin
+        Vector3 forward2 = moveForce;
+        if (forward2 != Vector3.zero && !firstPersonMode)
+        {
+            Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
+            Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
+            transform.rotation = newRot;
+        }
+        //更新面向end
+
+        //addForce可以有疊加的效果
+        MoveForceMonitor moveForceMonitor = characterMoveForceRepository.getMoveForceMonitor();
+        float moveForceStrength = moveForceMonitor.getMoveForceStrength(!ladding, isTurble);
+        Vector3 moveForceWithStrength = moveForceStrength * moveForce;
+        if (slopeForceMonitor != null && ladding)
+        {
+            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceMonitor.getGravityForceStrength(!ladding), groundUp, planeNormal);
+        }
+
+        rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
     }
 
     public void executeJump()
     {
+        MoveForceMonitor moveForceMonitor = characterMoveForceRepository.getMoveForceMonitor();
         rigid.AddForce(moveForceMonitor.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
     }
 
@@ -301,7 +286,6 @@ public class PlanetMovable : MonoBehaviour
 
     public void resetGroundType(GroundType groundType)
     {
-        if(moveForceSelector!=null)
-            moveForceSelector.resetByGroundType(groundType,rigid);
+        characterMoveForceRepository.resetGroundType(groundType,rigid);
     }
 }
