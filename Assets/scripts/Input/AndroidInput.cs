@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class AndroidInput : MonoBehaviour, InputProxy
 {
+    bool isFire;
+    bool isJump;
     Vector2 memoryPos;
     Vector2 nowInput;
     Vector2 doAndroidInput()
@@ -34,12 +37,20 @@ public class AndroidInput : MonoBehaviour, InputProxy
 
     Vector2 InputProxy.getHV()
     {
-        return doAndroidInput();
+        float h = CrossPlatformInputManager.GetAxis("Horizontal");
+        float v = CrossPlatformInputManager.GetAxis("Vertical");
+        return new Vector2(h, v);
     }
 
     bool InputProxy.pressJump()
     {
-        return false;
+        if (isJump)
+        {
+            isJump = false;
+            return true;
+        }
+        else
+            return false;
     }
 
     bool InputProxy.pressFire()
@@ -49,6 +60,21 @@ public class AndroidInput : MonoBehaviour, InputProxy
 
     bool InputProxy.holdFire()
     {
-        return false;
+        return isFire;
+    }
+
+    public void onClickJumpButton()
+    {
+        isJump = true;
+    }
+
+    public void onClickFireButton()
+    {
+        isFire = true;
+    }
+
+    public void onClickFireButtonUp()
+    {
+        isFire = false;
     }
 }
