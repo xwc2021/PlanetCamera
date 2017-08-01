@@ -34,8 +34,7 @@ public class PlanetMovable : MonoBehaviour
     public GravityDirectionMonitor gravityDirectionMonitor;
     public MoveForceParameterRepository moveForceParameterRepository;
 
-    MoveController moveController;
-    public MonoBehaviour moveControllerSocket;
+    public MoveController moveController;
 
     Rigidbody rigid;
     public float rotationSpeed = 6f;
@@ -72,8 +71,7 @@ public class PlanetMovable : MonoBehaviour
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall= new List<ContactPoint[]>();
 
-        Debug.Assert(moveControllerSocket != null);
-        moveController = moveControllerSocket as MoveController;
+        moveController = GetComponent<MoveController>();
         Debug.Assert(moveController != null);
     }
 
