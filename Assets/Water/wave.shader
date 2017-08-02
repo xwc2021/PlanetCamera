@@ -44,7 +44,7 @@ Shader "Custom/wave" {
 					float h1 =5*_HS;
 					float h2 =_HS;
 					float twoPI=6.28f; 
-					float4 value;
+					float4 value=0;
 					value.r=h1*sin(2.0*twoPI*(i.uv.y+_Time));
 					value.r+=h2*sin(6.0*twoPI*(i.uv.x+i.uv.y+4.0f*_Time));//45度角方向的wave
 					value.r= max(value.r,_LH);
