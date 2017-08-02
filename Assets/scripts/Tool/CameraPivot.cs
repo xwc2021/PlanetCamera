@@ -55,7 +55,6 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 
     // Use this for initialization
     void Awake () {
-        print("CameraPivot Awake");
         Debug.Assert(player != null);
         PlanetPlayerController ppController = player.GetComponent<PlanetPlayerController>();
         Debug.Assert(ppController != null);
