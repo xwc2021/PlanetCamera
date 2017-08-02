@@ -107,9 +107,8 @@ public class PlanetMovable : MonoBehaviour
 
             planeNormal = hit.normal;
 
-            float distance = diff.magnitude;
             //如果距離小於某個值就判定是在地面上
-            if (distance < isHitDistance)
+            if (height < isHitDistance)
             {
                 isHit = true;
             }   

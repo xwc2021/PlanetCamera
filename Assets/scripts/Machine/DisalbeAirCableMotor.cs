@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class DisalbeAirCableMotor : MonoBehaviour {
 
-    public HingeJoint hingeJoint;
+    public HingeJoint refHingeJoint;
     private void OnTriggerEnter(Collider other)
     {
-        hingeJoint.useMotor = false;
+        refHingeJoint.useMotor = false;
     }
 }

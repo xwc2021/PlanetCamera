@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnableAirCableCarMotor : MonoBehaviour {
 
-    public HingeJoint hingeJoint;
+    public HingeJoint refHingeJoint;
     Material material;
     public float force = 1500;
 
@@ -16,10 +16,10 @@ public class EnableAirCableCarMotor : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         material.color = Color.yellow;
-        JointMotor motor = hingeJoint.motor;
+        JointMotor motor = refHingeJoint.motor;
         motor.targetVelocity = force;
-        hingeJoint.motor = motor;
-        hingeJoint.useMotor = true;
+        refHingeJoint.motor = motor;
+        refHingeJoint.useMotor = true;
     }
 
     private void OnTriggerExit(Collider other)

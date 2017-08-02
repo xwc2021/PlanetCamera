@@ -8,11 +8,9 @@ public class QuestionBox : MonoBehaviour {
     bool useTimer = false;
     float nowTime = 0;
     public float usefulTime = 0.25f;
-    Transform originalBoxTransform;
     public Animator originalBoxAnimator;
     public MeshRenderer originalBox;
     public MeshRenderer nullBox;
-    int finalHash = Animator.StringToHash("Base Layer.final");
     QBoxReady qBoxReady;
     QBoxFinal qBoxFinal;
     QBoxDoScale qBoxDoScale;
@@ -32,7 +30,6 @@ public class QuestionBox : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        originalBoxTransform = originalBox.transform;
         initAnimator();
     }
 

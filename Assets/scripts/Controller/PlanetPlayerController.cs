@@ -229,7 +229,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         float degree = Mathf.Rad2Deg * Mathf.Atan2(v, h);
 
         float extraDegree = degree % snapDegree;
-        float finalDegree = degree - extraDegree;
 
         float extraRad = extraDegree * Mathf.Deg2Rad;
 
