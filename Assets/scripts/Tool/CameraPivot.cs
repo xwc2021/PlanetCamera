@@ -54,7 +54,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     InputProxy inputProxy;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         Debug.Assert(player != null);
         PlanetPlayerController ppController = player.GetComponent<PlanetPlayerController>();
         Debug.Assert(ppController != null);
@@ -105,6 +105,12 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
             toSpeed = 300;
         else
             toSpeed = 5;     
+    }
+
+    public void adjustYaw(float degree)
+    {
+        Quaternion yaw = Quaternion.AngleAxis(degree, recordParentInitUp);
+        cameraTargetRot = yaw * cameraTargetRot;
     }
 
     float toSpeed;
