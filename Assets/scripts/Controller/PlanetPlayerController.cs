@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 public interface SurfaceFollowCameraBehavior
 {
@@ -19,6 +20,7 @@ public interface MoveController
 [RequireComponent(typeof(Animator))]
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
+    public PostProcessingBehaviour postProcessingBehaviour;
     public GameObject canvas;
     public GameObject eventSystem;
     public MeasuringJumpHeight measuringJumpHeight;
@@ -47,6 +49,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 #if (UNITY_ANDROID)
         AndroidInput androidInput = GetComponent<AndroidInput>();
         inputProxy = androidInput as InputProxy;
+        postProcessingBehaviour.enabled = false;
 #else
         PCInput pcInput = GetComponent<PCInput>();
         inputProxy = pcInput as InputProxy;
