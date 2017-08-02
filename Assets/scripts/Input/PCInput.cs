@@ -27,4 +27,20 @@ public class PCInput : MonoBehaviour,  InputProxy
     {
         return CrossPlatformInputManager.GetButton("Fire1");
     }
+
+    float scale = 1;
+    float InputProxy.yawScale()
+    {
+        return scale;
+    }
+
+    float InputProxy.pitchScale()
+    {
+        return scale;
+    }
+
+    bool InputProxy.enableControlUI()
+    {
+        return false;
+    }
 }

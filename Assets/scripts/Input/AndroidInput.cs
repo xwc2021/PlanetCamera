@@ -63,18 +63,34 @@ public class AndroidInput : MonoBehaviour, InputProxy
         return isFire;
     }
 
-    public void onClickJumpButton()
+    public void onJumpButtonDown()
     {
         isJump = true;
     }
 
-    public void onClickFireButton()
+    public void onFireButtonDown()
     {
         isFire = true;
     }
 
-    public void onClickFireButtonUp()
+    public void onFireButtonUp()
     {
         isFire = false;
+    }
+
+    float scale = 0.25f;
+    float InputProxy.yawScale()
+    {
+        return scale;
+    }
+
+    float InputProxy.pitchScale()
+    {
+        return scale;
+    }
+
+    bool InputProxy.enableControlUI()
+    {
+        return true;
     }
 }

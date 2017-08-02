@@ -19,13 +19,14 @@ public interface MoveController
 [RequireComponent(typeof(Animator))]
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
+    public GameObject canvas;
+    public GameObject eventSystem;
     public MeasuringJumpHeight measuringJumpHeight;
     public PlanetMovable planetMovable;
     SurfaceFollowCameraBehavior followCameraBehavior;
     public MonoBehaviour followCameraBehaviorSocket;
     public bool adjustCameraWhenMove = true;
     InputProxy inputProxy;
-    public MonoBehaviour inputPorxySocket;
     public Transform m_Cam;
     Rigidbody rigid;
     Animator animator;
@@ -43,14 +44,30 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         //print("cameraBehavior="+cameraBehavior);
 
-        if (inputPorxySocket != null)
-            inputProxy = inputPorxySocket as InputProxy;
- 
+#if (UNITY_ANDROID)
+        AndroidInput androidInput = GetComponent<AndroidInput>();
+        inputProxy = androidInput as InputProxy;
+#else
+        PCInput pcInput = GetComponent<PCInput>();
+        inputProxy = pcInput as InputProxy;
+#endif
+        Debug.Assert(inputProxy != null);
+        if (inputProxy.enableControlUI())
+        {
+            canvas.SetActive(true);
+            eventSystem.SetActive(true);
+        }
+
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         onAirHash = Animator.StringToHash("Base Layer.onAir");
 
         getCamera();
+    }
+
+    public InputProxy getInputProxy()
+    {
+        return inputProxy;
     }
 
     public void getCamera()
@@ -226,6 +243,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     {
         //取得輸入
         Vector2 hv = inputProxy.getHV();
+        hv.Normalize();
         float h = hv.x;
         float v = hv.y;
 

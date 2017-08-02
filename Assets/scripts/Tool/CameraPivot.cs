@@ -51,9 +51,17 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     static public float rotateMinBorader=-60;
     public float localNowPitchDegree;
     public bool flyAway = false;
+    InputProxy inputProxy;
 
     // Use this for initialization
     void Start () {
+
+        Debug.Assert(player != null);
+        PlanetPlayerController ppController = player.GetComponent<PlanetPlayerController>();
+        Debug.Assert(ppController != null);
+        inputProxy=ppController.getInputProxy();
+        Debug.Assert(inputProxy != null);
+
         myParent = transform.parent;
         cameraTargetRot = myParent.rotation;
         CAMERA = transform.GetChild(0);
@@ -120,14 +128,14 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         }     
 
         //pitch旋轉
-        float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y");
+        float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y") * inputProxy.pitchScale();
         addPitch(perPitchDegreen * deltaY * Time.deltaTime);
         Quaternion pitch = Quaternion.Euler(localNowPitchDegree, 0, 0);
 
         if (!lockYaw)
         {
             //yaw旋轉
-            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X");   
+            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X") * inputProxy.yawScale();   
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
             cameraTargetRot = yaw * cameraTargetRot;
 

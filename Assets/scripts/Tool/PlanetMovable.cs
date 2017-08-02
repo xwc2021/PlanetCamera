@@ -9,6 +9,9 @@ public interface InputProxy
     bool pressJump();
     bool pressFire();
     bool holdFire();
+    float yawScale();
+    float pitchScale();
+    bool enableControlUI();
 }
 
 public interface GroundGravityGenerator
