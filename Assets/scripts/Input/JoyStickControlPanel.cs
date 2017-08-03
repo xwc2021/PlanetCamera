@@ -28,9 +28,11 @@ public class JoyStickControlPanel : MonoBehaviour, IPointerDownHandler,IPointerU
         Vector2 nowPos = eventData.position;
         Vector2 diff =nowPos - recordPos;
         //如果超過了
-        if (diff.magnitude > joystick.MovementRange)
+        float limit = joystick.MovementRange;
+        float nowLength = diff.magnitude;
+        if (nowLength > limit)
         {
-            recordPos = recordPos + diff;
+            recordPos = recordPos + diff.normalized*(nowLength-limit);
             joystick.resetStartPos(recordPos);
         }
         joystick.OnDrag(eventData);
