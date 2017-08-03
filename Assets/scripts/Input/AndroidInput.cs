@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.UI;
 
 public class AndroidInput : MonoBehaviour, InputProxy
 {
@@ -63,19 +64,18 @@ public class AndroidInput : MonoBehaviour, InputProxy
         return isFire;
     }
 
-    public void onJumpButtonDown()
+    public void doJump()
     {
         isJump = true;
     }
 
-    public void onFireButtonDown()
+    public void toggleTurbo(Button btn)
     {
-        isFire = true;
-    }
-
-    public void onFireButtonUp()
-    {
-        isFire = false;
+        isFire = !isFire;
+        var colors = btn.colors;
+        colors.normalColor = isFire ? Color.yellow : Color.gray;
+        colors.highlightedColor = isFire ? Color.yellow : Color.gray;
+        btn.colors = colors;
     }
 
     float scale = 0.25f;
