@@ -164,6 +164,7 @@
     <Compile Include="Assets\scripts\help\AlignPlanetCenter.cs" />
     <Compile Include="Assets\scripts\help\MeasuringJumpHeight.cs" />
     <Compile Include="Assets\scripts\Input\AndroidInput.cs" />
+    <Compile Include="Assets\scripts\Input\JoyStickControlPanel.cs" />
     <Compile Include="Assets\scripts\Input\PCInput.cs" />
     <Compile Include="Assets\scripts\Machine\DestoryGameObject.cs" />
     <Compile Include="Assets\scripts\Machine\DisalbeAirCableMotor.cs" />
