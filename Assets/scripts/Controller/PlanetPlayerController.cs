@@ -97,6 +97,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         processWallJump();
         processJump();
         processLadding();
+
+        //從Update移到FixedUpdate
+        //因為無法保證FixedUpdate在第1個frame一定會執行到
+        if (adjustCameraWhenMove)
+            doAdjustByGroundUp();
     }
 
     void processWallJump()
@@ -162,9 +167,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     void Update()
     {
-        if (adjustCameraWhenMove)
-            doAdjustByGroundUp();
-
         //這邊要加上if (!doJump)的判斷，因為：
         //如果在|frame1|按下跳，其實會在|frame2|的Update裡才執行GetButtonDown檢查(在同個Frame裡FixedUpdate會先於Update執行)
         //這時GetButtonDown為true，但要等到|frame3|才會執行到fixedUPdate
