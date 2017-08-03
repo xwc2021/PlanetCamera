@@ -31,19 +31,11 @@ public class MirrorCamera : MonoBehaviour {
         Vector3 temp = targetMirror.position-refCamera.transform.position ;
         transform.position = targetMirror.position - Vector3.Reflect(temp, normal);
 
-
         //Debug.DrawLine(transform.position, transform.position+transform.forward*10, Color.green);
         //Debug.DrawLine(refCamera.transform.position, refCamera.transform.position+ refCamera.transform.forward * 10, Color.blue);
 
-        //set data to shader
-        Matrix4x4 M =targetMirror.transform.localToWorldMatrix;
-        Matrix4x4 V = myCamera.worldToCameraMatrix;
-        
-        mirrorMaterial.SetMatrix("_mirror_camera_vp", P * V );
-
         //從unity 內建的water4來的(早知道unity有內建的水，我就不會自己作了吧)
         //為了clip掉水下的vertex不畫
-        //(這個ObliqueMatrix對我來說就像黑魔法般的存在)
         if (useObliqueMatrix)
         {
             Vector4 clipPlane = CameraSpacePlane(myCamera, targetMirror.position, normal, 1.0f);
@@ -51,6 +43,10 @@ public class MirrorCamera : MonoBehaviour {
         }
         else
             myCamera.projectionMatrix = P;
+
+        //set data to shader
+        Matrix4x4 V = myCamera.worldToCameraMatrix;
+        mirrorMaterial.SetMatrix("_mirror_camera_vp", P * V);
     }
 
     static float Sgn(float a)

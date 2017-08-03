@@ -6,6 +6,7 @@ build/
 temp/
 PC/
 /Android
+/FB
 PlanetCamera_Data/
 PlanetCamera.exe
 Test.exe
