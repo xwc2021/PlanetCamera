@@ -15,6 +15,7 @@ public interface MoveController
 [RequireComponent(typeof(Animator))]
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
+    SurfaceFollowHelper surfaceFollowHelper;
     MultiplayerCameraManager multiplayerCameraManager;
     public PostProcessingBehaviour postProcessingBehaviour;
     public GameObject canvas;
@@ -28,12 +29,12 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Rigidbody rigid;
     Animator animator;
     int onAirHash;
-
     
     bool doJump = false;
     // Use this for initialization
     void Awake()
     {
+        surfaceFollowHelper = GetComponent<SurfaceFollowHelper>();
         multiplayerCameraManager = GetComponent<MultiplayerCameraManager>();
 
         //print("cameraBehavior="+cameraBehavior);
@@ -117,6 +118,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         processLadding();
 
         syncAnimatorAndRot();
+
+        //從Update移到FixedUpdate
+        //因為無法保證FixedUpdate在第1個frame一定會執行到
+        if (surfaceFollowHelper!=null)
+            surfaceFollowHelper.doAdjustByGroundUp();
     }
 
 

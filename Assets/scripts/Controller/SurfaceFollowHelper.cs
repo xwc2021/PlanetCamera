@@ -16,14 +16,7 @@ public class SurfaceFollowHelper : MonoBehaviour {
         previousGroundUp = transform.up;
     }
 
-    // Update is called once per frame
-    void FixedUpdate () {
-        //從Update移到FixedUpdate
-        //因為無法保證FixedUpdate在第1個frame一定會執行到
-        doAdjustByGroundUp();
-    }
-
-    void doAdjustByGroundUp()
+    public void doAdjustByGroundUp()
     {
 
         //如果位置有更新，就更新FlowPoint
