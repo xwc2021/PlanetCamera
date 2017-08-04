@@ -20,6 +20,7 @@ public interface MoveController
 [RequireComponent(typeof(Animator))]
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
+    MultiplayerCameraManager multiplayerCameraManager;
     public PostProcessingBehaviour postProcessingBehaviour;
     public GameObject canvas;
     public GameObject eventSystem;
@@ -39,6 +40,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     // Use this for initialization
     void Awake()
     {
+        multiplayerCameraManager = GetComponent<MultiplayerCameraManager>();
+
         previousGroundUp = transform.up;
 
         if (followCameraBehaviorSocket != null)
@@ -83,6 +86,33 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         }
     }
 
+    void setAnimatorMoving()
+    {
+        bool moving = rigid.velocity.magnitude > 0.05;
+        animator.SetBool("moving", moving);
+    }
+
+    void setAnimatorDoJump()
+    {
+        animator.SetBool("doJump", true);
+    }
+
+    void setAnimatorOnAir()
+    {
+        animator.SetBool("onAir", false);
+    }
+
+    void syncAnimatorAndRot()
+    {
+        if (multiplayerCameraManager != null)
+        {
+            bool moving = animator.GetBool("moving");
+            bool doJump =animator.GetBool("doJump");
+            bool onAir = animator.GetBool("onAir");
+            multiplayerCameraManager.CmdSyncAnimatorAndRot(moving, doJump, onAir, transform.rotation);
+        }
+    }
+
     void FixedUpdate()
     {
         planetMovable.setupGravity();
@@ -91,12 +121,13 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         planetMovable.executeGravityForce();
         planetMovable.executeMoving();
 
-        bool moving = rigid.velocity.magnitude > 0.05;
-        animator.SetBool("moving", moving);
+        setAnimatorMoving();
 
         processWallJump();
         processJump();
         processLadding();
+
+        syncAnimatorAndRot();
 
         //從Update移到FixedUpdate
         //因為無法保證FixedUpdate在第1個frame一定會執行到
@@ -104,7 +135,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
             doAdjustByGroundUp();
     }
 
-    void processWallJump()
+
+
+        void processWallJump()
     {
         //jump from wall
         if (!planetMovable.Ladding && planetMovable.TouchWall)
@@ -132,8 +165,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
                 planetMovable.executeJump();
 
-                if (animator != null)
-                    animator.SetBool("doJump", true);
+                setAnimatorDoJump();
 
                 doJump = false;
             }
@@ -156,7 +188,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
                 bool isOnAir = onAirHash == animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
                 if (isOnAir)
                 {
-                    animator.SetBool("onAir", false);
+                    setAnimatorOnAir();
                     if (measuringJumpHeight != null)
                         measuringJumpHeight.stopRecord();
                 }
