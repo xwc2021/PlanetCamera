@@ -10,11 +10,9 @@ public class MultiplayerCameraManager : NetworkBehaviour {
     public PlanetPlayerController planetPlayerController;
 
     Animator animator;
-    Rigidbody rigid;
     public void Awake()
     {
         animator = GetComponent<Animator>();
-        rigid = GetComponent<Rigidbody>();
     }
 
     public override void OnStartLocalPlayer()

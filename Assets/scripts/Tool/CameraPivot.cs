@@ -6,7 +6,7 @@ using System;
 
  
 
-public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
+public class CameraPivot : MonoBehaviour
 {
     public bool doCameraCollison = true;
     float fixedR;
@@ -280,7 +280,7 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     Quaternion sumSurfaceRot = Quaternion.identity;
     bool doSurfaceFollow = false;
 
-    void SurfaceFollowCameraBehavior.setSurfaceRotate(bool doRotateFollow, Quaternion adjustRotate)
+    public void setSurfaceRotate(bool doRotateFollow, Quaternion adjustRotate)
     {
         sumSurfaceRot = adjustRotate* sumSurfaceRot;
         this.doSurfaceFollow = doRotateFollow;

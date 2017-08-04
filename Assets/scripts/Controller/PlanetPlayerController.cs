@@ -4,11 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 
-public interface SurfaceFollowCameraBehavior
-{
-    void setSurfaceRotate(bool doRotateFollow, Quaternion adjustRot);
-}
-
 public interface MoveController
 {
     Vector3 getMoveForce();
@@ -26,8 +21,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     public GameObject eventSystem;
     public MeasuringJumpHeight measuringJumpHeight;
     public PlanetMovable planetMovable;
-    SurfaceFollowCameraBehavior followCameraBehavior;
-    public MonoBehaviour followCameraBehaviorSocket;
+
     public bool adjustCameraWhenMove = true;
     InputProxy inputProxy;
     public Transform m_Cam;
@@ -35,17 +29,12 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Animator animator;
     int onAirHash;
 
-    Vector3 previousGroundUp;
+    
     bool doJump = false;
     // Use this for initialization
     void Awake()
     {
         multiplayerCameraManager = GetComponent<MultiplayerCameraManager>();
-
-        previousGroundUp = transform.up;
-
-        if (followCameraBehaviorSocket != null)
-            followCameraBehavior = followCameraBehaviorSocket as SurfaceFollowCameraBehavior;
 
         //print("cameraBehavior="+cameraBehavior);
 
@@ -128,16 +117,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         processLadding();
 
         syncAnimatorAndRot();
-
-        //從Update移到FixedUpdate
-        //因為無法保證FixedUpdate在第1個frame一定會執行到
-        if (adjustCameraWhenMove)
-            doAdjustByGroundUp();
     }
 
 
 
-        void processWallJump()
+    void processWallJump()
     {
         //jump from wall
         if (!planetMovable.Ladding && planetMovable.TouchWall)
@@ -209,49 +193,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
         if (!doJump)
             doJump = inputProxy.pressJump();
-    }
-
-    void doAdjustByGroundUp()
-    {
-        if (followCameraBehavior == null)
-            return;
-
-        //如果位置有更新，就更新FlowPoint
-        //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
-
-        Vector3 groundUp = planetMovable.GroundUp;
-
-        Vector3 Z = Vector3.Cross(previousGroundUp, groundUp);
-        //Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
-        //Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
-        //Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
-
-        //算出2個frame之間在planet上移動的角度差
-        float cosValue = Vector3.Dot(previousGroundUp, groundUp);
-
-        //http://answers.unity3d.com/questions/778626/mathfacos-1-return-nan.html
-        //上面說Dot有可能會>1或<-1
-        cosValue = Mathf.Max(-1.0f, cosValue);
-        cosValue = Mathf.Min(1.0f, cosValue);
-
-        float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
-        //print("rotDegree=" + rotDegree);
-
-        if (float.IsNaN(rotDegree))
-        {
-            print("IsNaN");
-            return;
-        }
-
-        float threshold = 0.1f;
-        if (rotDegree > threshold)
-        {
-            //print("rotDegree=" + rotDegree);
-            Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
-
-            followCameraBehavior.setSurfaceRotate(true, q);
-            previousGroundUp = groundUp;//有轉動才更新
-        }
     }
 
     //https://msdn.microsoft.com/zh-tw/library/14akc2c7.aspx
