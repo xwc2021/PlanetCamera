@@ -15,7 +15,6 @@ public class CameraPivot : MonoBehaviour
     public Transform player;
     public float yawFollowSpeed = 1.5f;
     public float rotateFollowSpeed = 5;
-    public bool follow = true;
     public float posFollowSpeed = 5;
     public float perPitchDegreen = 200;
     public float perYawDegreen = 600;
@@ -33,7 +32,6 @@ public class CameraPivot : MonoBehaviour
     public bool lockYaw = false;
 
     float R;
-
     public float RScale = 1;
     public void resetTargetRScale(float s)
     {
@@ -48,7 +46,7 @@ public class CameraPivot : MonoBehaviour
     static public float rotateMaxBorader=240;
     static public float rotateMinBorader=-60;
     public float localNowPitchDegree;
-    static bool flyAway = true;
+
     InputProxy inputProxy;
 
     // Use this for initialization
@@ -77,8 +75,7 @@ public class CameraPivot : MonoBehaviour
 
     private void Start()
     {
-        if (flyAway)
-            transform.parent = null;
+        transform.parent = null;
     }
 
     public void resetRecordPos(Vector3 v,float scaleR)
@@ -111,24 +108,64 @@ public class CameraPivot : MonoBehaviour
         cameraTargetRot = yaw * cameraTargetRot;
     }
 
+    void doPosFollow(out bool doYawFollow)
+    {
+        posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
+
+        Vector3 old = recordPos;
+        recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
+
+        float diff = (old - recordPos).magnitude;
+        //print(diff);
+        if (autoYawFollow)
+            doYawFollow = diff > doYawFollowDiff;//超過門檻值才作
+        else
+            doYawFollow = false;
+
+        if (diff > 0.0001f)
+            transform.position = recordPos;
+    }
+
+    void calculateAutoYawFollowTurnDiff(bool doYawFollow,Quaternion final)
+    {
+        if (doYawFollow)
+        {
+            //使用cameraForwardOnPlane和targetForward的夾角作為yawFollow的旋轉量
+            Vector3 cameraForwardInWorld = final * Vector3.forward;
+            Vector3 planeNormal = myParent.up;
+            Vector3 cameraForwardOnPlane = Vector3.ProjectOnPlane(cameraForwardInWorld, planeNormal);
+            cameraForwardOnPlane.Normalize();
+
+            //camera繞過頭頂的情況
+            if (localNowPitchDegree > 90)
+                cameraForwardOnPlane = -cameraForwardOnPlane;
+
+            Vector3 targetForward = myParent.forward;
+
+            Vector3 helpV = Vector3.Cross(cameraForwardOnPlane, targetForward);
+            float dotValue = Vector3.Dot(cameraForwardOnPlane, targetForward);
+            float sign = Vector3.Dot(helpV, planeNormal) > 0.0f ? 1.0f : -1.0f;
+            yawFollowDegree = Mathf.Acos(dotValue) * Mathf.Rad2Deg;
+
+            //在限定的範圍內才作yawFollow
+            bool doAdjust = yawFollowDegree > yawFollowMin && yawFollowDegree < yawFollowMax;
+            autoYawFollowTurnDiff = doAdjust ? Quaternion.AngleAxis(sign * yawFollowDegree, recordParentInitUp) : Quaternion.identity;
+
+            //draw debug
+            Vector3 pPos = myParent.transform.position;
+            float scale = 5.0f;
+            Debug.DrawLine(pPos, pPos + scale * targetForward, Color.yellow);
+            Debug.DrawLine(pPos, pPos + scale * cameraForwardOnPlane, Color.blue);
+        }
+        else
+            autoYawFollowTurnDiff = Quaternion.identity;
+    }
+
     float toSpeed;
     void LateUpdate() {
 
-        if (follow)
-        {
-            posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
-
-            Vector3 old = recordPos;
-            recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
-            
-            float diff = (old - recordPos).magnitude;
-            //print(diff);
-            if(autoYawFollow)
-                doYawFollow = diff > doYawFollowDiff;//超過門檻值才作
-
-            if(diff>0.0001f)
-                transform.position = recordPos;
-        }     
+        bool doYawFollow;
+        doPosFollow(out doYawFollow);
 
         //pitch旋轉
         float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y") * inputProxy.pitchScale();
@@ -142,14 +179,35 @@ public class CameraPivot : MonoBehaviour
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
             cameraTargetRot = yaw * cameraTargetRot;
 
-            //doYawFollow
+            //doYawFollow by autoYawFollowTurnDiff
             if (autoYawFollow && doYawFollow)
             {
                 Quaternion y = Quaternion.Slerp(Quaternion.identity, autoYawFollowTurnDiff, yawFollowSpeed * Time.deltaTime);
                 cameraTargetRot = y * cameraTargetRot;
             }
-        }      
+        }
 
+        transform.rotation = getTemporarySurfaceFollowModify() * cameraTargetRot * pitch;
+
+        if (autoYawFollow)
+        {
+            Quaternion final = sumSurfaceRot * cameraTargetRot * pitch;//使用sumSurfaceRot來計算!
+            calculateAutoYawFollowTurnDiff(doYawFollow,final);
+        }  
+         
+        if (!firstPersonMode)
+        {
+            adjustDistanceToTarget();
+
+            if(doCameraCollison)
+                doCameraCollision();
+        }
+        else
+            syncRotation();
+    }
+
+    Quaternion getTemporarySurfaceFollowModify()
+    {
         Quaternion surfaceFollow = Quaternion.identity;
         //因為可以在曲面(球、甜甜圈、knock)上移動，所以要有這一項的修正
         if (doSurfaceFollow)
@@ -157,62 +215,16 @@ public class CameraPivot : MonoBehaviour
             temporarySurfaceRot = Quaternion.Slerp(temporarySurfaceRot, sumSurfaceRot, rotateFollowSpeed * Time.deltaTime);
             surfaceFollow = temporarySurfaceRot;
         }
+        return surfaceFollow;
+    }
 
-        transform.rotation = surfaceFollow * cameraTargetRot * pitch;
-
-        //calculate yawFollow
-        if (autoYawFollow)
-        {
-            if (doYawFollow)
-            {
-                //使用cameraForwardOnPlane和targetForward的夾角作為yawFollow的旋轉量
-                Quaternion final = sumSurfaceRot * cameraTargetRot * pitch;//使用sumSurfaceRot來計算!
-                Vector3 cameraForwardInWorld = final * Vector3.forward;
-                Vector3 planeNormal = myParent.up;
-                Vector3 cameraForwardOnPlane = Vector3.ProjectOnPlane(cameraForwardInWorld, planeNormal);
-                cameraForwardOnPlane.Normalize();
-
-                //camera繞過頭頂的情況
-                if (localNowPitchDegree > 90)
-                    cameraForwardOnPlane = -cameraForwardOnPlane;
-
-                Vector3 targetForward = myParent.forward;
-
-                Vector3 helpV = Vector3.Cross(cameraForwardOnPlane, targetForward);
-                float dotValue = Vector3.Dot(cameraForwardOnPlane, targetForward);
-                float sign = Vector3.Dot(helpV, planeNormal) > 0.0f ? 1.0f : -1.0f;
-                yawFollowDegree = Mathf.Acos(dotValue) * Mathf.Rad2Deg;
-
-                //在限定的範圍內才作yawFollow
-                bool doAdjust = yawFollowDegree > yawFollowMin && yawFollowDegree < yawFollowMax;
-                autoYawFollowTurnDiff = doAdjust ? Quaternion.AngleAxis(sign * yawFollowDegree, recordParentInitUp) : Quaternion.identity;
-
-                //draw debug
-                Vector3 pPos = myParent.transform.position;
-                float scale = 5.0f;
-                Debug.DrawLine(pPos, pPos + scale * targetForward, Color.yellow);
-                Debug.DrawLine(pPos, pPos + scale * cameraForwardOnPlane, Color.blue);
-            }
-            else
-                autoYawFollowTurnDiff = Quaternion.identity;
-        }
-
-        if (firstPersonMode)
-        {
-            //更新模型轉向
-            Vector3 right = Vector3.Cross(syncDirTarget.up, transform.forward);
-            Vector3 forward = Vector3.Cross(right, syncDirTarget.up);
-            Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
-            syncDirTarget.rotation = q;
-        }
- 
-        if (!firstPersonMode)
-        {
-            adjustR();
-
-            if(doCameraCollison)
-                doCameraCollision();
-        }
+    void syncRotation()
+    {
+        //更新模型轉向
+        Vector3 right = Vector3.Cross(syncDirTarget.up, transform.forward);
+        Vector3 forward = Vector3.Cross(right, syncDirTarget.up);
+        Quaternion q = Quaternion.LookRotation(forward, syncDirTarget.up);
+        syncDirTarget.rotation = q;
     }
 
     void doCameraCollision()
@@ -265,7 +277,7 @@ public class CameraPivot : MonoBehaviour
         }
     }
 
-    void adjustR()
+    void adjustDistanceToTarget()
     {
         float Rscale = Input.GetAxis("Mouse ScrollWheel");
         R += Rdiff * Rscale * Time.deltaTime;
@@ -287,7 +299,6 @@ public class CameraPivot : MonoBehaviour
     }
 
     public bool autoYawFollow = false;
-    bool doYawFollow=false;
     Quaternion autoYawFollowTurnDiff= Quaternion.identity;
     public  float doYawFollowDiff = 0.2f;
     public float yawFollowDegree;
