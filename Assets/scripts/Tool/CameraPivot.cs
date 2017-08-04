@@ -35,22 +35,20 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
     float R;
 
     public float RScale = 1;
-    float targetRScale=1;
     public void resetTargetRScale(float s)
     {
-        targetRScale = s;
+        RScale = s;
     }
 
     public void resetRScale()
     {
         RScale = 1;
-        targetRScale = 1;
     }
 
     static public float rotateMaxBorader=240;
     static public float rotateMinBorader=-60;
     public float localNowPitchDegree;
-    public bool flyAway = false;
+    static bool flyAway = true;
     InputProxy inputProxy;
 
     // Use this for initialization
@@ -74,13 +72,13 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
 
         //記錄一開始的pitch值
         localNowPitchDegree = transform.localRotation.eulerAngles.x;
+        toSpeed = posFollowSpeed;
+    }
 
-        //只解除parent關系，只要player有縮小就是會搖動
-        //還是得在doScale裡鎖scale的增加值
+    private void Start()
+    {
         if (flyAway)
             transform.parent = null;
-
-        toSpeed = posFollowSpeed;
     }
 
     public void resetRecordPos(Vector3 v,float scaleR)
@@ -210,8 +208,6 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
  
         if (!firstPersonMode)
         {
-            //Endless Corrider Scene縮放player時所以也要跟著縮放R
-            RScale = Mathf.Lerp(RScale, targetRScale, posFollowSpeed * Time.deltaTime);
             adjustR();
 
             if(doCameraCollison)
@@ -275,7 +271,8 @@ public class CameraPivot : MonoBehaviour, SurfaceFollowCameraBehavior
         R += Rdiff * Rscale * Time.deltaTime;
         R = Mathf.Max(limitR, R);
 
-        CAMERA.localPosition = new Vector3(0, 0, -R * RScale);
+        Vector3 newPos = new Vector3(0, 0, -R * RScale);
+        CAMERA.localPosition = Vector3.Lerp(CAMERA.localPosition, newPos, posFollowSpeed * Time.deltaTime);
         Debug.DrawLine(transform.position, CAMERA.position, Color.red);
     }
 
