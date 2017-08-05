@@ -146,6 +146,7 @@
     <Compile Include="Assets\scripts\AnimationState\QBox\QBoxReady.cs" />
     <Compile Include="Assets\scripts\Controller\FollowerController.cs" />
     <Compile Include="Assets\scripts\Controller\PlanetPlayerController.cs" />
+    <Compile Include="Assets\scripts\Controller\RigidbodyWrapper.cs" />
     <Compile Include="Assets\scripts\Controller\StandingController.cs" />
     <Compile Include="Assets\scripts\Controller\SurfaceFollowHelper.cs" />
     <Compile Include="Assets\scripts\EndlessCorridor\EndlessCorridorHolder.cs" />

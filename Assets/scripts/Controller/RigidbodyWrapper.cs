@@ -1,29 +1,27 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
-public class StandingController : MonoBehaviour,MoveController {
+public class RigidbodyWrapper : MonoBehaviour, MoveController
+{
 
     PlanetMovable planetMovable;
-
     private void Awake()
     {
         planetMovable = GetComponent<PlanetMovable>();
     }
 
-    bool MoveController.doTurbo()
-    {
-        return false;
-    }
-
     private void FixedUpdate()
     {
         planetMovable.setupGravity();
-        planetMovable.setupRequireData();
         planetMovable.executeGravityForce();
+    }
+
+    bool MoveController.doTurbo()
+    {
+        return false;
     }
 
     Vector3 MoveController.getMoveForce()

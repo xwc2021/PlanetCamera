@@ -13,6 +13,7 @@ public interface MoveController
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlanetMovable))]
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
     SurfaceFollowHelper surfaceFollowHelper;
@@ -21,7 +22,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     public GameObject canvas;
     public GameObject eventSystem;
     public MeasuringJumpHeight measuringJumpHeight;
-    public PlanetMovable planetMovable;
+    PlanetMovable planetMovable;
 
     public bool adjustCameraWhenMove = true;
     InputProxy inputProxy;
@@ -34,6 +35,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     // Use this for initialization
     void Awake()
     {
+        planetMovable = GetComponent<PlanetMovable>();
         surfaceFollowHelper = GetComponent<SurfaceFollowHelper>();
         multiplayerCameraManager = GetComponent<MultiplayerCameraManager>();
 
@@ -48,6 +50,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         inputProxy = pcInput as InputProxy;
 #endif
         Debug.Assert(inputProxy != null);
+        print("here");
         if (inputProxy.enableControlUI())
         {
             canvas.SetActive(true);

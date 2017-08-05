@@ -6,15 +6,17 @@ using System;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlanetMovable))]
 public class FollowerController : MonoBehaviour, MoveController
 {
-    public PlanetMovable planetMovable;
+    PlanetMovable planetMovable;
     public Transform followTarget;
     Rigidbody rigid;
     Animator animator;
 
     private void Awake()
     {
+        planetMovable = GetComponent<PlanetMovable>();
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
     }

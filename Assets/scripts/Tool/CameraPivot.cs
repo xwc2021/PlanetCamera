@@ -47,15 +47,14 @@ public class CameraPivot : MonoBehaviour
     static public float rotateMinBorader=-60;
     public float localNowPitchDegree;
 
+    PlanetPlayerController ppController;
     InputProxy inputProxy;
 
     // Use this for initialization
     void Awake () {
         Debug.Assert(player != null);
-        PlanetPlayerController ppController = player.GetComponent<PlanetPlayerController>();
+        ppController = player.GetComponent<PlanetPlayerController>();
         Debug.Assert(ppController != null);
-        inputProxy=ppController.getInputProxy();
-        Debug.Assert(inputProxy != null);
 
         myParent = transform.parent;
         cameraTargetRot = myParent.rotation;
@@ -163,6 +162,9 @@ public class CameraPivot : MonoBehaviour
 
     float toSpeed;
     void LateUpdate() {
+
+        inputProxy = ppController.getInputProxy();
+        Debug.Assert(inputProxy != null);
 
         bool doYawFollow;
         doPosFollow(out doYawFollow);
