@@ -21,6 +21,7 @@ public class CameraPivot : MonoBehaviour
     public float Rdiff = 300;
     public Transform syncDirTarget;
     public bool firstPersonMode = false;
+    public bool posFollowLerp = true;
     public float limitR = 2.0f;
     Vector3 recordParentInitUp;
     Vector3 recordPos;
@@ -95,6 +96,9 @@ public class CameraPivot : MonoBehaviour
 
     public void setFollowHighSpeed(bool b)
     {
+        if (!posFollowLerp)
+            return;
+
         if (b)
             toSpeed = 300;
         else
@@ -112,7 +116,11 @@ public class CameraPivot : MonoBehaviour
         posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
 
         Vector3 old = recordPos;
-        recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
+
+        if (posFollowLerp)
+            recordPos = Vector3.Lerp(recordPos, myParent.position, posFollowSpeed * Time.deltaTime);
+        else
+            recordPos = myParent.position;
 
         float diff = (old - recordPos).magnitude;
         //print(diff);
