@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class SetParent : MonoBehaviour {
 
-    
-    
+    public bool cameraFollowUsingHighSpeed=true;
 
     void OnTriggerEnter(Collider other)
     {
@@ -14,9 +13,12 @@ public class SetParent : MonoBehaviour {
 
         other.transform.parent = transform;
 
-        SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
-        if (setCameraPivot != null)
-            setCameraPivot.setFollowHighSpeed(true);
+        if (cameraFollowUsingHighSpeed)
+        {
+            SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
+            if (setCameraPivot != null)
+                setCameraPivot.setFollowHighSpeed(true);
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -26,8 +28,11 @@ public class SetParent : MonoBehaviour {
 
         other.transform.parent = null;
 
-        SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
-        if (setCameraPivot != null)
-            setCameraPivot.setFollowHighSpeed(false);
+        if (cameraFollowUsingHighSpeed)
+        {
+            SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
+            if (setCameraPivot != null)
+                setCameraPivot.setFollowHighSpeed(false);
+        }     
     }
 }
