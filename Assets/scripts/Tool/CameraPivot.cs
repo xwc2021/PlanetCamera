@@ -73,11 +73,6 @@ public class CameraPivot : MonoBehaviour
         toSpeed = posFollowSpeed;
     }
 
-    private void Start()
-    {
-        transform.parent = null;
-    }
-
     public void resetRecordPos(Vector3 v,float scaleR)
     {
         recordPos = scaleR * recordPos+v;
@@ -94,25 +89,27 @@ public class CameraPivot : MonoBehaviour
         localNowPitchDegree = newPitchDegree;
     }
 
-    public void setFollowHighSpeed(bool b)
-    {
-        if (!posFollowLerp)
-            return;
-
-        if (b)
-            toSpeed = 300;
-        else
-            toSpeed = 5;     
-    }
-
     public void adjustYaw(float degree)
     {
         Quaternion yaw = Quaternion.AngleAxis(degree, recordParentInitUp);
         cameraTargetRot = yaw * cameraTargetRot;
     }
 
-    void doPosFollow(out bool doYawFollow)
-    {
+    private void Start(){
+        transform.parent = null;
+    }
+
+    public void setFollowHighSpeed(bool b){
+        if (!posFollowLerp)
+            return;
+
+        if (b)
+            toSpeed = 300;
+        else
+            toSpeed = 5;
+    }
+
+    void doPosFollow(out bool doYawFollow){
         posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
 
         Vector3 old = recordPos;
@@ -125,7 +122,7 @@ public class CameraPivot : MonoBehaviour
         float diff = (old - recordPos).magnitude;
         //print(diff);
         if (autoYawFollow)
-            doYawFollow = diff > doYawFollowDiff;//超過門檻值才作
+            doYawFollow = diff > doYawFollowDiff;//set a threshold
         else
             doYawFollow = false;
 
