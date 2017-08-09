@@ -267,6 +267,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         platform = null;
     }
 
+    //when using "set parent method" to move player on MovingPlatform.
+    //this method will not be called.
     void syncPositionByPlatform()
     {
         if (platform == null)
