@@ -132,13 +132,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="PlanetCamera.csproj">
-      <Project>{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}</Project>
-      <Name>PlanetCamera</Name>
-    </ProjectReference>
     <ProjectReference Include="PlanetCamera.Plugins.csproj">
       <Project>{9C24C2EC-745C-D917-D7CE-458B998FA298}</Project>
       <Name>PlanetCamera.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlanetCamera.csproj">
+      <Project>{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}</Project>
+      <Name>PlanetCamera</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

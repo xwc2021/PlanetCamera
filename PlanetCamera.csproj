@@ -179,6 +179,7 @@
     <Compile Include="Assets\scripts\Machine\MovingPlatform.cs" />
     <Compile Include="Assets\scripts\Machine\PosFollow.cs" />
     <Compile Include="Assets\scripts\Machine\QuestionBox.cs" />
+    <Compile Include="Assets\scripts\Machine\RecordPositionDiff.cs" />
     <Compile Include="Assets\scripts\Machine\SetParent.cs" />
     <Compile Include="Assets\scripts\Machine\SinMove.cs" />
     <Compile Include="Assets\scripts\MoveForceMonitor\MoveForceParameterRepository.cs" />

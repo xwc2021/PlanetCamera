@@ -111,6 +111,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         planetMovable.setupGravity();
         planetMovable.setupRequireData();
 
+        syncPositionByPlatform();
+
         planetMovable.executeGravityForce();
         planetMovable.executeMoving();
 
@@ -252,5 +254,24 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     bool MoveController.doTurbo()
     {
         return inputProxy.holdFire();
+    }
+
+    RecordPositionDiff platform;
+    public void setPlatform(RecordPositionDiff pPlatform)
+    {
+        platform = pPlatform;
+    }
+
+    public void clearPlatform()
+    {
+        platform = null;
+    }
+
+    void syncPositionByPlatform()
+    {
+        if (platform == null)
+            return;
+
+        transform.position += platform.getDiff();
     }
 }
