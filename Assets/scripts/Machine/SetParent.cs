@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class SetParent : MonoBehaviour {
 
-    public bool cameraFollowUsingHighSpeed=true;
+    [SerializeField]
+    bool cameraFollowUsingHighSpeed=false;
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
         if(!TagDefined.canOnMovableSet(other.gameObject.tag))
              return;

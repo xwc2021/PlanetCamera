@@ -21,7 +21,7 @@ public class RecordPositionDiff : MonoBehaviour {
         oldPos = newPos;
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
         if (!TagDefined.canOnMovableSet(other.gameObject.tag))
             return;
