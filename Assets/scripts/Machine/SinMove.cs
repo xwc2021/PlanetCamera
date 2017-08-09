@@ -18,8 +18,11 @@ public class SinMove : MonoBehaviour {
     void FixedUpdate () {
         Vector3 newPos = recordPos + 5 * Mathf.Sin(Time.fixedTime) * transform.right;
         if (useMovePositon)
+            //rigid.position = newPos;
             rigid.MovePosition(newPos);
         else
-            transform.position = Vector3.Lerp(transform.position,newPos,Time.fixedDeltaTime*speed);
-	}
+            transform.position= newPos;
+            //transform.position = Vector3.Lerp(transform.position, newPos, Time.fixedDeltaTime * speed);
+            //rigid.position = newPos;
+    }
 }

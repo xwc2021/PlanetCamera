@@ -95,8 +95,23 @@ public class CameraPivot : MonoBehaviour
         cameraTargetRot = yaw * cameraTargetRot;
     }
 
+    private void FixedUpdate()
+    {
+        updateCamera();
+    }
+
     private void Start(){
         transform.parent = null;
+
+        //StartCoroutine(doSomethingAfterFixedUpdate());
+    }
+
+    IEnumerator doSomethingAfterFixedUpdate()
+    {
+        yield return new WaitForFixedUpdate();
+        updateCamera();
+
+        StartCoroutine(doSomethingAfterFixedUpdate());
     }
 
     public void setFollowHighSpeed(bool b){
@@ -166,7 +181,7 @@ public class CameraPivot : MonoBehaviour
     }
 
     float toSpeed;
-    void LateUpdate() {
+    void updateCamera() {
 
         inputProxy = ppController.getInputProxy();
         Debug.Assert(inputProxy != null);

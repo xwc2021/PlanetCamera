@@ -272,6 +272,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (platform == null)
             return;
 
-        transform.position += platform.getDiff();
+        rigid.position += platform.getDiff();
+        //transform.position += platform.getDiff();
     }
 }
