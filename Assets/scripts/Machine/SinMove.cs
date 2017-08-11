@@ -21,8 +21,8 @@ public class SinMove : MonoBehaviour {
             //rigid.position = newPos;
             rigid.MovePosition(newPos);
         else
-            transform.position= newPos;
-            //transform.position = Vector3.Lerp(transform.position, newPos, Time.fixedDeltaTime * speed);
+            //transform.position= newPos;
+            transform.position = Vector3.Lerp(transform.position, newPos, Time.fixedDeltaTime * speed);
             //rigid.position = newPos;
     }
 }
