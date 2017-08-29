@@ -52,7 +52,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         inputProxy = pcInput as InputProxy;
 #endif
         Debug.Assert(inputProxy != null);
-        print("here");
         if (inputProxy.enableControlUI())
         {
             canvas.SetActive(true);
