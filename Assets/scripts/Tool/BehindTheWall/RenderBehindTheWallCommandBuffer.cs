@@ -14,15 +14,28 @@ public class RenderBehindTheWallCommandBuffer
         return instance;
     }
 
-    CommandBuffer bufDrawDepth;
     Camera cam;
     Material material;
+    RenderTexture depth;
     private RenderBehindTheWallCommandBuffer()
     {
-        bufDrawDepth = new CommandBuffer();
+        cam = Camera.main;
+
+        //這裡用RenderTextureFormat.Depth就看不到效果
+        depth = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 24, RenderTextureFormat.RFloat);
+        Debug.Log(cam.pixelHeight);
+        depth.Create();
+
+        var depthID = new RenderTargetIdentifier(depth);
+
+        var bufDrawDepth = new CommandBuffer();
         bufDrawDepth.name = "Draw Depth Texture";
 
-        cam = Camera.main;
+        //在Deffred Render這樣用OK，還沒測過Forward Render
+        bufDrawDepth.Blit(BuiltinRenderTextureType.ResolvedDepth, depthID);
+        bufDrawDepth.SetGlobalTexture("_DepthTexture", depthID);
+
+        cam.AddCommandBuffer(CameraEvent.AfterSkybox, bufDrawDepth);
     }
 
     public void setMaterial(Material material)
