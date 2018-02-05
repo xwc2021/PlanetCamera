@@ -57,23 +57,8 @@
 				uv.x = (uv.x + 1.0f)*0.5f;
 				uv.y = (uv.y + 1.0f)*0.5f;
 
-				#if SHADER_API_D3D11
-					uv.y = 1.0f - uv.y;//DX11 上下會反過來
-				#endif
-
-				
 				float zBuffer = tex2D(_DepthTexture, uv);
 						
-#if SHADER_API_D3D11
-				float z = (i.vertex2.z / i.vertex2.w);
-				float bias = 0.005f;
-				//靠近Camera是1，遠離是0
-				z += bias;//往鏡頭靠近，才不會判定在身體後面
-				if (z > zBuffer)
-					discard;
-#endif
-
-#if SHADER_API_GLCORE
 				float z = (i.vertex2.z / i.vertex2.w);
 				z = (z + 1.0f)*0.5f;
 				float bias = 0.005f;
@@ -81,7 +66,6 @@
 				z -= bias;//往鏡頭靠近，才不會判定在身體後面
 				if (z < zBuffer)
 					discard;
-#endif
 
 				return _BaseColor;
 			}

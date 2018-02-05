@@ -31,8 +31,8 @@ public class RenderBehindTheWallCommandBuffer
         var bufDrawDepth = new CommandBuffer();
         bufDrawDepth.name = "Draw Depth Texture";
 
-        //在Deffred Render這樣用OK，還沒測過Forward Render
-        bufDrawDepth.Blit(BuiltinRenderTextureType.ResolvedDepth, depthID);
+        var src = cam.renderingPath == RenderingPath.Forward ? BuiltinRenderTextureType.Depth : BuiltinRenderTextureType.ResolvedDepth;
+        bufDrawDepth.Blit(src, depthID);
         bufDrawDepth.SetGlobalTexture("_DepthTexture", depthID);
 
         cam.AddCommandBuffer(CameraEvent.AfterSkybox, bufDrawDepth);
