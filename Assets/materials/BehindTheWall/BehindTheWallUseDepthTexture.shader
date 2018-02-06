@@ -2,12 +2,11 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
-		_BaseColor ("BaseColor",Color) =(1,1,1,1)
+		_BaseColor ("BaseColor",Color) =(0,1,0,1)
 	}
 	SubShader
 	{
-		Tags { "Queue" = "Transparent-1" "RenderType"="Opaque" }
+		Tags { "Queue" = "Transparent-2" "RenderType"="Opaque" }
 		LOD 100
 
 		Pass
@@ -41,8 +40,6 @@
 			};
 
 			sampler2D _DepthTexture;
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
 			float4 _BaseColor;
 			
 			v2f vert (appdata v)
@@ -50,7 +47,6 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.vertex2 = UnityObjectToClipPos(v.vertex);
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				return o;
 			}
 			
@@ -65,7 +61,7 @@
 						
 				float z = (i.vertex2.z / i.vertex2.w);
 				z = (z + 1.0f)*0.5f;
-				float bias = 0.005f;
+				float bias = 0.001f;
 				//靠近Camera是0，遠離是1
 				z -= bias;//往鏡頭靠近，才不會判定在身體後面
 				if (z < zBuffer)

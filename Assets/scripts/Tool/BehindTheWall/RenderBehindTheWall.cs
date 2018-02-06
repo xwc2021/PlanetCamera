@@ -12,7 +12,7 @@ public class RenderBehindTheWall : MonoBehaviour {
 
     //這樣才能抽換
     delegate void DrawMeshFun(Mesh mesh, ref Matrix4x4 matrix);
-    DrawMeshFun mDrawBehindTheWallUseDepthTextureFun;
+    DrawMeshFun mDrawBehindTheWallFun;
     DrawMeshFun mDrawMaskFun;
 
     void Awake()
@@ -21,20 +21,28 @@ public class RenderBehindTheWall : MonoBehaviour {
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         meshFilters = GetComponentsInChildren<MeshFilter>();
         skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-        mDrawBehindTheWallUseDepthTextureFun = RenderBehindTheWallCommandBuffer.getInstance().DrawBehindTheWallUseDepthTexture;
+        mDrawBehindTheWallFun = RenderBehindTheWallCommandBuffer.getInstance().DrawBehindTheWall;
         mDrawMaskFun = RenderBehindTheWallCommandBuffer.getInstance().DrawMask;
 
-        AjustRenderQueue();
+        
     }
 
-    void AjustRenderQueue()
+    RenderBehindTheWallCamera.QueueOrderForMainBody queueOrderForMainBody;
+    void Start()
     {
-        int GeometryOrder = 2050;
+        queueOrderForMainBody = RenderBehindTheWallCommandBuffer.getInstance().GetQueueOrderForMainBody();
+        AjustRenderQueue((int)queueOrderForMainBody);
+    }
+
+
+    void AjustRenderQueue(int renderQueueOrder)
+    {
+
         foreach (var mr in meshRenderers)
         {
             foreach (var m in mr.materials)
             {
-                m.renderQueue = GeometryOrder;
+                m.renderQueue = renderQueueOrder;
             }
         }
 
@@ -42,7 +50,7 @@ public class RenderBehindTheWall : MonoBehaviour {
         {
             foreach (var m in smr.materials)
             {
-                m.renderQueue = GeometryOrder;
+                m.renderQueue = renderQueueOrder;
             }
         }
     }
@@ -55,7 +63,7 @@ public class RenderBehindTheWall : MonoBehaviour {
         if (!SharedTool.IsGetMainCamera())
             return;
 
-        DrawAll(mDrawBehindTheWallUseDepthTextureFun);
+        DrawAll(mDrawBehindTheWallFun);
     }
 
     void DrawAll(DrawMeshFun fun)
@@ -83,7 +91,8 @@ public class RenderBehindTheWall : MonoBehaviour {
 
     void Update()
     {
-        DrawAll(mDrawMaskFun);
+        if(queueOrderForMainBody== RenderBehindTheWallCamera.QueueOrderForMainBody.GeometryAfterMask)
+            DrawAll(mDrawMaskFun);
     }
 
 

@@ -15,13 +15,16 @@ public class RenderBehindTheWallCommandBuffer
     }
 
     Camera cam;
-    Material materialUseDepthTexture;
+    Material materialDrawBehindTheWall;
     Material materialDrawMask;
     RenderTexture depth;
     private RenderBehindTheWallCommandBuffer()
     {
-        cam = Camera.main;
+        
+    }
 
+    void DrawDepthTexture()
+    {
         //這裡用RenderTextureFormat.Depth就看不到效果
         depth = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 24, RenderTextureFormat.RFloat);
         depth.Create();
@@ -32,7 +35,7 @@ public class RenderBehindTheWallCommandBuffer
         bufDrawDepth.name = "Draw Depth Texture";
 
         //[方便測式用]這裡強制設成Forward Rendering
-        cam.renderingPath = RenderingPath.Forward;
+        //cam.renderingPath = RenderingPath.Forward;
         //這樣如果是RenderingPath.UsePlayerSettings，也能取出確切的RenderPath
         var src = cam.actualRenderingPath == RenderingPath.Forward ? BuiltinRenderTextureType.Depth : BuiltinRenderTextureType.ResolvedDepth;
         bufDrawDepth.Blit(src, depthID);
@@ -41,17 +44,22 @@ public class RenderBehindTheWallCommandBuffer
         cam.AddCommandBuffer(CameraEvent.AfterSkybox, bufDrawDepth);
     }
 
-    public void setMaterial(Material materialUseDepthTexture, Material materialDrawMask)
+    RenderBehindTheWallCamera.QueueOrderForMainBody queueOrderForMainBody;
+    public void SetRequired(Material materialDrawBehindTheWall, Material materialDrawMask, RenderBehindTheWallCamera.QueueOrderForMainBody queueOrderForMainBody)
     {
-        this.materialUseDepthTexture = materialUseDepthTexture;
+        this.materialDrawBehindTheWall = materialDrawBehindTheWall;
         this.materialDrawMask = materialDrawMask;
+        this.queueOrderForMainBody = queueOrderForMainBody;
+
+        cam = Camera.main;
+        if (queueOrderForMainBody == RenderBehindTheWallCamera.QueueOrderForMainBody.GeometryAfterMask)
+            DrawDepthTexture();
     }
 
-    public void DrawBehindTheWallUseDepthTexture(Mesh mesh, ref Matrix4x4 matrix)
+    public RenderBehindTheWallCamera.QueueOrderForMainBody GetQueueOrderForMainBody()
     {
-        DrawBehindTheWall(mesh,ref matrix);
+        return queueOrderForMainBody;
     }
-
 
     public void DrawBehindTheWall(Mesh mesh,ref Matrix4x4 matrix)
     {
@@ -60,7 +68,7 @@ public class RenderBehindTheWallCommandBuffer
         buf.name = "Draw BehindTheWall";
         for (var i = 0; i < subCount; i++)
         {
-            buf.DrawMesh(mesh, matrix, materialUseDepthTexture, i);
+            buf.DrawMesh(mesh, matrix, materialDrawBehindTheWall, i);
         }
 
         cam.AddCommandBuffer(CameraEvent.BeforeForwardAlpha, buf);

@@ -7,7 +7,7 @@
 	SubShader
 	{
 		Tags { "Queue"="Geometry+49" "RenderType" = "Opaque" }
-		ColorMask 0 //不寫入FrameBuffer
+		//ColorMask 0 //不寫入FrameBuffer
 		ZWrite Off
 		ZTest Less
 		Stencil{
