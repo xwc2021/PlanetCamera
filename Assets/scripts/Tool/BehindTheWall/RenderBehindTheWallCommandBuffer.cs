@@ -16,6 +16,7 @@ public class RenderBehindTheWallCommandBuffer
 
     Camera cam;
     Material material;
+    Material materialDrawMask;
     RenderTexture depth;
     private RenderBehindTheWallCommandBuffer()
     {
@@ -23,7 +24,6 @@ public class RenderBehindTheWallCommandBuffer
 
         //這裡用RenderTextureFormat.Depth就看不到效果
         depth = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 24, RenderTextureFormat.RFloat);
-        Debug.Log(cam.pixelHeight);
         depth.Create();
 
         var depthID = new RenderTargetIdentifier(depth);
@@ -31,6 +31,8 @@ public class RenderBehindTheWallCommandBuffer
         var bufDrawDepth = new CommandBuffer();
         bufDrawDepth.name = "Draw Depth Texture";
 
+        //[方便測式用]這裡強制設成Forward Rendering
+        cam.renderingPath = RenderingPath.Forward;
         //這樣如果是RenderingPath.UsePlayerSettings，也能取出確切的RenderPath
         var src = cam.actualRenderingPath == RenderingPath.Forward ? BuiltinRenderTextureType.Depth : BuiltinRenderTextureType.ResolvedDepth;
         bufDrawDepth.Blit(src, depthID);
@@ -39,12 +41,13 @@ public class RenderBehindTheWallCommandBuffer
         cam.AddCommandBuffer(CameraEvent.AfterSkybox, bufDrawDepth);
     }
 
-    public void setMaterial(Material material)
+    public void setMaterial(Material material,Material materialDrawMask)
     {
         this.material = material;
+        this.materialDrawMask = materialDrawMask;
     }
     
-    public void Draw(Mesh mesh,ref Matrix4x4 matrix)
+    public void DrawCommandBuffer(Mesh mesh,ref Matrix4x4 matrix)
     {
         var subCount = mesh.subMeshCount;
         var buf= new CommandBuffer();
@@ -60,6 +63,18 @@ public class RenderBehindTheWallCommandBuffer
     public void clearCommand()
     {
         cam.RemoveCommandBuffers(CameraEvent.BeforeForwardAlpha);
+    }
+
+    public void Draw(Mesh mesh, ref Matrix4x4 matrix)
+    {
+        var subCount = mesh.subMeshCount;
+
+        for (var i = 0; i < subCount; i++)
+        {
+            Graphics.DrawMesh(mesh, matrix, materialDrawMask, 0,cam,i);
+        }
+        
+
     }
 
 }

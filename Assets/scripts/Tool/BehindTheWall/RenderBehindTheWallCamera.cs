@@ -7,10 +7,13 @@ public class RenderBehindTheWallCamera : MonoBehaviour {
     [SerializeField]
     Material m_Material;
 
+    [SerializeField]
+    Material m_MaterialDrawMask;
+
     void Awake()
     {
         var instance = RenderBehindTheWallCommandBuffer.getInstance();
-        instance.setMaterial(m_Material);
+        instance.setMaterial(m_Material, m_MaterialDrawMask);
     }
 
     void OnPostRender()

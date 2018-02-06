@@ -401,6 +401,7 @@
     <None Include="Assets\Water\fetchWaveDataMirror.shader" />
     <None Include="Assets\Water\wave.shader" />
     <None Include="Assets\materials\BehindTheWall.shader" />
+    <None Include="Assets\materials\BehindTheWallMask.shader" />
     <None Include="Assets\materials\mirror.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -7,13 +7,17 @@
 	}
 	SubShader
 	{
-		Tags { "Queue" = "Transparent" "RenderType"="Opaque" }
+		Tags { "Queue" = "Transparent-1" "RenderType"="Opaque" }
 		LOD 100
 
 		Pass
 		{
 			ZTest Always
 			ZWrite Off
+			Stencil{
+				Ref 1
+				Comp notequal
+			}
 
 			CGPROGRAM
 			#pragma vertex vert
