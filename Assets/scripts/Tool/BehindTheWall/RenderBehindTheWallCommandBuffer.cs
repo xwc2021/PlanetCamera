@@ -15,7 +15,7 @@ public class RenderBehindTheWallCommandBuffer
     }
 
     Camera cam;
-    Material material;
+    Material materialUseDepthTexture;
     Material materialDrawMask;
     RenderTexture depth;
     private RenderBehindTheWallCommandBuffer()
@@ -41,20 +41,26 @@ public class RenderBehindTheWallCommandBuffer
         cam.AddCommandBuffer(CameraEvent.AfterSkybox, bufDrawDepth);
     }
 
-    public void setMaterial(Material material,Material materialDrawMask)
+    public void setMaterial(Material materialUseDepthTexture, Material materialDrawMask)
     {
-        this.material = material;
+        this.materialUseDepthTexture = materialUseDepthTexture;
         this.materialDrawMask = materialDrawMask;
     }
-    
-    public void DrawCommandBuffer(Mesh mesh,ref Matrix4x4 matrix)
+
+    public void DrawBehindTheWallUseDepthTexture(Mesh mesh, ref Matrix4x4 matrix)
+    {
+        DrawBehindTheWall(mesh,ref matrix);
+    }
+
+
+    public void DrawBehindTheWall(Mesh mesh,ref Matrix4x4 matrix)
     {
         var subCount = mesh.subMeshCount;
         var buf= new CommandBuffer();
         buf.name = "Draw BehindTheWall";
         for (var i = 0; i < subCount; i++)
         {
-            buf.DrawMesh(mesh, matrix, material,i);
+            buf.DrawMesh(mesh, matrix, materialUseDepthTexture, i);
         }
 
         cam.AddCommandBuffer(CameraEvent.BeforeForwardAlpha, buf);
@@ -65,16 +71,13 @@ public class RenderBehindTheWallCommandBuffer
         cam.RemoveCommandBuffers(CameraEvent.BeforeForwardAlpha);
     }
 
-    public void Draw(Mesh mesh, ref Matrix4x4 matrix)
+    public void DrawMask(Mesh mesh, ref Matrix4x4 matrix)
     {
         var subCount = mesh.subMeshCount;
-
         for (var i = 0; i < subCount; i++)
         {
             Graphics.DrawMesh(mesh, matrix, materialDrawMask, 0,cam,i);
         }
-        
-
     }
 
 }

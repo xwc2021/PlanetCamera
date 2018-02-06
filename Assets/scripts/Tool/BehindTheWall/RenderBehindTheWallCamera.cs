@@ -5,7 +5,7 @@ using UnityEngine;
 public class RenderBehindTheWallCamera : MonoBehaviour {
 
     [SerializeField]
-    Material m_Material;
+    Material m_MaterialUseDepthTexture;
 
     [SerializeField]
     Material m_MaterialDrawMask;
@@ -13,7 +13,7 @@ public class RenderBehindTheWallCamera : MonoBehaviour {
     void Awake()
     {
         var instance = RenderBehindTheWallCommandBuffer.getInstance();
-        instance.setMaterial(m_Material, m_MaterialDrawMask);
+        instance.setMaterial(m_MaterialUseDepthTexture, m_MaterialDrawMask);
     }
 
     void OnPostRender()

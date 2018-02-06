@@ -1,4 +1,4 @@
-﻿Shader "Unlit/BehindTheWall"
+﻿Shader "Unlit/BehindTheWallUseDepthTexture"
 {
 	Properties
 	{

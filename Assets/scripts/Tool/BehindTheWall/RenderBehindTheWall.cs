@@ -12,8 +12,8 @@ public class RenderBehindTheWall : MonoBehaviour {
 
     //這樣才能抽換
     delegate void DrawMeshFun(Mesh mesh, ref Matrix4x4 matrix);
-    DrawMeshFun mDrawCommandBufferFun;
-    DrawMeshFun mDrawFun;
+    DrawMeshFun mDrawBehindTheWallUseDepthTextureFun;
+    DrawMeshFun mDrawMaskFun;
 
     void Awake()
     {
@@ -21,23 +21,20 @@ public class RenderBehindTheWall : MonoBehaviour {
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         meshFilters = GetComponentsInChildren<MeshFilter>();
         skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-        mDrawCommandBufferFun = RenderBehindTheWallCommandBuffer.getInstance().DrawCommandBuffer;
-        mDrawFun = RenderBehindTheWallCommandBuffer.getInstance().Draw;
+        mDrawBehindTheWallUseDepthTextureFun = RenderBehindTheWallCommandBuffer.getInstance().DrawBehindTheWallUseDepthTexture;
+        mDrawMaskFun = RenderBehindTheWallCommandBuffer.getInstance().DrawMask;
 
         AjustRenderQueue();
     }
 
     void AjustRenderQueue()
     {
-        int Geometry = 2000;
-        int offset = 50;
+        int GeometryOrder = 2050;
         foreach (var mr in meshRenderers)
         {
             foreach (var m in mr.materials)
             {
-                print(m.renderQueue);
-                m.renderQueue = Geometry + offset;
-                print("new ="+m.renderQueue);
+                m.renderQueue = GeometryOrder;
             }
         }
 
@@ -45,7 +42,7 @@ public class RenderBehindTheWall : MonoBehaviour {
         {
             foreach (var m in smr.materials)
             {
-                m.renderQueue = Geometry + offset;
+                m.renderQueue = GeometryOrder;
             }
         }
     }
@@ -58,7 +55,7 @@ public class RenderBehindTheWall : MonoBehaviour {
         if (!SharedTool.IsGetMainCamera())
             return;
 
-        DrawAll(mDrawCommandBufferFun);
+        DrawAll(mDrawBehindTheWallUseDepthTextureFun);
     }
 
     void DrawAll(DrawMeshFun fun)
@@ -86,7 +83,7 @@ public class RenderBehindTheWall : MonoBehaviour {
 
     void Update()
     {
-        DrawAll(mDrawFun);
+        DrawAll(mDrawMaskFun);
     }
 
 
