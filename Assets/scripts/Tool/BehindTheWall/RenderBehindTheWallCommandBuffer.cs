@@ -31,7 +31,8 @@ public class RenderBehindTheWallCommandBuffer
         var bufDrawDepth = new CommandBuffer();
         bufDrawDepth.name = "Draw Depth Texture";
 
-        var src = cam.renderingPath == RenderingPath.Forward ? BuiltinRenderTextureType.Depth : BuiltinRenderTextureType.ResolvedDepth;
+        //這樣如果是RenderingPath.UsePlayerSettings，也能取出確切的RenderPath
+        var src = cam.actualRenderingPath == RenderingPath.Forward ? BuiltinRenderTextureType.Depth : BuiltinRenderTextureType.ResolvedDepth;
         bufDrawDepth.Blit(src, depthID);
         bufDrawDepth.SetGlobalTexture("_DepthTexture", depthID);
 
