@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-//OnWillRenderObject需要加在有MeshFilter或SkinnedMeshRenderer元件的GameObject身上才會觸發!!
 public class RenderBehindTheWall : MonoBehaviour {
 
     MeshRenderer[] meshRenderers;
     MeshFilter[] meshFilters;
     SkinnedMeshRenderer[] skinnedMeshRenderers;
+    Mesh[] bakeMeshs;
 
     //這樣才能抽換
     delegate void DrawMeshFun(Mesh mesh, ref Matrix4x4 matrix);
@@ -21,10 +21,12 @@ public class RenderBehindTheWall : MonoBehaviour {
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         meshFilters = GetComponentsInChildren<MeshFilter>();
         skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-        mDrawBehindTheWallFun = RenderBehindTheWallCommandBuffer.getInstance().DrawBehindTheWall;
-        mDrawMaskFun = RenderBehindTheWallCommandBuffer.getInstance().DrawMask;
+        bakeMeshs = new Mesh[skinnedMeshRenderers.Length];
+        for (var i=0;i< bakeMeshs.Length;i++)
+            bakeMeshs[i] = new Mesh();
 
-        
+        mDrawBehindTheWallFun = RenderBehindTheWallCommandBuffer.getInstance().DrawBehindTheWall;
+        mDrawMaskFun = RenderBehindTheWallCommandBuffer.getInstance().DrawMask;   
     }
 
     RenderBehindTheWallCamera.QueueOrderForMainBody queueOrderForMainBody;
@@ -55,30 +57,22 @@ public class RenderBehindTheWall : MonoBehaviour {
         }
     }
 
-    //https://docs.unity3d.com/Manual/ExecutionOrder.html
-    //OnBecameVisible只有第1個camera看到物件才會觸發
-    //OnWillRenderObject需要加在有MeshFilter或SkinnedMeshRenderer元件的GameObject身上才會觸發!!
-    void OnWillRenderObject()
-    {
-        if (!SharedTool.IsGetMainCamera())
-            return;
-
-        DrawAll(mDrawBehindTheWallFun);
-    }
-
     void DrawAll(DrawMeshFun fun)
     {
         foreach (var mf in meshFilters)
             DrawMesh(mf,fun);
 
-        foreach (var smr in skinnedMeshRenderers)
-            DrawSkin(smr, fun);
+        for (var i = 0; i < skinnedMeshRenderers.Length; i++)
+            DrawSkin(skinnedMeshRenderers[i], bakeMeshs[i], fun);
     }
 
-    void DrawSkin(SkinnedMeshRenderer skinnedMeshRenderer, DrawMeshFun fun)
+    void BackSkinMesh(SkinnedMeshRenderer skinnedMeshRenderer,Mesh mesh)
     {
-        var mesh = new Mesh();
         skinnedMeshRenderer.BakeMesh(mesh);
+    }
+
+    void DrawSkin(SkinnedMeshRenderer skinnedMeshRenderer,Mesh mesh,DrawMeshFun fun)
+    {
         var matrix = skinnedMeshRenderer.transform.localToWorldMatrix;
         fun(mesh, ref matrix);
     }
@@ -89,11 +83,19 @@ public class RenderBehindTheWall : MonoBehaviour {
         fun(mesh, ref matrix);
     }
 
-    void Update()
+    void LateUpdate()
     {
-        if(queueOrderForMainBody== RenderBehindTheWallCamera.QueueOrderForMainBody.MainBodyAfterMask)
+        //只需要BackSkinMesh一次
+        for (var i = 0; i < skinnedMeshRenderers.Length; i++)
+            BackSkinMesh(skinnedMeshRenderers[i], bakeMeshs[i]);
+
+        if (queueOrderForMainBody == RenderBehindTheWallCamera.QueueOrderForMainBody.MainBodyAfterMask)
             DrawAll(mDrawMaskFun);
+
+        DrawAll(mDrawBehindTheWallFun);
     }
+
+
 
 
 }

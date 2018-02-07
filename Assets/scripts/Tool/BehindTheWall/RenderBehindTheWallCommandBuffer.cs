@@ -60,18 +60,11 @@ public class RenderBehindTheWallCommandBuffer
         return queueOrderForMainBody;
     }
 
-    public void DrawBehindTheWall(Mesh mesh,ref Matrix4x4 matrix)
+    public void DrawBehindTheWall(Mesh mesh, ref Matrix4x4 matrix)
     {
-        var subCount = mesh.subMeshCount;
-        var buf= new CommandBuffer();
-        buf.name = "Draw BehindTheWall";
-        for (var i = 0; i < subCount; i++)
-        {
-            buf.DrawMesh(mesh, matrix, materialDrawBehindTheWall, i);
-        }
-
-        cam.AddCommandBuffer(CameraEvent.BeforeForwardAlpha, buf);
+        GraphicsDrawMesh(mesh, ref matrix, materialDrawBehindTheWall);
     }
+
 
     public void clearCommand()
     {
@@ -80,10 +73,15 @@ public class RenderBehindTheWallCommandBuffer
 
     public void DrawMask(Mesh mesh, ref Matrix4x4 matrix)
     {
+        GraphicsDrawMesh(mesh, ref matrix, materialDrawMask);
+    }
+
+    public void GraphicsDrawMesh(Mesh mesh, ref Matrix4x4 matrix,Material material)
+    {
         var subCount = mesh.subMeshCount;
         for (var i = 0; i < subCount; i++)
         {
-            Graphics.DrawMesh(mesh, matrix, materialDrawMask, 0,cam,i);
+            Graphics.DrawMesh(mesh, matrix, material, 0, cam, i);
         }
     }
 
