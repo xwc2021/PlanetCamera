@@ -34,7 +34,7 @@ public class RenderBehindTheWall : MonoBehaviour {
         AjustRenderQueue((int)queueOrderForMainBody);
     }
 
-
+    //動態修改renderQueue
     void AjustRenderQueue(int renderQueueOrder)
     {
 
@@ -91,7 +91,7 @@ public class RenderBehindTheWall : MonoBehaviour {
 
     void Update()
     {
-        if(queueOrderForMainBody== RenderBehindTheWallCamera.QueueOrderForMainBody.GeometryAfterMask)
+        if(queueOrderForMainBody== RenderBehindTheWallCamera.QueueOrderForMainBody.MainBodyAfterMask)
             DrawAll(mDrawMaskFun);
     }
 

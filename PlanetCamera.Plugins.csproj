@@ -394,7 +394,8 @@
     <None Include="Assets\Water\wave.shader" />
     <None Include="Assets\materials\BehindTheWall\BehindTheWall.shader" />
     <None Include="Assets\materials\BehindTheWall\BehindTheWallMask.shader" />
-    <None Include="Assets\materials\BehindTheWall\BehindTheWallUseDepthTexture.shader" />
+    <None Include="Assets\materials\BehindTheWall\BehindTheWallUseMask.shader" />
+    <None Include="Assets\materials\BehindTheWall\BehindTheWallUseMaskAndDepthTexture.shader" />
     <None Include="Assets\materials\mirror.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

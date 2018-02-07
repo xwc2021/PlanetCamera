@@ -20,22 +20,21 @@ public class RenderBehindTheWallCommandBuffer
     RenderTexture depth;
     private RenderBehindTheWallCommandBuffer()
     {
-        
+        cam = Camera.main;
     }
 
+    //(沒在使用了)
+    //有了Mask就不需要了
     void DrawDepthTexture()
     {
         //這裡用RenderTextureFormat.Depth就看不到效果
         depth = new RenderTexture(cam.pixelWidth, cam.pixelHeight, 24, RenderTextureFormat.RFloat);
         depth.Create();
-
         var depthID = new RenderTargetIdentifier(depth);
 
         var bufDrawDepth = new CommandBuffer();
         bufDrawDepth.name = "Draw Depth Texture";
 
-        //[方便測式用]這裡強制設成Forward Rendering
-        //cam.renderingPath = RenderingPath.Forward;
         //這樣如果是RenderingPath.UsePlayerSettings，也能取出確切的RenderPath
         var src = cam.actualRenderingPath == RenderingPath.Forward ? BuiltinRenderTextureType.Depth : BuiltinRenderTextureType.ResolvedDepth;
         bufDrawDepth.Blit(src, depthID);
@@ -51,9 +50,9 @@ public class RenderBehindTheWallCommandBuffer
         this.materialDrawMask = materialDrawMask;
         this.queueOrderForMainBody = queueOrderForMainBody;
 
-        cam = Camera.main;
-        if (queueOrderForMainBody == RenderBehindTheWallCamera.QueueOrderForMainBody.GeometryAfterMask)
-            DrawDepthTexture();
+        //強制設成Forward Rendering
+        if (queueOrderForMainBody == RenderBehindTheWallCamera.QueueOrderForMainBody.MainBodyAfterMask)
+            cam.renderingPath = RenderingPath.Forward;
     }
 
     public RenderBehindTheWallCamera.QueueOrderForMainBody GetQueueOrderForMainBody()

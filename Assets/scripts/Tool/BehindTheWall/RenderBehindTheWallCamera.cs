@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class RenderBehindTheWallCamera : MonoBehaviour {
 
-    public enum QueueOrderForMainBody { GeometryAfterMask = 2050, TransparentAfterBehindWall = 2999 }
+    public enum QueueOrderForMainBody { MainBodyAfterMask = 2050, MainBodyAfterBehindWall = 2999 }
 
     //[SerializeField]
-    //[Tooltip("GeometryAfterMask是方法一；TransparentAfterBehindWall是方法二")]
-    QueueOrderForMainBody queueOrderForMainBody = QueueOrderForMainBody.TransparentAfterBehindWall;
+    //[Tooltip("MainBodyAfterMask是方法一；MainBodyAfterBehindWall是方法二")]
+    QueueOrderForMainBody queueOrderForMainBody = QueueOrderForMainBody.MainBodyAfterBehindWall;
 
     [SerializeField]
-    Material m_MaterialDrawBehindTheWallUseDepthTexture;
+    Material m_MaterialDrawBehindTheWallUseMask;
 
     [SerializeField]
     Material m_MaterialDrawBehindTheWall;
@@ -25,8 +25,8 @@ public class RenderBehindTheWallCamera : MonoBehaviour {
     {
         var instance = RenderBehindTheWallCommandBuffer.getInstance();
 
-        var materail = queueOrderForMainBody == QueueOrderForMainBody.GeometryAfterMask?
-                                            m_MaterialDrawBehindTheWallUseDepthTexture:
+        var materail = queueOrderForMainBody == QueueOrderForMainBody.MainBodyAfterMask ?
+                                            m_MaterialDrawBehindTheWallUseMask :
                                             m_MaterialDrawBehindTheWall;
 
         instance.SetRequired(materail, m_MaterialDrawMask,queueOrderForMainBody);
