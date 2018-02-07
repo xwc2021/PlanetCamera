@@ -68,7 +68,8 @@ public class RenderBehindTheWallCommandBuffer
 
     public void clearCommand()
     {
-        cam.RemoveCommandBuffers(CameraEvent.BeforeForwardAlpha);
+        if(cam)
+            cam.RemoveCommandBuffers(CameraEvent.BeforeForwardAlpha);
     }
 
     public void DrawMask(Mesh mesh, ref Matrix4x4 matrix)
