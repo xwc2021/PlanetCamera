@@ -91,15 +91,11 @@ public class EndlessCorridorManager : MonoBehaviour {
     //藉此產生無限縮小的假象
     void worldReSacle(float scaleValue)
     {
-
-        //player.transform.localScale = Vector3.one;
         player.resetScale();
-        player.transform.position = scaleValue * player.transform.position;
-        Vector3 offset = -player.transform.position;
 
+        Vector3 offset = -scaleValue * player.transform.position;
         player.transform.position = Vector3.zero;
         flyCamara.resetRecordPos(offset, scaleValue);
-
 
         foreach (EndlessCorridorHolder element in createlist)
         {

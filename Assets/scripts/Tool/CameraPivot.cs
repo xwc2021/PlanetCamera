@@ -194,7 +194,7 @@ public class CameraPivot : MonoBehaviour
             autoYawFollowTurnDiff = Quaternion.identity;
     }
 
-    float toSpeed;
+    public float toSpeed;
     void updateCamera() {
 
         inputProxy = ppController.getInputProxy();
