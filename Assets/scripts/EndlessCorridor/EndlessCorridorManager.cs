@@ -6,7 +6,6 @@ public class EndlessCorridorManager : MonoBehaviour {
 
     public EndlessCorridorHolder[] prefabList;
     public Scalable player;
-    public CameraPivot flyCamara;
 
     public int createSize=5;
     LinkedList<EndlessCorridorHolder> createlist;
@@ -26,11 +25,6 @@ public class EndlessCorridorManager : MonoBehaviour {
     }
 
     public bool doRescale = true;
-
-    // Update is called once per frame
-    void Update () {
-		
-	}
     
     void initEC()
     {
@@ -91,12 +85,7 @@ public class EndlessCorridorManager : MonoBehaviour {
     //藉此產生無限縮小的假象
     void worldReSacle(float scaleValue)
     {
-        player.resetScale();
-
         Vector3 offset = -scaleValue * player.transform.position;
-        player.transform.position = Vector3.zero;
-        flyCamara.resetRecordPos(offset, scaleValue);
-
         foreach (EndlessCorridorHolder element in createlist)
         {
             float localScale = element.transform.localScale.x;
@@ -105,6 +94,9 @@ public class EndlessCorridorManager : MonoBehaviour {
             element.transform.localScale = scale;
             element.transform.position = scaleValue * element.transform.position + offset;
         }
+
+        player.resetScale();
+        player.resetPos();
     }
 
     EndlessCorridorHolder createEcByRef(int index, EndlessCorridorHolder refObj,Transform dummy,float ScaleValue)

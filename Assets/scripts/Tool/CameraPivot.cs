@@ -75,9 +75,13 @@ public class CameraPivot : MonoBehaviour
         toSpeed = posFollowSpeed;
     }
 
-    public void resetRecordPos(Vector3 v,float scaleR)
+    public void resetRecordPos()
     {
-        recordPos = scaleR * recordPos+v;
+        var k = 1100.0f;
+        var VectorToHelpCameraChangeSmoothing = -CAMERA.forward;
+
+        //為了閉開角色由0.5變大到1倍時，Camera閃動的問題
+        recordPos = Vector3.zero+ k * VectorToHelpCameraChangeSmoothing;
     }
 
     void addPitch(float deltaPitch)
@@ -320,6 +324,7 @@ public class CameraPivot : MonoBehaviour
         R = Mathf.Max(limitR, R);
 
         Vector3 newPos = new Vector3(0, 0, -R * RScale);
+
         CAMERA.localPosition = Vector3.Lerp(CAMERA.localPosition, newPos, posFollowSpeed * Time.deltaTime);
         Debug.DrawLine(transform.position, CAMERA.position, Color.red);
     }

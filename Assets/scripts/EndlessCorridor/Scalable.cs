@@ -22,4 +22,10 @@ public class Scalable : MonoBehaviour {
         transform.localScale = Vector3.one;
         cameraPivot.resetRScale();
     }
+
+    public void resetPos()
+    {
+        transform.position = Vector3.zero;
+        cameraPivot.resetRecordPos();
+    }
 }

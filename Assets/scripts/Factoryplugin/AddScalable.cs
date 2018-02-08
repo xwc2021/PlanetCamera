@@ -15,6 +15,5 @@ public class AddScalable : MonoBehaviour,FactoryPlugin {
 
         ecManager.player = scalable;
         scalable.cameraPivot = cameraPivot;
-        ecManager.flyCamara = cameraPivot;
     }
 }
