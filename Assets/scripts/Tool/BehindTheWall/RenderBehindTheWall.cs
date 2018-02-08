@@ -78,12 +78,24 @@ public class RenderBehindTheWall : MonoBehaviour {
         //如果直接拿來使用
         //(比如說x方向scale=2，結果會是scale=4)
         //(比如說x方向scale=1/2，結果會是scale=1/4)
-        //var matrix = skinnedMeshRenderer.localToWorldMatrix;
+        var matrix = skinnedMeshRenderer.localToWorldMatrix;
 
-        var parent =transform.parent;
-        var nowMatrix = Matrix4x4.TRS(parent.transform.position, parent.transform.rotation, Vector3.one);
+        //(因為角色會演出動作
+        //所以skinnedMeshRenderer.localToWorldMatrix和parent.transform.localToWorldMatrix會有出入)
+        //改成下面的方法：取出3軸向量正規化
+        Vector3 x = matrix.GetColumn(0);
+        Vector3 y = matrix.GetColumn(1);
+        Vector3 z = matrix.GetColumn(2);
 
-        fun(mesh, ref nowMatrix);
+        Vector4 nX = x.normalized; nX.w = 0;
+        Vector4 nY = y.normalized; nY.w = 0;
+        Vector4 nZ = z.normalized; nZ.w = 0;
+
+        matrix.SetColumn(0, nX);
+        matrix.SetColumn(1, nY);
+        matrix.SetColumn(2, nZ);
+
+        fun(mesh, ref matrix);
     }
 
     void DrawMesh(MeshFilter meshFilter, DrawMeshFun fun) {

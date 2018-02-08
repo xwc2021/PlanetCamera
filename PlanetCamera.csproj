@@ -369,6 +369,7 @@
     <Compile Include="Assets\scripts\Factory\CreatePlayer.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\AddPlanet.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\AddScalable.cs" />
+    <Compile Include="Assets\scripts\Factoryplugin\BigPlayer.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\CreateLinedUp.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\FourtyFiveDegree.cs" />
     <Compile Include="Assets\scripts\Factoryplugin\SetMirrorCamera.cs" />
