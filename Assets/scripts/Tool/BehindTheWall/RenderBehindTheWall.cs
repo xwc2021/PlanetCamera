@@ -73,8 +73,17 @@ public class RenderBehindTheWall : MonoBehaviour {
 
     void DrawSkin(SkinnedMeshRenderer skinnedMeshRenderer,Mesh mesh,DrawMeshFun fun)
     {
-        var matrix = skinnedMeshRenderer.transform.localToWorldMatrix;
-        fun(mesh, ref matrix);
+        //因為BakeMesh後模型會包含縮放的結果
+        //而localToWorldMatrix也會包含縮放
+        //如果直接拿來使用
+        //(比如說x方向scale=2，結果會是scale=4)
+        //(比如說x方向scale=1/2，結果會是scale=1/4)
+        //var matrix = skinnedMeshRenderer.localToWorldMatrix;
+
+        var parent =transform.parent;
+        var nowMatrix = Matrix4x4.TRS(parent.transform.position, parent.transform.rotation, Vector3.one);
+
+        fun(mesh, ref nowMatrix);
     }
 
     void DrawMesh(MeshFilter meshFilter, DrawMeshFun fun) {
