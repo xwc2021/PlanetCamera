@@ -44,8 +44,8 @@ public class SlopeForceMonitor : MonoBehaviour {
         //http://home.phy.ntnu.edu.tw/~eureka/contents/elementary/chap%202/2-4-1.htm
 
         //為了讓上坡下坡和在地面時差不多，只要抵消掉fAlongSlope這項就行了
-        //因為浮點誤差，所以使用moveForceWithStrengthALongSlop而不直接用fAlongSlope
-        //Vector3 finalMoveForce = moveForceWithStrength - sign * fAlongSlope;
+        //sign是跟moveForceWithStrengthALongSlop變化，而不是fAlongSlope(所以不是浮點誤差的關系)
+        //Vector3 tempFinalMoveForce = moveForceWithStrength - sign * fAlongSlope;
         Vector3 finalMoveForce = moveForceWithStrength + sign * fAlongSlope.magnitude* moveForceWithStrengthALongSlop.normalized;
 
         float limitSpeed =Mathf.Min(finalMoveForce.magnitude, maxForceLimit);
