@@ -21,6 +21,10 @@ public class SlopeForceMonitor : MonoBehaviour {
         Vector3 fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
         Vector3 moveForceWithStrength = moveForce * moveForceStrength;
 
+        //這裡又作了一次ProjectOnPlane的動作，原因是
+        //fAlongSlope會和moveForceWithStrengthALongSlop方向平行
+        //但是玩家在斜坡上移動時，未必只會況了moveForceWithStrengthALongSlop方向移動
+        //https://plus.google.com/u/0/+XiangweiChiou/posts/cLCHt28TaXq
         Vector3 planeNormal = Vector3.Cross(groundUp, SlopeUp).normalized;
         Vector3 moveForceWithStrengthALongSlop =Vector3.ProjectOnPlane(moveForceWithStrength, planeNormal);
 
@@ -40,8 +44,8 @@ public class SlopeForceMonitor : MonoBehaviour {
         //http://home.phy.ntnu.edu.tw/~eureka/contents/elementary/chap%202/2-4-1.htm
 
         //為了讓上坡下坡和在地面時差不多，只要抵消掉fAlongSlope這項就行了
-        //fAlongSlope和moveForceWithStrengthALongSlop應該要在一直線上，不過那是理想狀態
-        //Vector3 finalMoveForce = moveForceWithStrength + sign * fAlongSlope;
+        //因為浮點誤差，所以使用moveForceWithStrengthALongSlop而不直接用fAlongSlope
+        //Vector3 finalMoveForce = moveForceWithStrength - sign * fAlongSlope;
         Vector3 finalMoveForce = moveForceWithStrength + sign * fAlongSlope.magnitude* moveForceWithStrengthALongSlop.normalized;
 
         float limitSpeed =Mathf.Min(finalMoveForce.magnitude, maxForceLimit);

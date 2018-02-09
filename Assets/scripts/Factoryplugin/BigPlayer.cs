@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class BigPlayer : MonoBehaviour, FactoryPlugin
 {
-
-    public EndlessCorridorManager ecManager;
     [SerializeField]
     float scale = 1;
     public void doIt(GameObject gameObject)
