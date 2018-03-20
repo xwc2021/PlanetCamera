@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera", "PlanetCamera.csproj", "{D68D9DA5-19EA-A2D7-8935-7B0D207B50CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanetCamera.Plugins", "PlanetCamera.Plugins.csproj", "{9C24C2EC-745C-D917-D7CE-458B998FA298}"
