@@ -6,23 +6,8 @@ using UnityEngine;
 //類球形星球專用
 public class PlanetGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
-    public Transform laddingPlanet;
-
-    public void Awake()
+    public Vector3 findGroundUp(ref Vector3 targetPos)
     {
-        if (laddingPlanet == null)
-        {
-            //因為還不知道multiplaer模式要怎麼設定laddingPlanet
-            GameObject gameObject = GameObject.FindGameObjectWithTag("nowPlanet");
-
-            if(gameObject!=null)
-                laddingPlanet = gameObject.transform;
-        }
-            
-    }
-
-    public Vector3 findGroundUp()
-    {
-        return (transform.position - laddingPlanet.position).normalized;
+        return (targetPos - transform.position).normalized;
     }
 }

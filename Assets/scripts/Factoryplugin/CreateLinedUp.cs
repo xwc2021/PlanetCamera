@@ -6,7 +6,6 @@ public class CreateLinedUp : MonoBehaviour,FactoryPlugin {
 
     public MonoBehaviour factoryPloginSocket;
     public PlanetMovable source;
-    public GravityGeneratorEnum gge = GravityGeneratorEnum.plane;
     public int count = 11;
     public int distance = 2;
     public void doIt(GameObject gameObject)
@@ -16,7 +15,6 @@ public class CreateLinedUp : MonoBehaviour,FactoryPlugin {
         {
             Vector3 newPos = transform.position - distance * (i+1) * transform.forward;
             PlanetMovable pm = GameObject.Instantiate<PlanetMovable>(source, newPos, transform.rotation);
-            pm.ResetGravityGenetrator(gge);
 
             pm.gameObject.name = "movable" + i;
 

@@ -10,11 +10,9 @@ public interface FactoryPlugin
 public class CreatePlayer : MonoBehaviour {
     public MonoBehaviour[] factoryPloginSocket;
     public PlanetMovable source;
-    public GravityGeneratorEnum gge = GravityGeneratorEnum.plane;
 	// Use this for initialization
 	void Awake () {
         PlanetMovable pm=GameObject.Instantiate<PlanetMovable>(source,transform.position,transform.rotation);
-        pm.ResetGravityGenetrator(gge);
 
         int pluginSide = factoryPloginSocket.Length;
         for (int i = 0; i < pluginSide; i++)

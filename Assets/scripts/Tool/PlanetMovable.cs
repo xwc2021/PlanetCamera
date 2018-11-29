@@ -16,11 +16,6 @@ public interface InputProxy
     bool enableControlUI();
 }
 
-public interface GroundGravityGenerator
-{
-    Vector3 findGroundUp();
-}
-
 public interface MoveForceParameter
 {
     float getMoveForceStrength(bool isOnAir, bool isTurble);
@@ -36,7 +31,7 @@ public class PlanetMovable : MonoBehaviour
 {
     public SlopeForceMonitor slopeForceMonitor;
 
-    public GravityDirectionMonitor gravityDirectionMonitor;
+    GroundGravityGenerator grounGravityGenerator;
     public MoveForceParameterRepository moveForceParameterRepository;
 
     public MoveController moveController;
@@ -46,9 +41,6 @@ public class PlanetMovable : MonoBehaviour
     public bool firstPersonMode = false;
     public float backOffset = -0.1f;
 
-    
-    
-
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
     List<ContactPoint[]> contactPointGround;
     List<ContactPoint[]> contactPointWall;
@@ -56,7 +48,7 @@ public class PlanetMovable : MonoBehaviour
     bool touchWall;
     bool isHit = false;
     bool ladding = false;
-    bool isTurble=false;
+    bool isTurble = false;
 
     static readonly float isHitDistance = 0.2f;
     public static readonly float rayCastDistanceToGround = 2;
@@ -64,17 +56,17 @@ public class PlanetMovable : MonoBehaviour
     Vector3 gravityDir;
     Vector3 planeNormal;
     Vector3 wallNormal;
-  
+
 
     // Use this for initialization
-    void Awake () {
-
+    void Awake()
+    {
         rigid = GetComponent<Rigidbody>();
         Debug.Assert(moveForceParameterRepository != null);
         moveForceParameterRepository.resetGroundType(GroundType.Normal, rigid);
 
         contactPointGround = new List<ContactPoint[]>();
-        contactPointWall= new List<ContactPoint[]>();
+        contactPointWall = new List<ContactPoint[]>();
 
         moveController = GetComponent<MoveController>();
         Debug.Assert(moveController != null);
@@ -83,20 +75,20 @@ public class PlanetMovable : MonoBehaviour
 
     rigid.interpolation = RigidbodyInterpolation.Interpolate;
 #else
-    rigid.interpolation = RigidbodyInterpolation.None;   
+        rigid.interpolation = RigidbodyInterpolation.None;
 #endif
     }
 
-    public void ResetGravityGenetrator(GravityGeneratorEnum pggEnum)
+    public void ResetGravityGenetrator(GroundGravityGenerator gg)
     {
-        gravityDirectionMonitor.ResetGravityGenerator(pggEnum);
+        this.grounGravityGenerator = gg;
     }
 
     private void Update()
     {
         //判定有沒有接觸
         contactGround = isContactGround();
-        touchWall =isTouchWall(); 
+        touchWall = isTouchWall();
     }
 
     private void getGroundNormalNow(out bool isHit)
@@ -120,7 +112,7 @@ public class PlanetMovable : MonoBehaviour
             if (height < isHitDistance)
             {
                 isHit = true;
-            }   
+            }
         }
     }
 
@@ -188,8 +180,11 @@ public class PlanetMovable : MonoBehaviour
 
     public void setupGravity()
     {
-        //計算重力方向
-        groundUp = gravityDirectionMonitor.findGroundUp();
+        // 地面朝向:預設向上
+        var pos = transform.position;
+        groundUp = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGroundUp(ref pos) : Vector3.up;
+
+        // 計算重力方向
         gravityDir = -groundUp;
     }
 
@@ -285,7 +280,7 @@ public class PlanetMovable : MonoBehaviour
 
     public bool Ladding
     {
-        get{return ladding;}
+        get { return ladding; }
     }
 
     public bool TouchWall
@@ -295,6 +290,6 @@ public class PlanetMovable : MonoBehaviour
 
     public void resetGroundType(GroundType groundType)
     {
-        moveForceParameterRepository.resetGroundType(groundType,rigid);
+        moveForceParameterRepository.resetGroundType(groundType, rigid);
     }
 }
