@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c105fe1eee255e64aa109a3ec3d31156
+guid: f29aaea236d0cb0409c898bbf7108024
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -8,7 +8,7 @@ ModelImporter:
     2100000: No Name
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Level_1
+    4300000: Plane
   externalObjects: {}
   materials:
     importMaterials: 1
