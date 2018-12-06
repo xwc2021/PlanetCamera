@@ -168,11 +168,16 @@
      <Compile Include="Assets\scripts\Tool\BehindTheWall\RenderBehindTheWallCommandBuffer.cs" />
      <Compile Include="Assets\scripts\Tool\CameraPivot.cs" />
      <Compile Include="Assets\scripts\Tool\DrawAABB.cs" />
+     <Compile Include="Assets\scripts\Tool\DrawMeshAABB.cs" />
+     <Compile Include="Assets\scripts\Tool\GeometryTool.cs" />
      <Compile Include="Assets\scripts\Tool\MultiplayerCameraManager.cs" />
      <Compile Include="Assets\scripts\Tool\PlanetMovable.cs" />
+     <Compile Include="Assets\scripts\Tool\RayPeaker.cs" />
+     <Compile Include="Assets\scripts\Tool\ResetShereTerrain.cs" />
      <Compile Include="Assets\scripts\Tool\SetCameraPivot.cs" />
      <Compile Include="Assets\scripts\Tool\ShowMeshBound.cs" />
      <Compile Include="Assets\scripts\Tool\SlopeForceMonitor.cs" />
+     <Compile Include="Assets\scripts\Tool\SphereTerrain.cs" />
      <Compile Include="Assets\scripts\Tool\SphereTerrainPiece.cs" />
      <Compile Include="Assets\scripts\Tool\TheTopOne.cs" />
      <Compile Include="Assets\scripts\Tool\UsingAnimator.cs" />

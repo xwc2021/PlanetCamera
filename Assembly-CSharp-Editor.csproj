@@ -58,6 +58,7 @@
      <Compile Include="Assets\Editor\CrossPlatformInput\CrossPlatformInputInitialize.cs" />
      <Compile Include="Assets\Editor\PeekGeoEditor.cs" />
      <Compile Include="Assets\Editor\PlanetMovableInspector.cs" />
+     <Compile Include="Assets\Editor\SphereTerrainEditor.cs" />
      <Compile Include="Assets\Editor\TorusGravityGeneratorGizmoDrawer.cs" />
      <Compile Include="Assets\PostProcessing\Editor\Attributes\PostProcessingModelEditorAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Editor\Models\AmbientOcclusionModelEditor.cs" />

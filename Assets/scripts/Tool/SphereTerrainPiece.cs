@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class SphereTerrainPiece : MonoBehaviour
 {
-    // Use this for initialization
-    void Start()
+
+    public void updateLocalPos()
     {
         var mRenderer = GetComponent<MeshRenderer>();
         mRenderer.enabled = true;
-        var m = mRenderer.material;
+        var m = mRenderer.sharedMaterial;
         m.SetVector("_local_pos", transform.localPosition);
+    }
+
+    void Start()
+    {
+        this.updateLocalPos();
 
         var meshFilter = this.GetComponent<MeshFilter>();
         var bounds = meshFilter.sharedMesh.bounds;
@@ -20,7 +25,7 @@ public class SphereTerrainPiece : MonoBehaviour
         var newCenter = (nMax + nMin) / 2;
         var size = nMax - nMin;
         // print(size);
-        meshFilter.mesh.bounds = new Bounds(newCenter, size);
+        meshFilter.mesh.bounds = new Bounds(newCenter, 2.0f * size);
         // print("modify");
     }
 
