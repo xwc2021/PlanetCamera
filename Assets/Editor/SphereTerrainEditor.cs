@@ -22,6 +22,11 @@ public class SphereTerrainEditor : UnityEditor.Editor
         {
             behavior.updateLocalPos();
         }
+
+        if (GUILayout.Button("create64Piece"))
+        {
+            behavior.create64Piece();
+        }
     }
 
     public void OnSceneGUI()

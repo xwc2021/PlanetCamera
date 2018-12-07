@@ -9,14 +9,12 @@ public class SphereTerrainPiece : MonoBehaviour
     {
         var mRenderer = GetComponent<MeshRenderer>();
         mRenderer.enabled = true;
-        var m = mRenderer.sharedMaterial;
+        var m = mRenderer.material;
         m.SetVector("_local_pos", transform.localPosition);
     }
 
-    void Start()
+    void updateMeshAABB()
     {
-        this.updateLocalPos();
-
         var meshFilter = this.GetComponent<MeshFilter>();
         var bounds = meshFilter.sharedMesh.bounds;
         var nMin = toSphere(bounds.min);
@@ -29,10 +27,16 @@ public class SphereTerrainPiece : MonoBehaviour
         // print("modify");
     }
 
+    void Start()
+    {
+        this.updateLocalPos();
+        this.updateMeshAABB();
+    }
+
     // Update is called once per frame
     void Update()
     {
-
+        this.updateLocalPos();
     }
 
     Vector3 toSphere(Vector3 v)
