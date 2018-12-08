@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class SphereTerrainPiece : MonoBehaviour
 {
+    public MeshRenderer meshRenderer;
+    public void updateHeightTexture(Texture heightTexture)
+    {
+        var m = meshRenderer.material;
+        m.SetTexture("_HeightTex", heightTexture);
+    }
 
     public void updateLocalPos()
     {
-        var mRenderer = GetComponent<MeshRenderer>();
-        mRenderer.enabled = true;
-        var m = mRenderer.material;
+        var m = meshRenderer.material;
         m.SetVector("_local_pos", transform.localPosition);
     }
 
@@ -29,7 +33,6 @@ public class SphereTerrainPiece : MonoBehaviour
 
     void Start()
     {
-        this.updateLocalPos();
         this.updateMeshAABB();
     }
 

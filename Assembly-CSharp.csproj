@@ -53,7 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\DiyTerrain\Dot.cs" />
+     <Compile Include="Assets\DiyTerrain\Brush.cs" />
+     <Compile Include="Assets\DiyTerrain\DrawHeightCamera.cs" />
      <Compile Include="Assets\DiyTerrain\DrawMeshAABB.cs" />
      <Compile Include="Assets\DiyTerrain\ShowMeshBound.cs" />
      <Compile Include="Assets\DiyTerrain\SphereTerrain.cs" />
@@ -194,7 +195,7 @@
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\LutGen.shader" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWallMask.shader" />
-     <None Include="Assets\DiyTerrain\shaders\Dot.shader" />
+     <None Include="Assets\DiyTerrain\shaders\brush\brush_dot.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
      <None Include="Assets\Water\Test\NewSurfaceShader.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\UI\CurveBackground.shader" />
@@ -223,6 +224,7 @@
      <None Include="Assets\PostProcessing\Resources\Shaders\Bloom.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\TAA.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\EyeHistogram.compute" />
+     <None Include="Assets\DiyTerrain\shaders\brush\brush_fill.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\TAA.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\EyeAdaptation.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\GrainGen.shader" />

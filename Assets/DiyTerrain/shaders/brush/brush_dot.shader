@@ -1,4 +1,4 @@
-﻿Shader "Unlit/Dot"
+﻿Shader "Unlit/brush_dot"
 {
 	Properties
 	{
@@ -7,11 +7,12 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType"="Opaque" "Queue"="Transparent" }
 		LOD 100
 
 		Pass
 		{
+			Blend One One
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag

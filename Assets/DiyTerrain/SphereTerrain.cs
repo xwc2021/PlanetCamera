@@ -12,12 +12,20 @@ public class SphereTerrain : MonoBehaviour
     public GameObject p_128x_129y;
     public GameObject p_129x_128y;
     public Material material;
+
     public void updateLocalPos()
     {
-        var sphereTerrainPieces = this.GetComponentsInChildren<SphereTerrainPiece>();
         foreach (var piece in sphereTerrainPieces)
         {
             piece.updateLocalPos();
+        }
+    }
+
+    public void updateHeightTexture(Texture heightTexture)
+    {
+        foreach (var piece in sphereTerrainPieces)
+        {
+            piece.updateHeightTexture(heightTexture);
         }
     }
 
@@ -53,9 +61,10 @@ public class SphereTerrain : MonoBehaviour
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
     /// </summary>
+    SphereTerrainPiece[] sphereTerrainPieces;
     void Start()
     {
-        var sphereTerrainPieces = this.GetComponentsInChildren<SphereTerrainPiece>();
+        sphereTerrainPieces = this.GetComponentsInChildren<SphereTerrainPiece>();
         foreach (var piece in sphereTerrainPieces)
         {
             var mRender = piece.GetComponent<MeshRenderer>();

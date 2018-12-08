@@ -7,7 +7,6 @@ using UnityEditor;
 [CustomEditor(typeof(SphereTerrain))]
 public class SphereTerrainEditor : UnityEditor.Editor
 {
-
     SphereTerrain behavior;
     void OnEnable()
     {
@@ -17,11 +16,6 @@ public class SphereTerrainEditor : UnityEditor.Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-
-        if (GUILayout.Button("updateLocalPos"))
-        {
-            behavior.updateLocalPos();
-        }
 
         if (GUILayout.Button("create64Piece"))
         {

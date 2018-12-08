@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dot : MonoBehaviour
+public class Brush : MonoBehaviour
 {
 
     public float height = 64.0f;
