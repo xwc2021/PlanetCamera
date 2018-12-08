@@ -81,7 +81,7 @@
 				o.vertex = UnityObjectToClipPos(v);
 				o.uv = TRANSFORM_TEX(V.uv, _MainTex);
 				// o.index =index;
-				// o.height =h;
+				o.height =h;
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
@@ -92,7 +92,7 @@
 				fixed4 col = tex2D(_MainTex, i.uv);
 
 				// float2 indexColor = i.index.xy % 2.0;
-				// float hColor = 0.5+0.5*sin(60.0*i.height);
+				float hColor = 0.5+0.5*sin(60.0*i.height);
 				// return float4(hColor,hColor,hColor,1.0);
 				return float4(col.rgb,1.0);
 				
