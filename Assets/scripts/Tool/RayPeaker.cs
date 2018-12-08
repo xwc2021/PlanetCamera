@@ -9,7 +9,7 @@ public class RayPeaker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Application.isPlaying)
+        // if (!Application.isPlaying)
         {
             // code executed in edit mode
             if (to != null)

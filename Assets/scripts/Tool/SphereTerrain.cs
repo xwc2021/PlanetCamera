@@ -7,7 +7,10 @@ public class SphereTerrain : MonoBehaviour
     public Transform from;
     public Transform to;
     public Transform pieceOwner;
-    public GameObject piecePrefab;
+    public GameObject p129;
+    public GameObject p128;
+    public GameObject p_128x_129y;
+    public GameObject p_129x_128y;
     public Material material;
     public void updateLocalPos()
     {
@@ -27,8 +30,18 @@ public class SphereTerrain : MonoBehaviour
         {
             for (var x = 0; x < 8; ++x)
             {
+                GameObject prefab = null;
+                if (x == 7 && z == 7)
+                    prefab = p128;
+                else if (x == 7)
+                    prefab = p_128x_129y;
+                else if (z == 7)
+                    prefab = p_129x_128y;
+                else
+                    prefab = p129;
+
                 var pos = offset + xStep * x + zStep * z;
-                var obj = Instantiate<GameObject>(this.piecePrefab, pos, Quaternion.identity);
+                var obj = Instantiate<GameObject>(prefab, pos, Quaternion.identity);
                 obj.transform.parent = pieceOwner;
 
                 obj.transform.name = string.Format("piece({0},{1})", x, z);
