@@ -58,21 +58,24 @@
 
 				// Todo: 讀取高度圖
 				
-				// float resolution =1024.0;
-				// float halfResolution =0.5*resolution;
-				// float onePixel = 1.0/resolution;
-				// float halfPixel = 0.5*onePixel;
-				// float2 index =v.xz+float2(halfResolution,halfResolution);
-				// float2 hUV = float2(halfPixel,halfPixel)+index*float2(onePixel,onePixel);
-				// float h = tex2Dlod(_HeightTex, float4(hUV,0,0)).r;
+				float resolution =1024.0;
+				float halfResolution =0.5*resolution;
+				float onePixel = 1.0/resolution;
+				float halfPixel = 0.5*onePixel;
+				float2 index =v.xz+float2(halfResolution,halfResolution);
+				float2 hUV = float2(halfPixel,halfPixel)+index*float2(onePixel,onePixel);
+				float h = tex2Dlod(_HeightTex, float4(hUV,0,0)).r;
+				h =h*2.0-1.0; // remap to -1~1
 
 				float3 nV = normalize(v);
 				float R=510.0;
-				v = (R)*nV-_local_pos;
+				//球面
+				// v = (R)*nV-_local_pos;
 				// v = (R+h*256.0f)*nV-_local_pos;
 
-				// v =V.vertex;
-				// v.y = h*128.0f;
+				// 平面
+				v =V.vertex;
+				v.y = h*128.0f;
 
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v);
@@ -87,8 +90,6 @@
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				// apply fog
-				UNITY_APPLY_FOG(i.fogCoord, col);
 
 				// float2 indexColor = i.index.xy % 2.0;
 				// float hColor = 0.5+0.5*sin(60.0*i.height);
