@@ -94,7 +94,7 @@
 				// float2 indexColor = i.index.xy % 2.0;
 				float hColor = 0.5+0.5*sin(60.0*i.height);
 				// return float4(hColor,hColor,hColor,1.0);
-				float3 newColor=float3(0.10,0.0,0.0);
+				float3 newColor=float3(0.5,0.5,0.5);
 				return float4(newColor*col.rgb,1.0);
 				
 			}

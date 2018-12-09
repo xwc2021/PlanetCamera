@@ -26,34 +26,31 @@ public class SphereTerrainEditor : UnityEditor.Editor
     bool isUsingBrush = false;
     public void OnSceneGUI()
     {
+        var hitPointWorld = ShootRay(Event.current.mousePosition);
 
 
         if (Event.current.button == 1)//right button
         {
+
             if (Event.current.type == EventType.MouseDrag)
             {
-                var hitPointWorld = ShootRay(Event.current.mousePosition);
                 behavior.setBrushLocalPos(hitPointWorld);
                 behavior.useBrush(isUsingBrush = true);
-                Debug.Log("isUsingBrush = " + isUsingBrush);
+                Event.current.Use(); // 中斷鏡頭的旋轉
                 return;
             }
 
             if (Event.current.type == EventType.MouseDown)
             {
-                var hitPointWorld = ShootRay(Event.current.mousePosition);
                 behavior.setBrushLocalPos(hitPointWorld);
                 behavior.useBrush(isUsingBrush = true);
-                Debug.Log("isUsingBrush = " + isUsingBrush);
                 return;
             }
 
             if (isUsingBrush == true)
             {
                 behavior.useBrush(isUsingBrush = false);
-                Debug.Log("isUsingBrush = " + isUsingBrush);
             }
-
         }
     }
 
