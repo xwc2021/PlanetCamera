@@ -12,6 +12,28 @@ public class SphereTerrain : MonoBehaviour
     public GameObject p_128x_129y;
     public GameObject p_129x_128y;
     public Material material;
+    public Brush dotBrush;
+
+    public Vector3 getPlaneNormal()
+    {
+        return transform.up;
+    }
+
+    public Vector3 getPlanePoint()
+    {
+        var point = new Vector3(0.0f, 510.0f, 0.0f);
+        return transform.TransformPoint(point);
+    }
+
+    public void useBrush(bool value)
+    {
+        dotBrush.gameObject.SetActive(value);
+    }
+
+    public void setBrushLocalPos(Vector3 hitPointWorld)
+    {
+        dotBrush.transform.localPosition = transform.InverseTransformPoint(hitPointWorld);
+    }
 
     public void updateLocalPos()
     {

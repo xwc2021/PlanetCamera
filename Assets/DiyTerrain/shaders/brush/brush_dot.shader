@@ -57,9 +57,16 @@
 
 				float2 center=(0.5,0.5);
 				float2 v =i.uv-center;
-				float r=length(v); // => \/
-				r=-r+1.0; // reverse =>  /\ 
+				float r=length(v); // => \/ 0.5~0~0.5
+
+				// smooth step
+				r=-r+1.0; // reverse =>  /\ 0.5~1~0.5
 				r=strength*smoothstep(0.5,1.0,r);
+
+				// 球
+				// r= 2.0*r;
+				// r = clamp(r,0.0,1.0);
+				// r=strength*cos(asin(r));
 
 				return float4(r,r,r,1.0);
 			}

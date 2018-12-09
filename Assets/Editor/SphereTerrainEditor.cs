@@ -23,24 +23,49 @@ public class SphereTerrainEditor : UnityEditor.Editor
         }
     }
 
+    bool isUsingBrush = false;
     public void OnSceneGUI()
     {
-        if (Event.current.type == EventType.MouseDown)
+
+
+        if (Event.current.button == 1)//right button
         {
-            if (Event.current.button == 1)//right button
+            if (Event.current.type == EventType.MouseDrag)
             {
-                ShootRay(Event.current.mousePosition);
-                SceneView.RepaintAll();
+                var hitPointWorld = ShootRay(Event.current.mousePosition);
+                behavior.setBrushLocalPos(hitPointWorld);
+                behavior.useBrush(isUsingBrush = true);
+                Debug.Log("isUsingBrush = " + isUsingBrush);
+                return;
             }
+
+            if (Event.current.type == EventType.MouseDown)
+            {
+                var hitPointWorld = ShootRay(Event.current.mousePosition);
+                behavior.setBrushLocalPos(hitPointWorld);
+                behavior.useBrush(isUsingBrush = true);
+                Debug.Log("isUsingBrush = " + isUsingBrush);
+                return;
+            }
+
+            if (isUsingBrush == true)
+            {
+                behavior.useBrush(isUsingBrush = false);
+                Debug.Log("isUsingBrush = " + isUsingBrush);
+            }
+
         }
     }
 
-    void ShootRay(Vector3 mousePos)
+    Vector3 ShootRay(Vector3 mousePos)
     {
         Vector3 from, dir;
         GeometryTool.GetShootingRay(mousePos, out from, out dir);
+        Vector3 hitPoint;
+        GeometryTool.RayHitPlane(from, dir, behavior.getPlaneNormal(), behavior.getPlanePoint(), out hitPoint);
 
         behavior.from.position = from;
-        behavior.to.position = from + dir * 500.0f;
+        behavior.to.position = hitPoint;
+        return hitPoint;
     }
 }
