@@ -63,6 +63,7 @@ public class SphereTerrainEditor : UnityEditor.Editor
 
         behavior.from.position = from;
         behavior.to.position = hitPoint;
+        behavior.to.rotation = behavior.transform.rotation;
         return hitPoint;
     }
 }

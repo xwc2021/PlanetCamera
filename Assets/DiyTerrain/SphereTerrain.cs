@@ -53,7 +53,7 @@ public class SphereTerrain : MonoBehaviour
 
     public void create64Piece()
     {
-        var offset = new Vector3(-448.0f, 510.0f, -448.0f);
+        var offset = new Vector3(-448.0f, 511.5f, -448.0f) + new Vector3(0.5f, 0.0f, 0.5f);
         var xStep = new Vector3(128.0f, 0.0f, 0.0f);
         var zStep = new Vector3(0.0f, 0.0f, 128.0f);
         for (var z = 0; z < 8; ++z)
