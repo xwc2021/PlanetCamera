@@ -4,25 +4,28 @@ using UnityEngine;
 
 public class SphereTerrain : MonoBehaviour
 {
-    public Transform from;
-    public Transform to;
-    public Transform hitOnPlane;
     public Transform pieceOwner;
     public GameObject p129;
     public GameObject p128;
     public GameObject p_128x_129y;
     public GameObject p_129x_128y;
     public Material material;
+    public Brush fillBrush;
     public Brush dotBrush;
 
-    public float getSphereR()
+    public void updateBrushStrength(float strength)
     {
-        return 511.5f;
+        dotBrush.height = strength;
     }
 
-    public Vector3 getSphereWorldCenter()
+    public void updateBrushSzie(float size)
     {
-        return transform.position;
+        dotBrush.transform.localScale = new Vector3(size, 1.0f, size);
+    }
+
+    public void clearHeight(bool clear)
+    {
+        fillBrush.gameObject.SetActive(clear);
     }
 
     public Vector3 getPlaneNormal()

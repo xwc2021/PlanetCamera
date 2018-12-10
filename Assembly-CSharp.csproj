@@ -58,6 +58,7 @@
      <Compile Include="Assets\DiyTerrain\DrawMeshAABB.cs" />
      <Compile Include="Assets\DiyTerrain\ShowMeshBound.cs" />
      <Compile Include="Assets\DiyTerrain\SphereTerrain.cs" />
+     <Compile Include="Assets\DiyTerrain\SphereTerrainBrushController.cs" />
      <Compile Include="Assets\DiyTerrain\SphereTerrainPiece.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
