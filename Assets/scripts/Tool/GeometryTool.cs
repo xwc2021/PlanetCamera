@@ -50,6 +50,11 @@ public class GeometryTool
             return false;
         }
         var t = A / B;
+        if (t < 0.0f)
+        {
+            hitPos = Vector3.zero;
+            return false;
+        }
         hitPos = from + t * dir;
         return true;
     }

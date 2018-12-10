@@ -46,7 +46,7 @@ public class SphereTerrainPiece : MonoBehaviour
     {
         var localV = v + transform.localPosition;
         var nV = localV.normalized;
-        var R = 510.0f;
+        var R = SphereTerrain.HalfBoxWidth;
         return nV * R - transform.localPosition;
     }
 }

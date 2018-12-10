@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SphereTerrain : MonoBehaviour
 {
+    public static float BoxWidth = 1023.0f;
+    public static float HalfBoxWidth = 1023.0f * 0.5f;
+    public static float R = HalfBoxWidth;
+
     public Transform pieceOwner;
     public GameObject p129;
     public GameObject p128;
@@ -12,6 +16,55 @@ public class SphereTerrain : MonoBehaviour
     public Material material;
     public Brush fillBrush;
     public Brush dotBrush;
+    public Vector3 localHitPoint;
+
+    public SphereTerrain upPiece;
+    public SphereTerrain downPiece;
+    public SphereTerrain leftPiece;
+    public SphereTerrain rightPiece;
+
+    //靠在邊界上旋轉
+    Vector2 getRotAlongBorderLine(Vector2 a, Vector2 b, Vector2 border)
+    {
+        var pointToBorder = a - border;
+        var rot = new Vector2(a.x * b.x - a.y * b.y, b.x * a.y + a.x * b.y);
+        return rot + border;
+    }
+
+    public void updateNeighborsBrush(bool usingBrush)
+    {
+        var yz = new Vector2(localHitPoint.y, localHitPoint.z);
+        var xy = new Vector2(localHitPoint.x, localHitPoint.y);
+        var i = new Vector2(0.0f, 1.0f);
+
+        var borderPlus = new Vector2(SphereTerrain.HalfBoxWidth, SphereTerrain.HalfBoxWidth);
+        var borderMinus = new Vector2(SphereTerrain.HalfBoxWidth, -SphereTerrain.HalfBoxWidth);
+
+        //TODO
+        // //upPiece x軸正轉 
+        // var newYZ = getRotAlongBorderLine(yz, i, borderPlus);
+
+        // upPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y)));
+        // upPiece.useBrush(usingBrush);
+
+        // //downPiece x軸逆轉 
+        // newYZ = getRotAlongBorderLine(yz, -i, borderMinus);// 乘上-i
+
+        // downPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y)));
+        // downPiece.useBrush(usingBrush);
+
+        // //rightPiece z軸逆轉
+        // var newXY = getRotAlongBorderLine(xy, -i, borderPlus);
+
+        // rightPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(newXY.x, newXY.y, localHitPoint.z)));
+        // rightPiece.useBrush(usingBrush);
+
+        // //leftPiece z軸正轉
+        // newXY = getRotAlongBorderLine(xy, i, borderMinus);
+
+        // leftPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(newXY.x, newXY.y, localHitPoint.z)));
+        // leftPiece.useBrush(usingBrush);
+    }
 
     public void updateBrushStrength(float strength)
     {
@@ -35,7 +88,7 @@ public class SphereTerrain : MonoBehaviour
 
     public Vector3 getPlanePoint()
     {
-        var point = new Vector3(0.0f, 510.0f, 0.0f);
+        var point = new Vector3(0.0f, HalfBoxWidth, 0.0f);
         return transform.TransformPoint(point);
     }
 
@@ -44,9 +97,10 @@ public class SphereTerrain : MonoBehaviour
         dotBrush.gameObject.SetActive(value);
     }
 
-    public void setBrushLocalPos(Vector3 hitPointWorld)
+    public void setBrushLocalPosFrom(Vector3 hitPointWorld)
     {
-        dotBrush.transform.localPosition = transform.InverseTransformPoint(hitPointWorld);
+        localHitPoint = transform.InverseTransformPoint(hitPointWorld);
+        dotBrush.transform.localPosition = localHitPoint;
     }
 
     public void updateLocalPos()
@@ -67,7 +121,7 @@ public class SphereTerrain : MonoBehaviour
 
     public void create64Piece()
     {
-        var offset = new Vector3(-448.0f, 511.5f, -448.0f) + new Vector3(0.5f, 0.0f, 0.5f);
+        var offset = new Vector3(-448.0f, SphereTerrain.HalfBoxWidth, -448.0f) + new Vector3(0.5f, 0.0f, 0.5f);
         var xStep = new Vector3(128.0f, 0.0f, 0.0f);
         var zStep = new Vector3(0.0f, 0.0f, 128.0f);
         for (var z = 0; z < 8; ++z)

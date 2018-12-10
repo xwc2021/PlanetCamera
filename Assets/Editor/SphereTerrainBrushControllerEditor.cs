@@ -15,21 +15,34 @@ public class SphereTerrainBrushControllerEditor : UnityEditor.Editor
     bool isUsingBrush = false;
     public void OnSceneGUI()
     {
-        Vector3 from, dir;
-        GeometryTool.GetShootingRay(Event.current.mousePosition, out from, out dir);
-        Vector3 hitPoint, hitNormal;
-        rayOnSphere(from, dir, out hitPoint, out hitNormal);
-
         if (Event.current.button == 1)//right button
         {
-            SphereTerrain[] testingTerrainList;
-            int testingTerrainCount;
-            controller.getTestingTerrains(hitNormal, out testingTerrainList, out testingTerrainCount);
+            Vector3 from, dir;
+            GeometryTool.GetShootingRay(Event.current.mousePosition, out from, out dir);
+            Vector3 hitPoint, hitNormal;
+            controller.from.position = from;
+            var isHitSphere = rayHitSphere(from, dir, out hitPoint, out hitNormal);
+            if (!isHitSphere)
+                return;
 
-            // var hitPointWorld = ShootRay(Event.current.mousePosition);
+
+            Vector3 hitOnPlane;
+            var hitTerrain = getHitPlane(hitPoint, hitNormal, out hitOnPlane);
+            if (hitTerrain == null)
+            {
+                Debug.Log("no hit plane");
+                return;
+            }
+
             if (Event.current.type == EventType.MouseDrag || Event.current.type == EventType.MouseDown)
             {
-                usingBrush(hitPoint, hitNormal, testingTerrainList, testingTerrainCount);
+                Debug.Log(hitTerrain.name);
+                isUsingBrush = true;
+
+                hitTerrain.setBrushLocalPosFrom(hitOnPlane);
+                hitTerrain.useBrush(true);
+
+                hitTerrain.updateNeighborsBrush(true);
                 Event.current.Use(); // 中斷鏡頭的旋轉
                 return;
             }
@@ -37,33 +50,19 @@ public class SphereTerrainBrushControllerEditor : UnityEditor.Editor
             if (isUsingBrush == true)
             {
                 isUsingBrush = false;
-                for (var i = 0; i < testingTerrainCount; ++i)
-                {
-                    var tesingTerrain = testingTerrainList[i];
-                    tesingTerrain.useBrush(false);
-                }
+
+                hitTerrain.setBrushLocalPosFrom(hitOnPlane);
+                hitTerrain.useBrush(false);
+
+                hitTerrain.updateNeighborsBrush(false);
             }
         }
     }
 
-    void usingBrush(Vector3 from, Vector3 dir, SphereTerrain[] testingTerrainList, int testingTerrainCount)
+    bool rayHitSphere(Vector3 from, Vector3 dir, out Vector3 hitPoint, out Vector3 hitNormal)
     {
-        isUsingBrush = true;
-        for (var i = 0; i < testingTerrainCount; ++i)
-        {
-            var tesingTerrain = testingTerrainList[i];
-
-            var hitPointWorld = rayOnPlane(from, dir, tesingTerrain);
-            tesingTerrain.setBrushLocalPos(hitPointWorld);
-            tesingTerrain.useBrush(true);
-        }
-    }
-
-    bool rayOnSphere(Vector3 from, Vector3 dir, out Vector3 hitPoint, out Vector3 hitNormal)
-    {
-        // GeometryTool.RayHitPlane(from, dir, behavior.getPlaneNormal(), behavior.getPlanePoint(), out hitPoint);
         var shereWorldCenter = controller.getSphereWorldCenter(); // 先射球
-        var R = controller.getSphereR();
+        var R = SphereTerrain.R;
         var isHit = GeometryTool.RayMarchingSphere(from, dir, shereWorldCenter, R, out hitPoint, out hitNormal);
         if (isHit)
         {
@@ -80,12 +79,29 @@ public class SphereTerrainBrushControllerEditor : UnityEditor.Editor
         return isHit;
     }
 
-    Vector3 rayOnPlane(Vector3 from, Vector3 dir, SphereTerrain sTerrain)
+    bool rayHitPlane(Vector3 from, Vector3 dir, SphereTerrain sTerrain, out Vector3 hitPoint)
     {
-        Vector3 hitOnPlane = Vector3.zero;
-        GeometryTool.RayHitPlane(from, dir, sTerrain.getPlaneNormal(), sTerrain.getPlanePoint(), out hitOnPlane);
-        controller.hitOnPlane.position = hitOnPlane;
+        if (!GeometryTool.RayHitPlane(from, dir, sTerrain.getPlaneNormal(), sTerrain.getPlanePoint(), out hitPoint))
+            return false;
 
-        return hitOnPlane;
+        var localHitPoint = sTerrain.transform.InverseTransformPoint(hitPoint);
+        var half = 1023.0f * 0.5f;
+        var inRect = Mathf.Abs(localHitPoint.x) < half && Mathf.Abs(localHitPoint.z) < half;
+        controller.hitOnPlane.position = inRect ? hitPoint : Vector3.zero;
+        return inRect;
+    }
+
+    SphereTerrain getHitPlane(Vector3 from, Vector3 dir, out Vector3 hitPoint)
+    {
+        var sphereTerrains = controller.sphereTerrains;
+        for (var i = 0; i < sphereTerrains.Length; ++i)
+        {
+            var sTerrain = sphereTerrains[i];
+            if (rayHitPlane(from, dir, sTerrain, out hitPoint))
+                return sTerrain;
+        }
+
+        hitPoint = Vector3.zero;
+        return null;
     }
 }
