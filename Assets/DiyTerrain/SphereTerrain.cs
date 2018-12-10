@@ -6,6 +6,7 @@ public class SphereTerrain : MonoBehaviour
 {
     public Transform from;
     public Transform to;
+    public Transform hitOnPlane;
     public Transform pieceOwner;
     public GameObject p129;
     public GameObject p128;
@@ -13,6 +14,16 @@ public class SphereTerrain : MonoBehaviour
     public GameObject p_129x_128y;
     public Material material;
     public Brush dotBrush;
+
+    public float getSphereR()
+    {
+        return 511.5f;
+    }
+
+    public Vector3 getSphereWorldCenter()
+    {
+        return transform.position;
+    }
 
     public Vector3 getPlaneNormal()
     {

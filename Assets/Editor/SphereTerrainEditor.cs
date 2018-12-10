@@ -26,12 +26,11 @@ public class SphereTerrainEditor : UnityEditor.Editor
     bool isUsingBrush = false;
     public void OnSceneGUI()
     {
-        var hitPointWorld = ShootRay(Event.current.mousePosition);
-
+        // var hitPointWorld = ShootRay(Event.current.mousePosition);
 
         if (Event.current.button == 1)//right button
         {
-
+            var hitPointWorld = ShootRay(Event.current.mousePosition);
             if (Event.current.type == EventType.MouseDrag)
             {
                 behavior.setBrushLocalPos(hitPointWorld);
@@ -58,12 +57,32 @@ public class SphereTerrainEditor : UnityEditor.Editor
     {
         Vector3 from, dir;
         GeometryTool.GetShootingRay(mousePos, out from, out dir);
-        Vector3 hitPoint;
-        GeometryTool.RayHitPlane(from, dir, behavior.getPlaneNormal(), behavior.getPlanePoint(), out hitPoint);
+        Vector3 hitPoint, hitNormal;
+        // GeometryTool.RayHitPlane(from, dir, behavior.getPlaneNormal(), behavior.getPlanePoint(), out hitPoint);
+        var shereWorldCenter = behavior.getSphereWorldCenter(); // 先射球
+        var isHit = GeometryTool.RayMarchingSphere(from, dir, behavior.getSphereWorldCenter(), behavior.getSphereR(), out hitPoint, out hitNormal);
 
         behavior.from.position = from;
-        behavior.to.position = hitPoint;
-        behavior.to.rotation = behavior.transform.rotation;
-        return hitPoint;
+        Vector3 hitOnPlane = Vector3.zero;
+        if (isHit)
+        {
+            var tangent = Vector3.zero;
+            Vector3.OrthoNormalize(ref hitNormal, ref tangent);
+            behavior.to.rotation = Quaternion.LookRotation(hitNormal, tangent);
+
+            // 再射向平面
+            GeometryTool.RayHitPlane(hitPoint, hitNormal, behavior.getPlaneNormal(), behavior.getPlanePoint(), out hitOnPlane);
+
+            behavior.to.position = hitPoint;
+            behavior.hitOnPlane.position = hitOnPlane;
+            // behavior.to.rotation = Quaternion.identity;
+        }
+        else
+        {
+            behavior.to.position = from + dir * 1000.0f;
+            behavior.to.rotation = Quaternion.identity;
+        }
+
+        return hitOnPlane;
     }
 }

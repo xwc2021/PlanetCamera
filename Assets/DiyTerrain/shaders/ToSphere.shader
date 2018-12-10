@@ -70,12 +70,12 @@
 				float3 nV = normalize(v);
 				float R=510.0;
 				//球面
-				// v = (R)*nV-_local_pos;
-				// v = (R+h*256.0f)*nV-_local_pos;
+				v = (R)*nV-_local_pos;
+				v = (R+h*256.0f)*nV-_local_pos;
 
 				// 平面
-				v =V.vertex;
-				v.y = h*128.0f;
+				// v =V.vertex;
+				// v.y = h*128.0f;
 
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v);

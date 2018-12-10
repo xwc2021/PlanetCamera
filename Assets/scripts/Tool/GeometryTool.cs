@@ -4,6 +4,37 @@ using UnityEngine;
 
 public class GeometryTool
 {
+    // 之後再改成公式解
+    static public bool RayMarchingSphere(Vector3 from, Vector3 dir, Vector3 sphereWorldCenter, float R, out Vector3 hitPos, out Vector3 hitNormal)
+    {
+        var oldDist = float.MaxValue;
+        var p = from;
+        for (var i = 0; i < 100; ++i)
+        {
+            var dist = (p - sphereWorldCenter).magnitude - R;
+            if (dist > oldDist) // 比上次遠，代表射不中了
+            {
+                // Debug.Log(dist + ">" + oldDist + " " + i);
+                break;
+            }
+
+            oldDist = dist;
+
+            if (dist < 0.001f)
+            {
+                // Debug.Log("break" + i);
+                hitPos = p;
+                hitNormal = (hitPos - sphereWorldCenter).normalized;
+                return true;
+            }
+
+            p += dir * dist;
+        }
+
+        hitNormal = hitPos = Vector3.zero;
+        return false;
+    }
+
     static public bool RayHitPlane(Vector3 from, Vector3 dir, Vector3 PlaneN, Vector3 PlaneC, out Vector3 hitPos)
     {
         //(F-C)。N + t (D。N) = 0
