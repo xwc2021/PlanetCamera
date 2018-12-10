@@ -26,11 +26,10 @@ public class SphereTerrainEditor : UnityEditor.Editor
     bool isUsingBrush = false;
     public void OnSceneGUI()
     {
-        // var hitPointWorld = ShootRay(Event.current.mousePosition);
-
+        var hitPointWorld = ShootRay(Event.current.mousePosition);
         if (Event.current.button == 1)//right button
         {
-            var hitPointWorld = ShootRay(Event.current.mousePosition);
+            // var hitPointWorld = ShootRay(Event.current.mousePosition);
             if (Event.current.type == EventType.MouseDrag)
             {
                 behavior.setBrushLocalPos(hitPointWorld);

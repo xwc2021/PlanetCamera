@@ -68,7 +68,7 @@
 				h =h*2.0-1.0; // remap to -1~1
 
 				float3 nV = normalize(v);
-				float R=510.0;
+				float R=511.5;
 				//球面
 				v = (R)*nV-_local_pos;
 				v = (R+h*256.0f)*nV-_local_pos;

@@ -13,7 +13,7 @@ public class DrawHeightCamera : MonoBehaviour
     int tIndex;
     void Start()
     {
-        var descriptor = new RenderTextureDescriptor(1024, 1024, RenderTextureFormat.ARGBHalf);
+        var descriptor = new RenderTextureDescriptor(1024, 1024, RenderTextureFormat.RFloat);
         keepTexture = new RenderTexture(descriptor);
         nowRenderTexture = new RenderTexture(descriptor);
 
