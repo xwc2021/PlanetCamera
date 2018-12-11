@@ -26,7 +26,7 @@ public class SphereTerrain : MonoBehaviour
     //靠在邊界上旋轉
     Vector2 getRotAlongBorderLine(Vector2 a, Vector2 b, Vector2 border)
     {
-        var pointToBorder = a - border;
+        a = a - border;
         var rot = new Vector2(a.x * b.x - a.y * b.y, b.x * a.y + a.x * b.y);
         return rot + border;
     }
@@ -37,33 +37,32 @@ public class SphereTerrain : MonoBehaviour
         var xy = new Vector2(localHitPoint.x, localHitPoint.y);
         var i = new Vector2(0.0f, 1.0f);
 
-        var borderPlus = new Vector2(SphereTerrain.HalfBoxWidth, SphereTerrain.HalfBoxWidth);
-        var borderMinus = new Vector2(SphereTerrain.HalfBoxWidth, -SphereTerrain.HalfBoxWidth);
+        //upPiece x軸正轉 
+        var newYZ = getRotAlongBorderLine(yz, i, new Vector2(SphereTerrain.HalfBoxWidth, SphereTerrain.HalfBoxWidth));
 
-        //TODO
-        // //upPiece x軸正轉 
-        // var newYZ = getRotAlongBorderLine(yz, i, borderPlus);
+        upPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y)));
+        upPiece.useBrush(usingBrush);
 
-        // upPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y)));
-        // upPiece.useBrush(usingBrush);
+        //debug position
+        // SphereTerrainBrushController.instance.rotAlongBorder.position=transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y))
 
-        // //downPiece x軸逆轉 
-        // newYZ = getRotAlongBorderLine(yz, -i, borderMinus);// 乘上-i
+        //downPiece x軸逆轉 
+        newYZ = getRotAlongBorderLine(yz, -i, new Vector2(SphereTerrain.HalfBoxWidth, -SphereTerrain.HalfBoxWidth));// 乘上-i
 
-        // downPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y)));
-        // downPiece.useBrush(usingBrush);
+        downPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y)));
+        downPiece.useBrush(usingBrush);
 
-        // //rightPiece z軸逆轉
-        // var newXY = getRotAlongBorderLine(xy, -i, borderPlus);
+        //rightPiece z軸逆轉
+        var newXY = getRotAlongBorderLine(xy, -i, new Vector2(SphereTerrain.HalfBoxWidth, SphereTerrain.HalfBoxWidth));
 
-        // rightPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(newXY.x, newXY.y, localHitPoint.z)));
-        // rightPiece.useBrush(usingBrush);
+        rightPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(newXY.x, newXY.y, localHitPoint.z)));
+        rightPiece.useBrush(usingBrush);
 
-        // //leftPiece z軸正轉
-        // newXY = getRotAlongBorderLine(xy, i, borderMinus);
+        //leftPiece z軸正轉
+        newXY = getRotAlongBorderLine(xy, i, new Vector2(-SphereTerrain.HalfBoxWidth, SphereTerrain.HalfBoxWidth));
 
-        // leftPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(newXY.x, newXY.y, localHitPoint.z)));
-        // leftPiece.useBrush(usingBrush);
+        leftPiece.setBrushLocalPosFrom(transform.TransformPoint(new Vector3(newXY.x, newXY.y, localHitPoint.z)));
+        leftPiece.useBrush(usingBrush);
     }
 
     public void updateBrushStrength(float strength)

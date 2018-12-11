@@ -21,6 +21,14 @@ public class SphereTerrainBrushController : MonoBehaviour
     public Transform from;
     public Transform to;
     public Transform hitOnPlane;
+    public Transform rotAlongBorder;
+
+    public static SphereTerrainBrushController instance;
+
+    void Start()
+    {
+        instance = this;
+    }
 
     public SphereTerrain[] sphereTerrains;
 
