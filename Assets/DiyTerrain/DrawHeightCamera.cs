@@ -9,9 +9,13 @@ public class DrawHeightCamera : MonoBehaviour
     public SphereTerrain sphereTerrain;
     public MeshRenderer targetPlane;
 
-    RenderTexture keepTexture;
+    public RenderTexture keepTexture;
     RenderTexture nowRenderTexture;
-    int tIndex;
+
+    public Stitching stitchingUp;
+    public Stitching stitchingDown;
+    public Stitching stitchingLeft;
+    public Stitching stitchingRight;
     void Start()
     {
         var descriptor = new RenderTextureDescriptor(1024, 1024, RenderTextureFormat.RFloat);
