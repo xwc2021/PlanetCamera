@@ -2,7 +2,6 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
 		_height("height",float)=64.0
 	}
 	SubShader
@@ -30,19 +29,16 @@
 			struct v2f
 			{
 				float2 uv : TEXCOORD0;
-				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
 			float _height;
 			
 			v2f vert (appdata v)
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.uv = v.uv;
 				return o;
 			}
 			

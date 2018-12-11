@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class DrawHeightCamera : MonoBehaviour
 {
@@ -28,4 +29,19 @@ public class DrawHeightCamera : MonoBehaviour
         targetPlane.material.SetTexture("_MainTex", keepTexture);
     }
 
+    // https://gist.github.com/AlexanderDzhoganov/d795b897005389071e2a
+    public void DumpRenderTexture(string pngOutPath)
+    {
+        var saveName = pngOutPath + transform.parent.parent.name + ".png";
+        RenderTexture rt = keepTexture;
+        var oldRT = RenderTexture.active;
+
+        var tex = new Texture2D(rt.width, rt.height);
+        RenderTexture.active = rt;
+        tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+        tex.Apply();
+
+        File.WriteAllBytes(saveName, tex.EncodeToPNG());
+        RenderTexture.active = oldRT;
+    }
 }

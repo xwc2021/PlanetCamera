@@ -12,20 +12,29 @@ public class SphereTerrainBrushControllerEditor : UnityEditor.Editor
         controller = (SphereTerrainBrushController)target;
     }
 
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        if (GUILayout.Button("save Texture"))
+        {
+            controller.saveTexture();
+        }
+    }
+
     bool isUsingBrush = false;
     public void OnSceneGUI()
     {
+        Vector3 from, dir;
+        GeometryTool.GetShootingRay(Event.current.mousePosition, out from, out dir);
+        Vector3 hitPoint, hitNormal;
+        controller.from.position = from;
+        var isHitSphere = rayHitSphere(from, dir, out hitPoint, out hitNormal);
+        if (!isHitSphere)
+            return;
+
         if (Event.current.button == 1)//right button
         {
-            Vector3 from, dir;
-            GeometryTool.GetShootingRay(Event.current.mousePosition, out from, out dir);
-            Vector3 hitPoint, hitNormal;
-            controller.from.position = from;
-            var isHitSphere = rayHitSphere(from, dir, out hitPoint, out hitNormal);
-            if (!isHitSphere)
-                return;
-
-
             Vector3 hitOnPlane;
             var hitTerrain = getHitPlane(hitPoint, hitNormal, out hitOnPlane);
             if (hitTerrain == null)
@@ -36,7 +45,7 @@ public class SphereTerrainBrushControllerEditor : UnityEditor.Editor
 
             if (Event.current.type == EventType.MouseDrag || Event.current.type == EventType.MouseDown)
             {
-                Debug.Log(hitTerrain.name);
+                // Debug.Log(hitTerrain.name);
                 isUsingBrush = true;
 
                 hitTerrain.setBrushLocalPosFrom(hitOnPlane);

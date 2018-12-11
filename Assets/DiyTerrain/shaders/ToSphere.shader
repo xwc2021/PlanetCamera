@@ -4,6 +4,8 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_HeightTex ("Height Texture", 2D) = "white" {}
+		_BoxWidth ("BoxWidth", float) = 1023.0
+		_resolution ("resolution", float) = 1023.0
 	}
 	SubShader
 	{
@@ -35,34 +37,24 @@
 				float2 uv : TEXCOORD0;
 				float height: TEXCOORD1;
 				float2 index: TEXCOORD2;
-				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
 
 			sampler2D _MainTex;
 			sampler2D _HeightTex;
-			float4 _MainTex_ST;
-
-			float fract(float x){
-				return x-floor(x);
-			}
-
-			float N(float t) {
-				return fract(sin(t*12345.564)*7658.76);
-			}
-
+			float _BoxWidth;
+			float _resolution;
 			
 			v2f vert (appdata V)
 			{
 				float3 v = V.vertex+_local_pos;
+				float halfResolution =0.5*_BoxWidth;
+				float2 index =v.xz+float2(halfResolution,halfResolution);// 0~1023
 
 				// Todo: 讀取高度圖
 				
-				float resolution =1024.0;
-				float halfResolution =0.5*resolution;
-				float onePixel = 1.0/resolution;
+				float onePixel = 1.0/_resolution;
 				float halfPixel = 0.5*onePixel;
-				float2 index =v.xz+float2(halfResolution,halfResolution);
 				float2 hUV = float2(halfPixel,halfPixel)+index*float2(onePixel,onePixel);
 				float h = tex2Dlod(_HeightTex, float4(hUV,0,0)).r;
 				h =h*2.0-1.0; // remap to -1~1
@@ -79,10 +71,9 @@
 
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v);
-				o.uv = TRANSFORM_TEX(V.uv, _MainTex);
+				o.uv = V.uv;
 				// o.index =index;
 				o.height =h;
-				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			

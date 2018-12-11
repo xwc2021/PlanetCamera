@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class SphereTerrainBrushController : MonoBehaviour
 {
@@ -18,6 +19,13 @@ public class SphereTerrainBrushController : MonoBehaviour
         }
     }
 
+    DrawHeightCamera[] drawHeightCameras;
+    public void saveTexture()
+    {
+        foreach (var drawHeightCamera in drawHeightCameras)
+            drawHeightCamera.DumpRenderTexture(Application.dataPath + "/savePng/");
+    }
+
     public Transform from;
     public Transform to;
     public Transform hitOnPlane;
@@ -28,6 +36,7 @@ public class SphereTerrainBrushController : MonoBehaviour
     void Start()
     {
         instance = this;
+        drawHeightCameras = transform.parent.GetComponentsInChildren<DrawHeightCamera>();
     }
 
     public SphereTerrain[] sphereTerrains;

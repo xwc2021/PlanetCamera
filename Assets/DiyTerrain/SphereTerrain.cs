@@ -44,7 +44,7 @@ public class SphereTerrain : MonoBehaviour
         upPiece.useBrush(usingBrush);
 
         //debug position
-        // SphereTerrainBrushController.instance.rotAlongBorder.position=transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y))
+        SphereTerrainBrushController.instance.rotAlongBorder.position = transform.TransformPoint(new Vector3(localHitPoint.x, newYZ.x, newYZ.y));
 
         //downPiece x軸逆轉 
         newYZ = getRotAlongBorderLine(yz, -i, new Vector2(SphereTerrain.HalfBoxWidth, -SphereTerrain.HalfBoxWidth));// 乘上-i
@@ -120,7 +120,9 @@ public class SphereTerrain : MonoBehaviour
 
     public void create64Piece()
     {
-        var offset = new Vector3(-448.0f, SphereTerrain.HalfBoxWidth, -448.0f) + new Vector3(0.5f, 0.0f, 0.5f);
+        //長1023
+        // 左右端 -511.5~511.5
+        var offset = new Vector3(-447.5f, SphereTerrain.HalfBoxWidth, -447.5f);
         var xStep = new Vector3(128.0f, 0.0f, 0.0f);
         var zStep = new Vector3(0.0f, 0.0f, 128.0f);
         for (var z = 0; z < 8; ++z)
