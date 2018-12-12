@@ -5,7 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		_HeightTex ("Height Texture", 2D) = "white" {}
 		_BoxWidth ("BoxWidth", float) = 1023.0
-		_resolution ("resolution", float) = 1023.0
+		_resolution ("resolution", float) = 1024.0
 	}
 	SubShader
 	{
