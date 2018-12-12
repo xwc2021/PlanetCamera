@@ -33,7 +33,7 @@
 				float4 vertex : SV_POSITION;
 			};
 
-			sampler2D _MainTex;
+			sampler2D _HeightTex;
 			sampler2D _NeighborHeightTex;
 			
 			v2f vert (appdata v)
@@ -43,12 +43,12 @@
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target
+			float4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = tex2D(_MainTex, i.uv);
+				
 
-				return col;
+				return float4(1.0,0.0,0.0,1.0);
 			}
 			ENDCG
 		}

@@ -115,6 +115,87 @@ public class SphereTerrainBrushController : MonoBehaviour
         // case StitchingCase.Bottom_Left:
         bottom.stitchingLeft.setHeightTexture(bottom.keepTexture, left.keepTexture);
         left.stitchingDown.setHeightTexture(left.keepTexture, bottom.keepTexture);
+
+        var x = Vector2.right;
+        var y = Vector2.up;
+
+        // top
+        top.stitchingUp.uDir = x;
+        top.stitchingUp.vDir = y;
+
+        top.stitchingDown.uDir = x;
+        top.stitchingDown.vDir = y;
+
+        top.stitchingRight.uDir = -y;
+        top.stitchingRight.vDir = x;
+
+        top.stitchingLeft.uDir = y;
+        top.stitchingLeft.vDir = -x;
+
+        // back
+        back.stitchingUp.uDir = x;
+        back.stitchingUp.vDir = y;
+
+        back.stitchingDown.uDir = x;
+        back.stitchingDown.vDir = y;
+
+        back.stitchingRight.uDir = x;
+        back.stitchingRight.vDir = y;
+
+        back.stitchingLeft.uDir = x;
+        back.stitchingLeft.vDir = y;
+
+        // right
+        right.stitchingUp.uDir = y;
+        right.stitchingUp.vDir = -x;
+
+        right.stitchingDown.uDir = -y;
+        right.stitchingDown.vDir = x;
+
+        right.stitchingRight.uDir = x;
+        right.stitchingRight.vDir = y;
+
+        right.stitchingLeft.uDir = x;
+        right.stitchingLeft.vDir = y;
+
+        // left
+        left.stitchingUp.uDir = -y;
+        left.stitchingUp.vDir = x;
+
+        left.stitchingDown.uDir = y;
+        left.stitchingDown.vDir = -x;
+
+        left.stitchingRight.uDir = x;
+        left.stitchingRight.vDir = y;
+
+        left.stitchingLeft.uDir = x;
+        left.stitchingLeft.vDir = y;
+
+        // bottom
+        bottom.stitchingUp.uDir = x;
+        bottom.stitchingUp.vDir = y;
+
+        bottom.stitchingDown.uDir = x;
+        bottom.stitchingDown.vDir = y;
+
+        bottom.stitchingRight.uDir = y;
+        bottom.stitchingRight.vDir = -x;
+
+        bottom.stitchingLeft.uDir = -y;
+        bottom.stitchingLeft.vDir = x;
+
+        // forward
+        forward.stitchingUp.uDir = x;
+        forward.stitchingUp.vDir = y;
+
+        forward.stitchingDown.uDir = x;
+        forward.stitchingDown.vDir = y;
+
+        forward.stitchingRight.uDir = -x;
+        forward.stitchingRight.vDir = -y;
+
+        forward.stitchingLeft.uDir = -x;
+        forward.stitchingLeft.vDir = -y;
     }
 
     public SphereTerrain[] sphereTerrains;
