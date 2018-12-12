@@ -16,13 +16,15 @@ public class DrawHeightCamera : MonoBehaviour
     public Stitching stitchingDown;
     public Stitching stitchingLeft;
     public Stitching stitchingRight;
-    void Start()
+
+    void Awake()
     {
         var descriptor = new RenderTextureDescriptor(1024, 1024, RenderTextureFormat.RFloat);
         keepTexture = new RenderTexture(descriptor);
         nowRenderTexture = new RenderTexture(descriptor);
 
         usingCamera.targetTexture = nowRenderTexture;
+        print("init");
     }
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)

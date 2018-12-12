@@ -63,59 +63,6 @@ public class SphereTerrainBrushController : MonoBehaviour
         var forward = drawHeightCameras[4];
         var left = drawHeightCameras[5];
 
-        // 上4
-        // StitchingCase.Top_Forward:
-        top.stitchingUp.setHeightTexture(top.keepTexture, forward.keepTexture);
-        forward.stitchingDown.setHeightTexture(forward.keepTexture, top.keepTexture);
-
-        // case StitchingCase.Top_Right:
-        top.stitchingRight.setHeightTexture(top.keepTexture, right.keepTexture);
-        right.stitchingUp.setHeightTexture(right.keepTexture, top.keepTexture);
-
-        // case StitchingCase.Top_Back:
-        top.stitchingDown.setHeightTexture(top.keepTexture, back.keepTexture);
-        back.stitchingUp.setHeightTexture(back.keepTexture, top.keepTexture);
-
-        // case StitchingCase.Top_Left:
-        top.stitchingLeft.setHeightTexture(top.keepTexture, left.keepTexture);
-        left.stitchingUp.setHeightTexture(left.keepTexture, top.keepTexture);
-
-
-        // 中4
-        // case StitchingCase.Back_Right:
-        back.stitchingRight.setHeightTexture(back.keepTexture, right.keepTexture);
-        right.stitchingLeft.setHeightTexture(right.keepTexture, back.keepTexture);
-
-        // case StitchingCase.Right_Forward:
-        right.stitchingRight.setHeightTexture(right.keepTexture, forward.keepTexture);
-        forward.stitchingLeft.setHeightTexture(forward.keepTexture, right.keepTexture);
-
-        // case StitchingCase.Forward_Left:
-        forward.stitchingRight.setHeightTexture(forward.keepTexture, left.keepTexture);
-        left.stitchingLeft.setHeightTexture(left.keepTexture, forward.keepTexture);
-
-        // case StitchingCase.Left_Back:
-        left.stitchingRight.setHeightTexture(left.keepTexture, back.keepTexture);
-        back.stitchingLeft.setHeightTexture(back.keepTexture, left.keepTexture);
-
-
-        //下4
-        // case StitchingCase.Bottom_Forward:
-        bottom.stitchingDown.setHeightTexture(bottom.keepTexture, forward.keepTexture);
-        forward.stitchingUp.setHeightTexture(forward.keepTexture, bottom.keepTexture);
-
-        // case StitchingCase.Bottom_Right:
-        bottom.stitchingRight.setHeightTexture(bottom.keepTexture, right.keepTexture);
-        right.stitchingDown.setHeightTexture(right.keepTexture, bottom.keepTexture);
-
-        // case StitchingCase.Bottom_Back:
-        bottom.stitchingUp.setHeightTexture(back.keepTexture, bottom.keepTexture);
-        back.stitchingDown.setHeightTexture(bottom.keepTexture, back.keepTexture);
-
-        // case StitchingCase.Bottom_Left:
-        bottom.stitchingLeft.setHeightTexture(bottom.keepTexture, left.keepTexture);
-        left.stitchingDown.setHeightTexture(left.keepTexture, bottom.keepTexture);
-
         var x = Vector2.right;
         var y = Vector2.up;
 
@@ -196,6 +143,59 @@ public class SphereTerrainBrushController : MonoBehaviour
 
         forward.stitchingLeft.uDir = -x;
         forward.stitchingLeft.vDir = -y;
+
+        // 上4
+        // StitchingCase.Top_Forward:
+        top.stitchingUp.setHeightTexture(top.keepTexture, forward.keepTexture);
+        forward.stitchingDown.setHeightTexture(forward.keepTexture, top.keepTexture);
+
+        // case StitchingCase.Top_Right:
+        top.stitchingRight.setHeightTexture(top.keepTexture, right.keepTexture);
+        right.stitchingUp.setHeightTexture(right.keepTexture, top.keepTexture);
+
+        // case StitchingCase.Top_Back:
+        top.stitchingDown.setHeightTexture(top.keepTexture, back.keepTexture);
+        back.stitchingUp.setHeightTexture(back.keepTexture, top.keepTexture);
+
+        // case StitchingCase.Top_Left:
+        top.stitchingLeft.setHeightTexture(top.keepTexture, left.keepTexture);
+        left.stitchingUp.setHeightTexture(left.keepTexture, top.keepTexture);
+
+
+        // 中4
+        // case StitchingCase.Back_Right:
+        back.stitchingRight.setHeightTexture(back.keepTexture, right.keepTexture);
+        right.stitchingLeft.setHeightTexture(right.keepTexture, back.keepTexture);
+
+        // case StitchingCase.Right_Forward:
+        right.stitchingRight.setHeightTexture(right.keepTexture, forward.keepTexture);
+        forward.stitchingLeft.setHeightTexture(forward.keepTexture, right.keepTexture);
+
+        // case StitchingCase.Forward_Left:
+        forward.stitchingRight.setHeightTexture(forward.keepTexture, left.keepTexture);
+        left.stitchingLeft.setHeightTexture(left.keepTexture, forward.keepTexture);
+
+        // case StitchingCase.Left_Back:
+        left.stitchingRight.setHeightTexture(left.keepTexture, back.keepTexture);
+        back.stitchingLeft.setHeightTexture(back.keepTexture, left.keepTexture);
+
+
+        //下4
+        // case StitchingCase.Bottom_Forward:
+        bottom.stitchingDown.setHeightTexture(bottom.keepTexture, forward.keepTexture);
+        forward.stitchingUp.setHeightTexture(forward.keepTexture, bottom.keepTexture);
+
+        // case StitchingCase.Bottom_Right:
+        bottom.stitchingRight.setHeightTexture(bottom.keepTexture, right.keepTexture);
+        right.stitchingDown.setHeightTexture(right.keepTexture, bottom.keepTexture);
+
+        // case StitchingCase.Bottom_Back:
+        bottom.stitchingUp.setHeightTexture(back.keepTexture, bottom.keepTexture);
+        back.stitchingDown.setHeightTexture(bottom.keepTexture, back.keepTexture);
+
+        // case StitchingCase.Bottom_Left:
+        bottom.stitchingLeft.setHeightTexture(bottom.keepTexture, left.keepTexture);
+        left.stitchingDown.setHeightTexture(left.keepTexture, bottom.keepTexture);
     }
 
     public SphereTerrain[] sphereTerrains;
