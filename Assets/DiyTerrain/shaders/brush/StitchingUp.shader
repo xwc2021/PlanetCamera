@@ -45,18 +45,39 @@
 				o.vertex = UnityObjectToClipPos(v.vertex);
 
 				float2 uv =1.0-v.uv; // plane的uv 右上角是(0,0)
-				float newV = (1.0+(_scale*(v.vertex.z)/1024.0)) %1.0;
-				o.uv.x = uv.x;
-				o.uv.y = newV;
+				o.uv.xy=uv;
+
 				return o;
 			}
 			
 			float4 frag (v2f i) : SV_Target
 			{
-				// sample the texture
-				tex2D (_HeightTex,i.uv);
+				float2 uv =i.uv;
+				float2 n_uv =uv*2.0-1.0;
+				float scale =_scale/102.4;
+				float newV = frac(1.0+(0.5*scale*n_uv.y));
+				float2 newUV=float2(uv.x,newV);
+				// return float4((newV%0.25),0.0,0.0,1.0);
 
-				return float4(i.uv.y,0.0,0.0,1.0);
+				float h =0.0;
+				if(uv.y>0.5)
+					h=tex2D (_NeighborHeightTex,newUV);
+				else
+					h=tex2D (_HeightTex,newUV);
+
+				// 因為TextureWrapMode 是Clamp
+				float border_self_h=tex2D (_HeightTex,float2(newUV.x,1.0f));
+				float border_neighbor_h=tex2D (_NeighborHeightTex,float2(newUV.x,0.0f));
+				float mHeight =0.5*(border_self_h+border_neighbor_h);
+
+				float a=1.0-abs(n_uv.y);
+				float weight = a*a;
+	
+				float diff =(mHeight-h);
+				float finalH =h+weight*diff;
+				return float4(finalH,0.0,0.0,1.0);
+
+				// return float4(weight,0.0,0.0,1.0);
 			}
 			ENDCG
 		}

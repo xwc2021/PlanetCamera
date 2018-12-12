@@ -18,6 +18,11 @@ public class SphereTerrain : MonoBehaviour
     public Brush dotBrush;
     public Vector3 localHitPoint;
 
+    public Stitching stitchingUp;
+    public Stitching stitchingDown;
+    public Stitching stitchingRight;
+    public Stitching stitchingLeft;
+
     public SphereTerrain upPiece;
     public SphereTerrain downPiece;
     public SphereTerrain leftPiece;

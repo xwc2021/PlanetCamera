@@ -20,6 +20,11 @@ public class SphereTerrainBrushControllerEditor : UnityEditor.Editor
         {
             controller.saveTexture();
         }
+
+        if (GUILayout.Button("stitch"))
+        {
+            controller.doStitch();
+        }
     }
 
     bool isUsingBrush = false;

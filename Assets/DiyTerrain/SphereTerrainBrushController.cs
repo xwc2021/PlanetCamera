@@ -37,6 +37,20 @@ public class SphereTerrainBrushController : MonoBehaviour
         }
     }
 
+    public void doStitch()
+    {
+        StartCoroutine(stitching());
+    }
+
+    public IEnumerator stitching()
+    {
+        var topTerrain = this.sphereTerrains[0];
+        topTerrain.stitchingUp.gameObject.SetActive(true);
+
+        yield return new WaitForEndOfFrame();
+        topTerrain.stitchingUp.gameObject.SetActive(false); ;
+    }
+
     DrawHeightCamera[] drawHeightCameras;
     public void saveTexture()
     {
