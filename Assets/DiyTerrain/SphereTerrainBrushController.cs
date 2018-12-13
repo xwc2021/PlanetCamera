@@ -68,36 +68,47 @@ public class SphereTerrainBrushController : MonoBehaviour
         rightTerrain.stitchingUp.gameObject.SetActive(value);
 
         // case StitchingCase.Top_Back:
-
+        topTerrain.stitchingDown.gameObject.SetActive(value);
+        backTerrain.stitchingUp.gameObject.SetActive(value);
 
         // case StitchingCase.Top_Left:
-
+        topTerrain.stitchingLeft.gameObject.SetActive(value);
+        leftTerrain.stitchingUp.gameObject.SetActive(value);
 
         // 中4
         // case StitchingCase.Back_Right:
-
+        backTerrain.stitchingRight.gameObject.SetActive(value);
+        rightTerrain.stitchingLeft.gameObject.SetActive(value);
 
         // case StitchingCase.Right_Forward:
-
+        rightTerrain.stitchingRight.gameObject.SetActive(value);
+        forwardTerrain.stitchingRight.gameObject.SetActive(value);// forward 的面向不太一樣
 
         // case StitchingCase.Forward_Left:
-
+        forwardTerrain.stitchingLeft.gameObject.SetActive(value);// forward 的面向不太一樣
+        leftTerrain.stitchingLeft.gameObject.SetActive(value);
 
         // case StitchingCase.Left_Back:
-
+        leftTerrain.stitchingRight.gameObject.SetActive(value);
+        backTerrain.stitchingLeft.gameObject.SetActive(value);
 
 
         //下4
         // case StitchingCase.Bottom_Forward:
-
+        // bottomTerrain.stitchingDown.gameObject.SetActive(value);
+        // forwardTerrain.stitchingUp.gameObject.SetActive(value);
 
         // case StitchingCase.Bottom_Right:
-
+        // bottomTerrain.stitchingRight.gameObject.SetActive(value);
+        // rightTerrain.stitchingDown.gameObject.SetActive(value);
 
         // case StitchingCase.Bottom_Back:
-
+        // bottomTerrain.stitchingUp.gameObject.SetActive(value);
+        // backTerrain.stitchingDown.gameObject.SetActive(value);
 
         // case StitchingCase.Bottom_Left:
+        // bottomTerrain.stitchingLeft.gameObject.SetActive(value);
+        // leftTerrain.stitchingDown.gameObject.SetActive(value);
     }
 
     DrawHeightCamera[] drawHeightCameras;
@@ -172,9 +183,9 @@ public class SphereTerrainBrushController : MonoBehaviour
         right.stitchingDown.neibhborV = -x;
         right.stitchingDown.neibhborOriginal = x - y;
 
-        right.stitchingRight.neibhborU = x;
-        right.stitchingRight.neibhborV = y;
-        right.stitchingRight.neibhborOriginal = x;
+        right.stitchingRight.neibhborU = -x;//修正
+        right.stitchingRight.neibhborV = -y;
+        right.stitchingRight.neibhborOriginal = 2 * x + y;
 
         right.stitchingLeft.neibhborU = x;
         right.stitchingLeft.neibhborV = y;
@@ -193,9 +204,9 @@ public class SphereTerrainBrushController : MonoBehaviour
         left.stitchingRight.neibhborV = y;
         left.stitchingRight.neibhborOriginal = x;
 
-        left.stitchingLeft.neibhborU = x;
-        left.stitchingLeft.neibhborV = y;
-        left.stitchingLeft.neibhborOriginal = -x;
+        left.stitchingLeft.neibhborU = -x;// 修正
+        left.stitchingLeft.neibhborV = -y;
+        left.stitchingLeft.neibhborOriginal = y;
 
         // bottom
         bottom.stitchingUp.neibhborU = x;
@@ -256,10 +267,10 @@ public class SphereTerrainBrushController : MonoBehaviour
 
         // case StitchingCase.Right_Forward:
         right.stitchingRight.setHeightTexture(right.keepTexture, forward.keepTexture);
-        forward.stitchingLeft.setHeightTexture(forward.keepTexture, right.keepTexture);
+        forward.stitchingRight.setHeightTexture(forward.keepTexture, right.keepTexture);
 
         // case StitchingCase.Forward_Left:
-        forward.stitchingRight.setHeightTexture(forward.keepTexture, left.keepTexture);
+        forward.stitchingLeft.setHeightTexture(forward.keepTexture, left.keepTexture);
         left.stitchingLeft.setHeightTexture(left.keepTexture, forward.keepTexture);
 
         // case StitchingCase.Left_Back:
