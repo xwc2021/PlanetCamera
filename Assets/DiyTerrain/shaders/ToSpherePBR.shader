@@ -36,7 +36,7 @@ Shader "Custom/ToSpherePBR" {
 
 		void vert(inout appdata_full V, out Input o)
 		{
-			float3 v = V.vertex+_local_pos; // 原點是parent物件的中心
+			float3 v = V.vertex+_local_pos; // 計算normal的原點，是parent物件的中心點
 			float halfResolution =0.5*_BoxWidth;
 			float2 index =v.xz+float2(halfResolution,halfResolution);// 0~1023
 
@@ -78,9 +78,9 @@ Shader "Custom/ToSpherePBR" {
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			// Albedo comes from a texture tinted by color
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-			float h= sin(160.0*IN.height);
-			o.Albedo = float4(h,h,h,1.0);
-			// o.Albedo = c.rgb;
+			// float h= sin(160.0*IN.height);
+			// o.Albedo = float4(h,h,h,1.0);
+			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;

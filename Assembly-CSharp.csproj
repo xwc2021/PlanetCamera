@@ -199,9 +199,11 @@
      <None Include="Assets\materials\BehindTheWall\BehindTheWallMask.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\brush_dot.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
+     <None Include="Assets\DiyTerrain\shaders\brush\StitchingLeft.shader" />
      <None Include="Assets\Water\Test\NewSurfaceShader.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\UI\CurveBackground.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\ScreenSpaceReflection.shader" />
+     <None Include="Assets\DiyTerrain\shaders\brush\StitchingRight.shader" />
      <None Include="Assets\PostProcessing\Utilities\CustomMotionTexture\Shaders\CustomMotionVectorTexture.shader" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWallUseMask.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\ACES.cginc" />
@@ -209,7 +211,6 @@
      <None Include="Assets\PostProcessing\Resources\Shaders\Tonemapping.cginc" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
      <None Include="Assets\Water\fetchWaveDataMirror.shader" />
-     <None Include="Assets\DiyTerrain\shaders\ToSphere.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Uber.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Blit.shader" />
      <None Include="Assets\PostProcessing\Editor Resources\Monitors\WaveformRender.shader" />
@@ -220,6 +221,7 @@
      <None Include="Assets\DiyTerrain\shaders\brush\StitchingUp.shader" />
      <None Include="Assets\PostProcessing\Resources\Bluenoise64\LICENSE.txt" />
      <None Include="Assets\PostProcessing\Resources\Shaders\BuiltinDebugViews.shader" />
+     <None Include="Assets\DiyTerrain\shaders\brush\StitchingDown.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Common.cginc" />
      <None Include="Assets\PostProcessing\Resources\Bluenoise64\COPYING.txt" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWall.shader" />

@@ -44,11 +44,60 @@ public class SphereTerrainBrushController : MonoBehaviour
 
     public IEnumerator stitching()
     {
-        var topTerrain = this.sphereTerrains[0];
-        topTerrain.stitchingUp.gameObject.SetActive(true);
-
+        stitch12(true);
         yield return new WaitForEndOfFrame();
-        topTerrain.stitchingUp.gameObject.SetActive(false); ;
+        stitch12(false);
+    }
+
+    void stitch12(bool value)
+    {
+        var topTerrain = this.sphereTerrains[0];
+        var bottomTerrain = this.sphereTerrains[1];
+        var backTerrain = this.sphereTerrains[2];
+        var rightTerrain = this.sphereTerrains[3];
+        var forwardTerrain = this.sphereTerrains[4];
+        var leftTerrain = this.sphereTerrains[5];
+
+        // 上4
+        // StitchingCase.Top_Forward:
+        topTerrain.stitchingUp.gameObject.SetActive(value);
+        forwardTerrain.stitchingDown.gameObject.SetActive(value);
+
+        // case StitchingCase.Top_Right:
+        topTerrain.stitchingRight.gameObject.SetActive(value);
+        rightTerrain.stitchingUp.gameObject.SetActive(value);
+
+        // case StitchingCase.Top_Back:
+
+
+        // case StitchingCase.Top_Left:
+
+
+        // 中4
+        // case StitchingCase.Back_Right:
+
+
+        // case StitchingCase.Right_Forward:
+
+
+        // case StitchingCase.Forward_Left:
+
+
+        // case StitchingCase.Left_Back:
+
+
+
+        //下4
+        // case StitchingCase.Bottom_Forward:
+
+
+        // case StitchingCase.Bottom_Right:
+
+
+        // case StitchingCase.Bottom_Back:
+
+
+        // case StitchingCase.Bottom_Left:
     }
 
     DrawHeightCamera[] drawHeightCameras;

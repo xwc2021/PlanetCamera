@@ -1,4 +1,4 @@
-﻿Shader "Unlit/StitchingUp"
+﻿Shader "Unlit/StitchingDown"
 {
 	Properties
 	{
@@ -55,29 +55,25 @@
 				float scale =_scale/102.4;
 				float newV = frac(1.0+(0.5*scale*n_uv.y));
 				float2 newUV=float2(uv.x,newV);
-				// return float4((newV%0.25),0.0,0.0,1.0);
 
 				float h =0.0;
 				if(uv.y>0.5)
-					h=tex2D (_NeighborHeightTex,newUV);
-				else
 					h=tex2D (_HeightTex,newUV);
+				else
+					h=tex2D (_NeighborHeightTex,newUV);
 
 				// 因為TextureWrapMode 是Clamp
-				float border_self_h=tex2D (_HeightTex,float2(newUV.x,1.0f));
-				float border_neighbor_h=tex2D (_NeighborHeightTex,float2(newUV.x,0.0f));
+				float border_self_h=tex2D (_HeightTex,float2(newUV.x,0.0f));
+				float border_neighbor_h=tex2D (_NeighborHeightTex,float2(newUV.x,1.0f));
 				float mHeight =0.5*(border_self_h+border_neighbor_h);
 
 				float a=1.0-abs(n_uv.y);
 				float weight = a*a;
-
-				// float diff =(mHeight-h);
+				
 				float diff = mHeight-border_self_h;
 				float finalH =h+weight*diff;
-				
-				return float4(finalH,0.0,0.0,1.0);
-
 				// return float4(weight,0.0,0.0,1.0);
+				return float4(finalH,0.0,0.0,1.0);
 			}
 			ENDCG
 		}
