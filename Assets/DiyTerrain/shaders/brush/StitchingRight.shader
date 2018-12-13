@@ -4,7 +4,8 @@
 	{
 		_HeightTex ("Height", 2D) = "white" {}
 		_NeighborHeightTex ("Neighbor Height", 2D) = "white" {}
-		_uvDir ("Neighbor uv dir", Vector) = (1.0,0.0,0.0,1.0)
+		_neibhborUV ("Neighbor UV ", Vector) = (1.0,0.0,0.0,1.0)
+		_neibhborOriginal ("Neighbor Original", Vector) = (0.0,0.0,0.0,0.0)
 		_scale ("scale", float) = 6.4
 	}
 	SubShader
@@ -34,7 +35,8 @@
 
 			sampler2D _HeightTex;
 			sampler2D _NeighborHeightTex;
-			float _uvDir;
+			float4 _neibhborUV;
+			float2 _neibhborOriginal;
 			float _scale;
 			
 			v2f vert (appdata v)

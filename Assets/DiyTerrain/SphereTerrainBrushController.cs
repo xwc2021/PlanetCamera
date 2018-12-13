@@ -130,82 +130,106 @@ public class SphereTerrainBrushController : MonoBehaviour
         var y = Vector2.up;
 
         // top
-        top.stitchingUp.uDir = x;
-        top.stitchingUp.vDir = y;
+        top.stitchingUp.neibhborU = x;
+        top.stitchingUp.neibhborV = y;
+        top.stitchingUp.neibhborOriginal = y;
 
-        top.stitchingDown.uDir = x;
-        top.stitchingDown.vDir = y;
+        top.stitchingDown.neibhborU = x;
+        top.stitchingDown.neibhborV = y;
+        top.stitchingDown.neibhborOriginal = -y;
 
-        top.stitchingRight.uDir = -y;
-        top.stitchingRight.vDir = x;
+        top.stitchingRight.neibhborU = y;
+        top.stitchingRight.neibhborV = -x;
+        top.stitchingRight.neibhborOriginal = 2 * x;
 
-        top.stitchingLeft.uDir = y;
-        top.stitchingLeft.vDir = -x;
+        top.stitchingLeft.neibhborU = -y;
+        top.stitchingLeft.neibhborV = x;
+        top.stitchingLeft.neibhborOriginal = -x + y;
 
         // back
-        back.stitchingUp.uDir = x;
-        back.stitchingUp.vDir = y;
+        back.stitchingUp.neibhborU = x;
+        back.stitchingUp.neibhborV = y;
+        back.stitchingUp.neibhborOriginal = y;
 
-        back.stitchingDown.uDir = x;
-        back.stitchingDown.vDir = y;
+        back.stitchingDown.neibhborU = x;
+        back.stitchingDown.neibhborV = y;
+        back.stitchingDown.neibhborOriginal = -y;
 
-        back.stitchingRight.uDir = x;
-        back.stitchingRight.vDir = y;
+        back.stitchingRight.neibhborU = x;
+        back.stitchingRight.neibhborV = y;
+        back.stitchingRight.neibhborOriginal = x;
 
-        back.stitchingLeft.uDir = x;
-        back.stitchingLeft.vDir = y;
+        back.stitchingLeft.neibhborU = x;
+        back.stitchingLeft.neibhborV = y;
+        back.stitchingLeft.neibhborOriginal = -x;
 
         // right
-        right.stitchingUp.uDir = y;
-        right.stitchingUp.vDir = -x;
+        right.stitchingUp.neibhborU = -y;
+        right.stitchingUp.neibhborV = x;
+        right.stitchingUp.neibhborOriginal = 2 * y;
 
-        right.stitchingDown.uDir = -y;
-        right.stitchingDown.vDir = x;
+        right.stitchingDown.neibhborU = y;
+        right.stitchingDown.neibhborV = -x;
+        right.stitchingDown.neibhborOriginal = x - y;
 
-        right.stitchingRight.uDir = x;
-        right.stitchingRight.vDir = y;
+        right.stitchingRight.neibhborU = x;
+        right.stitchingRight.neibhborV = y;
+        right.stitchingRight.neibhborOriginal = x;
 
-        right.stitchingLeft.uDir = x;
-        right.stitchingLeft.vDir = y;
+        right.stitchingLeft.neibhborU = x;
+        right.stitchingLeft.neibhborV = y;
+        right.stitchingLeft.neibhborOriginal = -x;
 
         // left
-        left.stitchingUp.uDir = -y;
-        left.stitchingUp.vDir = x;
+        left.stitchingUp.neibhborU = y;
+        left.stitchingUp.neibhborV = -x;
+        left.stitchingUp.neibhborOriginal = x + y;
 
-        left.stitchingDown.uDir = y;
-        left.stitchingDown.vDir = -x;
+        left.stitchingDown.neibhborU = -y;
+        left.stitchingDown.neibhborV = x;
+        left.stitchingDown.neibhborOriginal = Vector2.zero;
 
-        left.stitchingRight.uDir = x;
-        left.stitchingRight.vDir = y;
+        left.stitchingRight.neibhborU = x;
+        left.stitchingRight.neibhborV = y;
+        left.stitchingRight.neibhborOriginal = x;
 
-        left.stitchingLeft.uDir = x;
-        left.stitchingLeft.vDir = y;
+        left.stitchingLeft.neibhborU = x;
+        left.stitchingLeft.neibhborV = y;
+        left.stitchingLeft.neibhborOriginal = -x;
 
         // bottom
-        bottom.stitchingUp.uDir = x;
-        bottom.stitchingUp.vDir = y;
+        bottom.stitchingUp.neibhborU = x;
+        bottom.stitchingUp.neibhborV = y;
+        bottom.stitchingUp.neibhborOriginal = y;
 
-        bottom.stitchingDown.uDir = x;
-        bottom.stitchingDown.vDir = y;
+        bottom.stitchingDown.neibhborU = x;
+        bottom.stitchingDown.neibhborV = y;
+        bottom.stitchingDown.neibhborOriginal = -y;
 
-        bottom.stitchingRight.uDir = y;
-        bottom.stitchingRight.vDir = -x;
+        bottom.stitchingRight.neibhborU = -y;
+        bottom.stitchingRight.neibhborV = x;
+        bottom.stitchingRight.neibhborOriginal = x + y;
 
-        bottom.stitchingLeft.uDir = -y;
-        bottom.stitchingLeft.vDir = x;
+        bottom.stitchingLeft.neibhborU = y;
+        bottom.stitchingLeft.neibhborV = -x;
+        bottom.stitchingLeft.neibhborOriginal = Vector2.zero;
 
         // forward
-        forward.stitchingUp.uDir = x;
-        forward.stitchingUp.vDir = y;
+        forward.stitchingUp.neibhborU = x;
+        forward.stitchingUp.neibhborV = y;
+        forward.stitchingUp.neibhborOriginal = y;
 
-        forward.stitchingDown.uDir = x;
-        forward.stitchingDown.vDir = y;
+        forward.stitchingDown.neibhborU = x;
+        forward.stitchingDown.neibhborV = y;
+        forward.stitchingDown.neibhborOriginal = -y;
 
-        forward.stitchingRight.uDir = -x;
-        forward.stitchingRight.vDir = -y;
+        forward.stitchingRight.neibhborU = -x;
+        forward.stitchingRight.neibhborV = -y;
+        forward.stitchingRight.neibhborOriginal = 2 * x + y;
 
-        forward.stitchingLeft.uDir = -x;
-        forward.stitchingLeft.vDir = -y;
+        forward.stitchingLeft.neibhborU = -x;
+        forward.stitchingLeft.neibhborV = -y;
+        forward.stitchingLeft.neibhborOriginal = y;
 
         // 上4
         // StitchingCase.Top_Forward:
