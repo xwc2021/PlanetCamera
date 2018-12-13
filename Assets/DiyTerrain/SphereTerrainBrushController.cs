@@ -37,6 +37,13 @@ public class SphereTerrainBrushController : MonoBehaviour
         }
     }
 
+    public IEnumerator doClear()
+    {
+        clear = true;
+        yield return new WaitForEndOfFrame();
+        clear = false;
+    }
+
     public void doStitch()
     {
         StartCoroutine(stitching());
@@ -44,19 +51,75 @@ public class SphereTerrainBrushController : MonoBehaviour
 
     public IEnumerator stitching()
     {
+        // 設定heightmap
+
+        // 上4
+        // StitchingCase.Top_Forward:
+        topCamera.stitchingUp.setHeightTexture(topCamera.keepTexture, forwardCamera.keepTexture);
+        forwardCamera.stitchingDown.setHeightTexture(forwardCamera.keepTexture, topCamera.keepTexture);
+
+        // case StitchingCase.Top_Right:
+        topCamera.stitchingRight.setHeightTexture(topCamera.keepTexture, rightCamera.keepTexture);
+        rightCamera.stitchingUp.setHeightTexture(rightCamera.keepTexture, topCamera.keepTexture);
+
+        // case StitchingCase.Top_Back:
+        topCamera.stitchingDown.setHeightTexture(topCamera.keepTexture, backCamera.keepTexture);
+        backCamera.stitchingUp.setHeightTexture(backCamera.keepTexture, topCamera.keepTexture);
+
+        // case StitchingCase.Top_Left:
+        topCamera.stitchingLeft.setHeightTexture(topCamera.keepTexture, leftCamera.keepTexture);
+        leftCamera.stitchingUp.setHeightTexture(leftCamera.keepTexture, topCamera.keepTexture);
+
+
+        // 中4
+        // case StitchingCase.Back_Right:
+        backCamera.stitchingRight.setHeightTexture(backCamera.keepTexture, rightCamera.keepTexture);
+        rightCamera.stitchingLeft.setHeightTexture(rightCamera.keepTexture, backCamera.keepTexture);
+
+        // case StitchingCase.Right_Forward:
+        rightCamera.stitchingRight.setHeightTexture(rightCamera.keepTexture, forwardCamera.keepTexture);
+        forwardCamera.stitchingRight.setHeightTexture(forwardCamera.keepTexture, rightCamera.keepTexture);
+
+        // case StitchingCase.Forward_Left:
+        forwardCamera.stitchingLeft.setHeightTexture(forwardCamera.keepTexture, leftCamera.keepTexture);
+        leftCamera.stitchingLeft.setHeightTexture(leftCamera.keepTexture, forwardCamera.keepTexture);
+
+        // case StitchingCase.Left_Back:
+        leftCamera.stitchingRight.setHeightTexture(leftCamera.keepTexture, backCamera.keepTexture);
+        backCamera.stitchingLeft.setHeightTexture(backCamera.keepTexture, leftCamera.keepTexture);
+
+
+        //下4
+        // case StitchingCase.Bottom_Forward:
+        bottomCamera.stitchingDown.setHeightTexture(bottomCamera.keepTexture, forwardCamera.keepTexture);
+        forwardCamera.stitchingUp.setHeightTexture(forwardCamera.keepTexture, bottomCamera.keepTexture);
+
+        // case StitchingCase.Bottom_Right:
+        bottomCamera.stitchingRight.setHeightTexture(bottomCamera.keepTexture, rightCamera.keepTexture);
+        rightCamera.stitchingDown.setHeightTexture(rightCamera.keepTexture, bottomCamera.keepTexture);
+
+        // case StitchingCase.Bottom_Back:
+        bottomCamera.stitchingUp.setHeightTexture(bottomCamera.keepTexture, backCamera.keepTexture);
+        backCamera.stitchingDown.setHeightTexture(backCamera.keepTexture, bottomCamera.keepTexture);
+
+        // case StitchingCase.Bottom_Left:
+        bottomCamera.stitchingLeft.setHeightTexture(bottomCamera.keepTexture, leftCamera.keepTexture);
+        leftCamera.stitchingDown.setHeightTexture(leftCamera.keepTexture, bottomCamera.keepTexture);
+
         stitch12(true);
         yield return new WaitForEndOfFrame();
         stitch12(false);
     }
 
+    void stichOne(bool value)
+    {
+        topTerrain.stitchingRight.gameObject.SetActive(value);
+        rightTerrain.stitchingUp.gameObject.SetActive(value);
+    }
+
     void stitch12(bool value)
     {
-        var topTerrain = this.sphereTerrains[0];
-        var bottomTerrain = this.sphereTerrains[1];
-        var backTerrain = this.sphereTerrains[2];
-        var rightTerrain = this.sphereTerrains[3];
-        var forwardTerrain = this.sphereTerrains[4];
-        var leftTerrain = this.sphereTerrains[5];
+        // 設定貼圖
 
         // 上4
         // StitchingCase.Top_Forward:
@@ -82,10 +145,10 @@ public class SphereTerrainBrushController : MonoBehaviour
 
         // case StitchingCase.Right_Forward:
         rightTerrain.stitchingRight.gameObject.SetActive(value);
-        forwardTerrain.stitchingRight.gameObject.SetActive(value);// forward 的面向不太一樣
+        forwardTerrain.stitchingRight.gameObject.SetActive(value);
 
         // case StitchingCase.Forward_Left:
-        forwardTerrain.stitchingLeft.gameObject.SetActive(value);// forward 的面向不太一樣
+        forwardTerrain.stitchingLeft.gameObject.SetActive(value);
         leftTerrain.stitchingLeft.gameObject.SetActive(value);
 
         // case StitchingCase.Left_Back:
@@ -95,20 +158,20 @@ public class SphereTerrainBrushController : MonoBehaviour
 
         //下4
         // case StitchingCase.Bottom_Forward:
-        // bottomTerrain.stitchingDown.gameObject.SetActive(value);
-        // forwardTerrain.stitchingUp.gameObject.SetActive(value);
+        bottomTerrain.stitchingDown.gameObject.SetActive(value);
+        forwardTerrain.stitchingUp.gameObject.SetActive(value);
 
         // case StitchingCase.Bottom_Right:
-        // bottomTerrain.stitchingRight.gameObject.SetActive(value);
-        // rightTerrain.stitchingDown.gameObject.SetActive(value);
+        bottomTerrain.stitchingRight.gameObject.SetActive(value);
+        rightTerrain.stitchingDown.gameObject.SetActive(value);
 
         // case StitchingCase.Bottom_Back:
-        // bottomTerrain.stitchingUp.gameObject.SetActive(value);
-        // backTerrain.stitchingDown.gameObject.SetActive(value);
+        bottomTerrain.stitchingUp.gameObject.SetActive(value);
+        backTerrain.stitchingDown.gameObject.SetActive(value);
 
         // case StitchingCase.Bottom_Left:
-        // bottomTerrain.stitchingLeft.gameObject.SetActive(value);
-        // leftTerrain.stitchingDown.gameObject.SetActive(value);
+        bottomTerrain.stitchingLeft.gameObject.SetActive(value);
+        leftTerrain.stitchingDown.gameObject.SetActive(value);
     }
 
     DrawHeightCamera[] drawHeightCameras;
@@ -125,175 +188,145 @@ public class SphereTerrainBrushController : MonoBehaviour
 
     public static SphereTerrainBrushController instance;
 
+    SphereTerrain topTerrain;
+    SphereTerrain bottomTerrain;
+    SphereTerrain backTerrain;
+    SphereTerrain rightTerrain;
+    SphereTerrain forwardTerrain;
+    SphereTerrain leftTerrain;
+
+    DrawHeightCamera topCamera;
+    DrawHeightCamera bottomCamera;
+    DrawHeightCamera backCamera;
+    DrawHeightCamera rightCamera;
+    DrawHeightCamera forwardCamera;
+    DrawHeightCamera leftCamera;
+
     void Start()
     {
+        topTerrain = this.sphereTerrains[0];
+        bottomTerrain = this.sphereTerrains[1];
+        backTerrain = this.sphereTerrains[2];
+        rightTerrain = this.sphereTerrains[3];
+        forwardTerrain = this.sphereTerrains[4];
+        leftTerrain = this.sphereTerrains[5];
+
         instance = this;
         drawHeightCameras = transform.parent.GetComponentsInChildren<DrawHeightCamera>();
 
-        var top = drawHeightCameras[0];
-        var bottom = drawHeightCameras[1];
-        var back = drawHeightCameras[2];
-        var right = drawHeightCameras[3];
-        var forward = drawHeightCameras[4];
-        var left = drawHeightCameras[5];
+        topCamera = drawHeightCameras[0];
+        bottomCamera = drawHeightCameras[1];
+        backCamera = drawHeightCameras[2];
+        rightCamera = drawHeightCameras[3];
+        forwardCamera = drawHeightCameras[4];
+        leftCamera = drawHeightCameras[5];
 
-        var x = Vector2.right;
-        var y = Vector2.up;
+        var U = Vector2.right;
+        var V = Vector2.up;
 
         // top
-        top.stitchingUp.neibhborU = x;
-        top.stitchingUp.neibhborV = y;
-        top.stitchingUp.neibhborOriginal = y;
+        topCamera.stitchingUp.neibhborU = U;
+        topCamera.stitchingUp.neibhborV = V;
+        topCamera.stitchingUp.neibhborOriginal = V;
 
-        top.stitchingDown.neibhborU = x;
-        top.stitchingDown.neibhborV = y;
-        top.stitchingDown.neibhborOriginal = -y;
+        topCamera.stitchingDown.neibhborU = U;
+        topCamera.stitchingDown.neibhborV = V;
+        topCamera.stitchingDown.neibhborOriginal = -V;
 
-        top.stitchingRight.neibhborU = y;
-        top.stitchingRight.neibhborV = -x;
-        top.stitchingRight.neibhborOriginal = 2 * x;
+        topCamera.stitchingRight.neibhborU = V;
+        topCamera.stitchingRight.neibhborV = -U;
+        topCamera.stitchingRight.neibhborOriginal = 2 * U;
 
-        top.stitchingLeft.neibhborU = -y;
-        top.stitchingLeft.neibhborV = x;
-        top.stitchingLeft.neibhborOriginal = -x + y;
+        topCamera.stitchingLeft.neibhborU = -V;
+        topCamera.stitchingLeft.neibhborV = U;
+        topCamera.stitchingLeft.neibhborOriginal = -U + V;
 
         // back
-        back.stitchingUp.neibhborU = x;
-        back.stitchingUp.neibhborV = y;
-        back.stitchingUp.neibhborOriginal = y;
+        backCamera.stitchingUp.neibhborU = U;
+        backCamera.stitchingUp.neibhborV = V;
+        backCamera.stitchingUp.neibhborOriginal = V;
 
-        back.stitchingDown.neibhborU = x;
-        back.stitchingDown.neibhborV = y;
-        back.stitchingDown.neibhborOriginal = -y;
+        backCamera.stitchingDown.neibhborU = U;
+        backCamera.stitchingDown.neibhborV = V;
+        backCamera.stitchingDown.neibhborOriginal = -V;
 
-        back.stitchingRight.neibhborU = x;
-        back.stitchingRight.neibhborV = y;
-        back.stitchingRight.neibhborOriginal = x;
+        backCamera.stitchingRight.neibhborU = U;
+        backCamera.stitchingRight.neibhborV = V;
+        backCamera.stitchingRight.neibhborOriginal = U;
 
-        back.stitchingLeft.neibhborU = x;
-        back.stitchingLeft.neibhborV = y;
-        back.stitchingLeft.neibhborOriginal = -x;
+        backCamera.stitchingLeft.neibhborU = U;
+        backCamera.stitchingLeft.neibhborV = V;
+        backCamera.stitchingLeft.neibhborOriginal = -U;
 
         // right
-        right.stitchingUp.neibhborU = -y;
-        right.stitchingUp.neibhborV = x;
-        right.stitchingUp.neibhborOriginal = 2 * y;
+        rightCamera.stitchingUp.neibhborU = -V;
+        rightCamera.stitchingUp.neibhborV = U;
+        rightCamera.stitchingUp.neibhborOriginal = 2 * V;
 
-        right.stitchingDown.neibhborU = y;
-        right.stitchingDown.neibhborV = -x;
-        right.stitchingDown.neibhborOriginal = x - y;
+        rightCamera.stitchingDown.neibhborU = V;
+        rightCamera.stitchingDown.neibhborV = -U;
+        rightCamera.stitchingDown.neibhborOriginal = U - V;
 
-        right.stitchingRight.neibhborU = -x;//修正
-        right.stitchingRight.neibhborV = -y;
-        right.stitchingRight.neibhborOriginal = 2 * x + y;
+        rightCamera.stitchingRight.neibhborU = -U;//修正
+        rightCamera.stitchingRight.neibhborV = -V;
+        rightCamera.stitchingRight.neibhborOriginal = 2 * U + V;
 
-        right.stitchingLeft.neibhborU = x;
-        right.stitchingLeft.neibhborV = y;
-        right.stitchingLeft.neibhborOriginal = -x;
+        rightCamera.stitchingLeft.neibhborU = U;
+        rightCamera.stitchingLeft.neibhborV = V;
+        rightCamera.stitchingLeft.neibhborOriginal = -U;
 
         // left
-        left.stitchingUp.neibhborU = y;
-        left.stitchingUp.neibhborV = -x;
-        left.stitchingUp.neibhborOriginal = x + y;
+        leftCamera.stitchingUp.neibhborU = V;
+        leftCamera.stitchingUp.neibhborV = -U;
+        leftCamera.stitchingUp.neibhborOriginal = U + V;
 
-        left.stitchingDown.neibhborU = -y;
-        left.stitchingDown.neibhborV = x;
-        left.stitchingDown.neibhborOriginal = Vector2.zero;
+        leftCamera.stitchingDown.neibhborU = -V;
+        leftCamera.stitchingDown.neibhborV = U;
+        leftCamera.stitchingDown.neibhborOriginal = Vector2.zero;
 
-        left.stitchingRight.neibhborU = x;
-        left.stitchingRight.neibhborV = y;
-        left.stitchingRight.neibhborOriginal = x;
+        leftCamera.stitchingRight.neibhborU = U;
+        leftCamera.stitchingRight.neibhborV = V;
+        leftCamera.stitchingRight.neibhborOriginal = U;
 
-        left.stitchingLeft.neibhborU = -x;// 修正
-        left.stitchingLeft.neibhborV = -y;
-        left.stitchingLeft.neibhborOriginal = y;
+        leftCamera.stitchingLeft.neibhborU = -U;// 修正
+        leftCamera.stitchingLeft.neibhborV = -V;
+        leftCamera.stitchingLeft.neibhborOriginal = V;
 
         // bottom
-        bottom.stitchingUp.neibhborU = x;
-        bottom.stitchingUp.neibhborV = y;
-        bottom.stitchingUp.neibhborOriginal = y;
+        bottomCamera.stitchingUp.neibhborU = U;
+        bottomCamera.stitchingUp.neibhborV = V;
+        bottomCamera.stitchingUp.neibhborOriginal = V;
 
-        bottom.stitchingDown.neibhborU = x;
-        bottom.stitchingDown.neibhborV = y;
-        bottom.stitchingDown.neibhborOriginal = -y;
+        bottomCamera.stitchingDown.neibhborU = U;
+        bottomCamera.stitchingDown.neibhborV = V;
+        bottomCamera.stitchingDown.neibhborOriginal = -V;
 
-        bottom.stitchingRight.neibhborU = -y;
-        bottom.stitchingRight.neibhborV = x;
-        bottom.stitchingRight.neibhborOriginal = x + y;
+        bottomCamera.stitchingRight.neibhborU = -V;
+        bottomCamera.stitchingRight.neibhborV = U;
+        bottomCamera.stitchingRight.neibhborOriginal = U + V;
 
-        bottom.stitchingLeft.neibhborU = y;
-        bottom.stitchingLeft.neibhborV = -x;
-        bottom.stitchingLeft.neibhborOriginal = Vector2.zero;
+        bottomCamera.stitchingLeft.neibhborU = V;
+        bottomCamera.stitchingLeft.neibhborV = -U;
+        bottomCamera.stitchingLeft.neibhborOriginal = Vector2.zero;
 
         // forward
-        forward.stitchingUp.neibhborU = x;
-        forward.stitchingUp.neibhborV = y;
-        forward.stitchingUp.neibhborOriginal = y;
+        forwardCamera.stitchingUp.neibhborU = U;
+        forwardCamera.stitchingUp.neibhborV = V;
+        forwardCamera.stitchingUp.neibhborOriginal = V;
 
-        forward.stitchingDown.neibhborU = x;
-        forward.stitchingDown.neibhborV = y;
-        forward.stitchingDown.neibhborOriginal = -y;
+        forwardCamera.stitchingDown.neibhborU = U;
+        forwardCamera.stitchingDown.neibhborV = V;
+        forwardCamera.stitchingDown.neibhborOriginal = -V;
 
-        forward.stitchingRight.neibhborU = -x;
-        forward.stitchingRight.neibhborV = -y;
-        forward.stitchingRight.neibhborOriginal = 2 * x + y;
+        forwardCamera.stitchingRight.neibhborU = -U;
+        forwardCamera.stitchingRight.neibhborV = -V;
+        forwardCamera.stitchingRight.neibhborOriginal = 2 * U + V;
 
-        forward.stitchingLeft.neibhborU = -x;
-        forward.stitchingLeft.neibhborV = -y;
-        forward.stitchingLeft.neibhborOriginal = y;
+        forwardCamera.stitchingLeft.neibhborU = -U;
+        forwardCamera.stitchingLeft.neibhborV = -V;
+        forwardCamera.stitchingLeft.neibhborOriginal = V;
 
-        // 上4
-        // StitchingCase.Top_Forward:
-        top.stitchingUp.setHeightTexture(top.keepTexture, forward.keepTexture);
-        forward.stitchingDown.setHeightTexture(forward.keepTexture, top.keepTexture);
-
-        // case StitchingCase.Top_Right:
-        top.stitchingRight.setHeightTexture(top.keepTexture, right.keepTexture);
-        right.stitchingUp.setHeightTexture(right.keepTexture, top.keepTexture);
-
-        // case StitchingCase.Top_Back:
-        top.stitchingDown.setHeightTexture(top.keepTexture, back.keepTexture);
-        back.stitchingUp.setHeightTexture(back.keepTexture, top.keepTexture);
-
-        // case StitchingCase.Top_Left:
-        top.stitchingLeft.setHeightTexture(top.keepTexture, left.keepTexture);
-        left.stitchingUp.setHeightTexture(left.keepTexture, top.keepTexture);
-
-
-        // 中4
-        // case StitchingCase.Back_Right:
-        back.stitchingRight.setHeightTexture(back.keepTexture, right.keepTexture);
-        right.stitchingLeft.setHeightTexture(right.keepTexture, back.keepTexture);
-
-        // case StitchingCase.Right_Forward:
-        right.stitchingRight.setHeightTexture(right.keepTexture, forward.keepTexture);
-        forward.stitchingRight.setHeightTexture(forward.keepTexture, right.keepTexture);
-
-        // case StitchingCase.Forward_Left:
-        forward.stitchingLeft.setHeightTexture(forward.keepTexture, left.keepTexture);
-        left.stitchingLeft.setHeightTexture(left.keepTexture, forward.keepTexture);
-
-        // case StitchingCase.Left_Back:
-        left.stitchingRight.setHeightTexture(left.keepTexture, back.keepTexture);
-        back.stitchingLeft.setHeightTexture(back.keepTexture, left.keepTexture);
-
-
-        //下4
-        // case StitchingCase.Bottom_Forward:
-        bottom.stitchingDown.setHeightTexture(bottom.keepTexture, forward.keepTexture);
-        forward.stitchingUp.setHeightTexture(forward.keepTexture, bottom.keepTexture);
-
-        // case StitchingCase.Bottom_Right:
-        bottom.stitchingRight.setHeightTexture(bottom.keepTexture, right.keepTexture);
-        right.stitchingDown.setHeightTexture(right.keepTexture, bottom.keepTexture);
-
-        // case StitchingCase.Bottom_Back:
-        bottom.stitchingUp.setHeightTexture(back.keepTexture, bottom.keepTexture);
-        back.stitchingDown.setHeightTexture(bottom.keepTexture, back.keepTexture);
-
-        // case StitchingCase.Bottom_Left:
-        bottom.stitchingLeft.setHeightTexture(bottom.keepTexture, left.keepTexture);
-        left.stitchingDown.setHeightTexture(left.keepTexture, bottom.keepTexture);
+        StartCoroutine(doClear());
     }
 
     public SphereTerrain[] sphereTerrains;
@@ -311,70 +344,63 @@ public class SphereTerrainBrushController : MonoBehaviour
 
     public void activeStitching(StitchingCase s, bool value)
     {
-        var top = drawHeightCameras[0];
-        var bottom = drawHeightCameras[1];
-        var back = drawHeightCameras[2];
-        var right = drawHeightCameras[3];
-        var forward = drawHeightCameras[4];
-        var left = drawHeightCameras[5];
-
         switch (s)
         {
             // 上4
             case StitchingCase.Top_Forward:
-                top.stitchingUp.gameObject.SetActive(value);
-                forward.stitchingDown.gameObject.SetActive(value);
+                topCamera.stitchingUp.gameObject.SetActive(value);
+                forwardCamera.stitchingDown.gameObject.SetActive(value);
                 break;
 
             case StitchingCase.Top_Right:
-                top.stitchingRight.gameObject.SetActive(value);
-                right.stitchingUp.gameObject.SetActive(value);
+                topCamera.stitchingRight.gameObject.SetActive(value);
+                rightCamera.stitchingUp.gameObject.SetActive(value);
                 break;
             case StitchingCase.Top_Back:
-                top.stitchingDown.gameObject.SetActive(value);
-                back.stitchingUp.gameObject.SetActive(value);
+                topCamera.stitchingDown.gameObject.SetActive(value);
+                backCamera.stitchingUp.gameObject.SetActive(value);
                 break;
 
             case StitchingCase.Top_Left:
-                top.stitchingLeft.gameObject.SetActive(value);
-                left.stitchingUp.gameObject.SetActive(value);
+                topCamera.stitchingLeft.gameObject.SetActive(value);
+                leftCamera.stitchingUp.gameObject.SetActive(value);
                 break;
 
             // 中4
             case StitchingCase.Back_Right:
-                back.stitchingRight.gameObject.SetActive(value);
-                right.stitchingLeft.gameObject.SetActive(value);
+                backCamera.stitchingRight.gameObject.SetActive(value);
+                rightCamera.stitchingLeft.gameObject.SetActive(value);
                 break;
 
             case StitchingCase.Right_Forward:
-                right.stitchingRight.gameObject.SetActive(value);
-                forward.stitchingLeft.gameObject.SetActive(value);
+                rightCamera.stitchingRight.gameObject.SetActive(value);
+                forwardCamera.stitchingLeft.gameObject.SetActive(value);
                 break;
             case StitchingCase.Forward_Left:
-                forward.stitchingRight.gameObject.SetActive(value);
-                left.stitchingLeft.gameObject.SetActive(value);
+                forwardCamera.stitchingRight.gameObject.SetActive(value);
+                leftCamera.stitchingLeft.gameObject.SetActive(value);
                 break;
             case StitchingCase.Left_Back:
-                left.stitchingRight.gameObject.SetActive(value);
-                back.stitchingLeft.gameObject.SetActive(value);
+                leftCamera.stitchingRight.gameObject.SetActive(value);
+                backCamera.stitchingLeft.gameObject.SetActive(value);
                 break;
 
             //下4
             case StitchingCase.Bottom_Forward:
-                bottom.stitchingDown.gameObject.SetActive(value);
-                forward.stitchingUp.gameObject.SetActive(value);
+                bottomCamera.stitchingDown.gameObject.SetActive(value);
+                forwardCamera.stitchingUp.gameObject.SetActive(value);
                 break;
             case StitchingCase.Bottom_Right:
-                bottom.stitchingRight.gameObject.SetActive(value);
-                right.stitchingDown.gameObject.SetActive(value);
+                bottomCamera.stitchingRight.gameObject.SetActive(value);
+                rightCamera.stitchingDown.gameObject.SetActive(value);
                 break;
             case StitchingCase.Bottom_Back:
-                bottom.stitchingUp.gameObject.SetActive(value);
-                back.stitchingDown.gameObject.SetActive(value);
+                bottomCamera.stitchingUp.gameObject.SetActive(value);
+                backCamera.stitchingDown.gameObject.SetActive(value);
                 break;
             case StitchingCase.Bottom_Left:
-                bottom.stitchingLeft.gameObject.SetActive(value);
-                left.stitchingDown.gameObject.SetActive(value);
+                bottomCamera.stitchingLeft.gameObject.SetActive(value);
+                leftCamera.stitchingDown.gameObject.SetActive(value);
                 break;
         }
     }

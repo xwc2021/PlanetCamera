@@ -83,6 +83,7 @@
 
 				float diff = mHeight-border_self_h;
 				float finalH =h+weight*diff;
+				// return float4(finalH,0.0,0.0,1.0);
 				return float4(finalH,0.0,0.0,1.0);
 			}
 			ENDCG
