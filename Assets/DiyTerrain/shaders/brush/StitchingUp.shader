@@ -57,7 +57,7 @@
 				return float2(dot(x,diff),dot(y,diff));
 			}
 			
-			float4 frag (v2f i) : SV_Target
+			float frag (v2f i) : SV_Target
 			{
 				float2 uv =i.uv;
 				float2 n_uv =uv*2.0-1.0;
@@ -84,7 +84,7 @@
 				float diff = mHeight-border_self_h;
 				float finalH =h+weight*diff;
 				// return float4(finalH,0.0,0.0,1.0);
-				return float4(finalH,0.0,0.0,1.0);
+				return finalH;
 			}
 			ENDCG
 		}

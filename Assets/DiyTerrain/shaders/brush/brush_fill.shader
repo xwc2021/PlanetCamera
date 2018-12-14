@@ -42,10 +42,9 @@
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target
+			float frag (v2f i) : SV_Target
 			{
-				float h=_height;
-				return float4(h,h,h,1.0);
+				return _height;
 			}
 			ENDCG
 		}

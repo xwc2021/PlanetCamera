@@ -51,14 +51,12 @@ Shader "Custom/ToSpherePBR" {
 			float3 nV = normalize(v);
 			float R=1023.0*0.5;
 			//球面
-			// v = (R)*nV-_local_pos;
 			v = (R+h*256.0f)*nV-_local_pos;
 			V.vertex.xyz =v; // Unity會自動作MVP
 			V.normal = nV;
 
 			// 平面
-			// v.y = h*128.0f;
-			// v =V.vertex;
+			// V.vertex.y =h*128.0f;
 
 			UNITY_INITIALIZE_OUTPUT(Input,o);
 			o.height =h;

@@ -40,7 +40,7 @@
 				return o;
 			}
 			
-			float4 frag (v2f i) : SV_Target
+			float frag (v2f i) : SV_Target
 			{
 				// 高度 -128~128
 				float range=128.0;
@@ -62,7 +62,7 @@
 				// r = clamp(r,0.0,1.0);
 				// r=strength*cos(asin(r));
 
-				return float4(r,r,r,1.0);
+				return r;
 			}
 			ENDCG
 		}
