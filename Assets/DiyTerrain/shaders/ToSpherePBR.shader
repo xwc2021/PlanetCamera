@@ -15,7 +15,9 @@ Shader "Custom/ToSpherePBR" {
 		Tags { "RenderType"="Opaque" }
 		LOD 200
 
+		
 		CGPROGRAM
+		#define sphereMapping
 		// Physically based Standard lighting model, and enable shadows on all light types
 		#pragma surface surf Standard vertex:vert fullforwardshadows
 		// Use shader model 3.0 target, to get nicer looking lighting
@@ -48,15 +50,17 @@ Shader "Custom/ToSpherePBR" {
 			float h = tex2Dlod(_HeightTex, float4(hUV,0,0)).r;
 			h =h*2.0-1.0; // remap to -1~1
 
-			float3 nV = normalize(v);
-			float R=1023.0*0.5;
-			//球面
-			v = (R+h*256.0f)*nV-_local_pos;
-			V.vertex.xyz =v; // Unity會自動作MVP
-			V.normal = nV;
-
-			// 平面
-			// V.vertex.y =h*128.0f;
+			#ifdef sphereMapping
+				float3 nV = normalize(v);
+				float R=1023.0*0.5;
+				//球面
+				v = (R+h*256.0f)*nV-_local_pos;
+				V.vertex.xyz =v; // Unity會自動作MVP
+				V.normal = nV;
+			#else
+				// 平面
+				V.vertex.y =h*128.0f;
+			#endif
 
 			UNITY_INITIALIZE_OUTPUT(Input,o);
 			o.height =h;
