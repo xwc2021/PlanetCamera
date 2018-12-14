@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
 public interface MoveController
 {
@@ -20,7 +19,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 {
     SurfaceFollowHelper surfaceFollowHelper;
     MultiplayerCameraManager multiplayerCameraManager;
-    public PostProcessingBehaviour postProcessingBehaviour;
     public GameObject canvas;
     public GameObject eventSystem;
     public MeasuringJumpHeight measuringJumpHeight;
@@ -32,7 +30,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Rigidbody rigid;
     Animator animator;
     int onAirHash;
-    
+
     bool doJump = false;
     // Use this for initialization
     void Awake()
@@ -46,7 +44,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 #if (UNITY_ANDROID)
         AndroidInput androidInput = GetComponent<AndroidInput>();
         inputProxy = androidInput as InputProxy;
-        postProcessingBehaviour.enabled = false;
 #else
         PCInput pcInput = GetComponent<PCInput>();
         inputProxy = pcInput as InputProxy;
@@ -101,7 +98,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         if (multiplayerCameraManager != null)
         {
             bool moving = animator.GetBool("moving");
-            bool doJump =animator.GetBool("doJump");
+            bool doJump = animator.GetBool("doJump");
             bool onAir = animator.GetBool("onAir");
             multiplayerCameraManager.CmdSyncAnimatorAndRot(moving, doJump, onAir, transform.rotation);
         }
@@ -130,7 +127,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         //從Update移到FixedUpdate
         //因為無法保證FixedUpdate在第1個frame一定會執行到
-        if (surfaceFollowHelper!=null)
+        if (surfaceFollowHelper != null)
             surfaceFollowHelper.doAdjustByGroundUp();
     }
 
@@ -241,7 +238,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         if (h != 0 || v != 0)
         {
-            if(m_Cam==null)
+            if (m_Cam == null)
                 return Vector3.zero;
 
             if (doDergeeLock)
@@ -285,21 +282,21 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     }
 
     public Vector3 syncDiff;
-    public float syncSpeed =5;
+    public float syncSpeed = 5;
     void syncPositionByPlatformLerp()
     {
         if (platform == null)
             return;
-        
+
 
         syncDiff += platform.getDiff();
 
         Vector3 nowPos = rigid.position;
         Vector3 targetPos = nowPos + syncDiff;
-        Vector3 newPos = Vector3.Lerp(nowPos, targetPos, syncSpeed*Time.fixedDeltaTime);
+        Vector3 newPos = Vector3.Lerp(nowPos, targetPos, syncSpeed * Time.fixedDeltaTime);
         Vector3 notCompletePart = targetPos - newPos;
         syncDiff = notCompletePart;
-        print("notCompletePart="+ notCompletePart);
+        print("notCompletePart=" + notCompletePart);
 
         rigid.position = newPos;
     }

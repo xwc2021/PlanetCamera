@@ -28,7 +28,6 @@ public class DrawHeightCamera : MonoBehaviour
         stitchTexture = new RenderTexture(descriptor);
 
         usingCamera.targetTexture = nowRenderTexture;
-        print("init");
     }
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
