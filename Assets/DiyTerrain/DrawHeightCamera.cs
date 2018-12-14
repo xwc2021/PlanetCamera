@@ -21,6 +21,7 @@ public class DrawHeightCamera : MonoBehaviour
     public bool writeForStitch = false;
     void Awake()
     {
+        // var descriptor = new RenderTextureDescriptor(1024, 1024, RenderTextureFormat.ARGBHalf);
         var descriptor = new RenderTextureDescriptor(1024, 1024, RenderTextureFormat.RFloat);
         keepTexture = new RenderTexture(descriptor);
         nowRenderTexture = new RenderTexture(descriptor);
