@@ -6,7 +6,7 @@ using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using System;
 
- 
+
 
 public class CameraPivot : MonoBehaviour
 {
@@ -46,15 +46,16 @@ public class CameraPivot : MonoBehaviour
         RScale = 1;
     }
 
-    static public float rotateMaxBorader=240;
-    static public float rotateMinBorader=-60;
+    static public float rotateMaxBorader = 240;
+    static public float rotateMinBorader = -60;
     public float localNowPitchDegree;
 
     PlanetPlayerController ppController;
     InputProxy inputProxy;
 
     // Use this for initialization
-    void Awake () {
+    void Awake()
+    {
         Debug.Assert(player != null);
         ppController = player.GetComponent<PlanetPlayerController>();
         Debug.Assert(ppController != null);
@@ -62,7 +63,7 @@ public class CameraPivot : MonoBehaviour
         myParent = transform.parent;
         cameraTargetRot = myParent.rotation;
         CAMERA = transform.GetChild(0);
-        c=CAMERA.GetComponent<Camera>();
+        c = CAMERA.GetComponent<Camera>();
         recordPos = transform.position;
         R = Mathf.Abs(CAMERA.localPosition.z);
 
@@ -75,13 +76,16 @@ public class CameraPivot : MonoBehaviour
         toSpeed = posFollowSpeed;
     }
 
-    public void resetRecordPos()
-    {
-        var k = 1100.0f;
-        var VectorToHelpCameraChangeSmoothing = -CAMERA.forward;
 
-        //為了閉開角色由0.5變大到1倍時，Camera閃動的問題
-        recordPos = Vector3.zero+ k * VectorToHelpCameraChangeSmoothing;
+    public void resetRecordPos(Vector3 player, float scaleR)
+    {
+        var offset = (recordPos - player);
+        var k = 0.0f; // 如果要從遠處zoom in 可以調這個
+        recordPos = (scaleR + k) * offset;
+
+        // 之前畫面會閃1下，就是因為沒有重設postion，距離變化太大造成的
+        // 但直接重設postion，還是會有頓1下的感覺
+        transform.position = recordPos;
     }
 
     void addPitch(float deltaPitch)
@@ -110,7 +114,7 @@ public class CameraPivot : MonoBehaviour
         updateCamera();
     }
 #else
-   private void FixedUpdate()
+    private void FixedUpdate()
     {
         updateCamera();
     }
@@ -118,7 +122,8 @@ public class CameraPivot : MonoBehaviour
 
 
 
-    private void Start(){
+    private void Start()
+    {
         transform.parent = null;
 
         //StartCoroutine(doSomethingAfterFixedUpdate());
@@ -132,7 +137,8 @@ public class CameraPivot : MonoBehaviour
         StartCoroutine(doSomethingAfterFixedUpdate());
     }
 
-    public void setFollowHighSpeed(bool b){
+    public void setFollowHighSpeed(bool b)
+    {
         if (!posFollowLerp)
             return;
 
@@ -142,7 +148,8 @@ public class CameraPivot : MonoBehaviour
             toSpeed = 5;
     }
 
-    void doPosFollow(out bool doYawFollow){
+    void doPosFollow(out bool doYawFollow)
+    {
         posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
 
         Vector3 old = recordPos;
@@ -163,7 +170,7 @@ public class CameraPivot : MonoBehaviour
             transform.position = recordPos;
     }
 
-    void calculateAutoYawFollowTurnDiff(bool doYawFollow,Quaternion final)
+    void calculateAutoYawFollowTurnDiff(bool doYawFollow, Quaternion final)
     {
         if (doYawFollow)
         {
@@ -199,7 +206,8 @@ public class CameraPivot : MonoBehaviour
     }
 
     public float toSpeed;
-    void updateCamera() {
+    void updateCamera()
+    {
 
         inputProxy = ppController.getInputProxy();
         Debug.Assert(inputProxy != null);
@@ -215,7 +223,7 @@ public class CameraPivot : MonoBehaviour
         if (!lockYaw)
         {
             //yaw旋轉
-            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X") * inputProxy.yawScale();   
+            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X") * inputProxy.yawScale();
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
             cameraTargetRot = yaw * cameraTargetRot;
 
@@ -232,14 +240,14 @@ public class CameraPivot : MonoBehaviour
         if (autoYawFollow)
         {
             Quaternion final = sumSurfaceRot * cameraTargetRot * pitch;//使用sumSurfaceRot來計算!
-            calculateAutoYawFollowTurnDiff(doYawFollow,final);
-        }  
-         
+            calculateAutoYawFollowTurnDiff(doYawFollow, final);
+        }
+
         if (!firstPersonMode)
         {
             adjustDistanceToTarget();
 
-            if(doCameraCollison)
+            if (doCameraCollison)
                 doCameraCollision();
         }
         else
@@ -277,7 +285,7 @@ public class CameraPivot : MonoBehaviour
         //Debug.DrawLine(CAMERA.transform.position, cameraCenterBottom,Color.green);
 
         float ep = 0.1f;
-        Vector3 from = player.position+player.up* ep;//從3D model的底部開始
+        Vector3 from = player.position + player.up * ep;//從3D model的底部開始
         Vector3 dir = cameraCenterBottom - from;
         float rayCastDistance = dir.magnitude;
         dir.Normalize();
@@ -291,13 +299,13 @@ public class CameraPivot : MonoBehaviour
             //Debug.DrawRay(hit.point,  hit.normal, Color.red);
             //Debug.DrawRay(hit.point + hit.normal, 0.25f*hit.normal, Color.green);
             Vector3 diff = from - hit.point;
-            bool underPlane = Vector3.Dot(diff, hit.normal)<0.0f;
+            bool underPlane = Vector3.Dot(diff, hit.normal) < 0.0f;
             //當player跳起後落地時，有可能穿過地板
             if (underPlane)
             {
                 //待辦：這裡再發射第2次看有沒有碰到其他東西
                 float offset = 0.1f;
-                from = hit.point+dir*offset;
+                from = hit.point + dir * offset;
                 if (Physics.Raycast(from, dir, out hit, rayCastDistance, layerMask))
                 {
                     print("第2次");
@@ -306,14 +314,14 @@ public class CameraPivot : MonoBehaviour
                 {
                     print("exclude:underPlane");
                     return;
-                }     
+                }
             }
 
             distance = Vector3.Dot(hit.point - cameraPos, CAMERA.forward);
-            float finalR=Mathf.Min(fixedR - distance, R);
+            float finalR = Mathf.Min(fixedR - distance, R);
             finalR = Mathf.Max(finalR, cameraCollisionMinDistance);
             CAMERA.localPosition = new Vector3(0, 0, -finalR * RScale);
-             //print("hit"+ finalR);
+            //print("hit"+ finalR);
         }
     }
 
@@ -335,13 +343,13 @@ public class CameraPivot : MonoBehaviour
 
     public void setSurfaceRotate(bool doRotateFollow, Quaternion adjustRotate)
     {
-        sumSurfaceRot = adjustRotate* sumSurfaceRot;
+        sumSurfaceRot = adjustRotate * sumSurfaceRot;
         this.doSurfaceFollow = doRotateFollow;
     }
 
     public bool autoYawFollow = false;
-    Quaternion autoYawFollowTurnDiff= Quaternion.identity;
-    public  float doYawFollowDiff = 0.2f;
+    Quaternion autoYawFollowTurnDiff = Quaternion.identity;
+    public float doYawFollowDiff = 0.2f;
     public float yawFollowDegree;
     public float yawFollowMin = 30.0f;
     public float yawFollowMax = 95.0f;

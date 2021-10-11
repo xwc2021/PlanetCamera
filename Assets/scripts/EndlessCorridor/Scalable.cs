@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Scalable : MonoBehaviour {
+public class Scalable : MonoBehaviour
+{
 
     public CameraPivot cameraPivot;
     public void doScale(float scale)
@@ -23,9 +24,9 @@ public class Scalable : MonoBehaviour {
         cameraPivot.resetRScale();
     }
 
-    public void resetPos()
+    public void resetPos(float scaleValue)
     {
+        cameraPivot.resetRecordPos(this.transform.position, scaleValue);
         transform.position = Vector3.zero;
-        cameraPivot.resetRecordPos();
     }
 }

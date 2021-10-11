@@ -88,18 +88,19 @@ public class EndlessCorridorManager : MonoBehaviour
     //藉此產生無限縮小的假象
     void worldReSacle(float scaleValue)
     {
-        Vector3 offset = -scaleValue * player.transform.position;
+
         foreach (EndlessCorridorHolder element in createlist)
         {
             float localScale = element.transform.localScale.x;
             float temp = localScale * scaleValue;
             Vector3 scale = new Vector3(temp, temp, temp);
             element.transform.localScale = scale;
-            element.transform.position = scaleValue * element.transform.position + offset;
+            var offset = element.transform.position - player.transform.position;
+            element.transform.position = scaleValue * offset;
         }
 
         player.resetScale();
-        player.resetPos();
+        player.resetPos(scaleValue);
     }
 
     EndlessCorridorHolder createEcByRef(int index, EndlessCorridorHolder refObj, Transform dummy, float ScaleValue)
