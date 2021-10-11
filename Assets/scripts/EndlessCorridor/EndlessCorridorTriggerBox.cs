@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndlessCorridorTriggerBox : MonoBehaviour {
+public class EndlessCorridorTriggerBox : MonoBehaviour
+{
 
-    
+
     public EndlessCorridorManager ecManager;
     public EndlessCorridorHolder ec;
     public Transform borderLimit;
@@ -15,7 +16,6 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     static float bigger_scaleA = 2.0f;
     static float bigger_scaleB = 1.0f;
 
-    //localRatio到A是0，到B是1
     float scaleA;
     float scaleB;
 
@@ -24,18 +24,17 @@ public class EndlessCorridorTriggerBox : MonoBehaviour {
     float borderValue;
     private void Awake()
     {
-        borderValue= Mathf.Abs(borderLimit.localPosition.x);
+        borderValue = Mathf.Abs(borderLimit.localPosition.x);
     }
 
+    //localRatio在A是0，在B是1
     float getLocalRatio(Collider other)
     {
         Vector3 localPos = transform.InverseTransformPoint(other.transform.position);
         float localValue = Mathf.Abs(localPos.x);
 
-        float checkValue = Mathf.Max(0, localValue);
-        checkValue = Mathf.Min(borderValue, localValue);
-        float ratio = checkValue / borderValue;
-
+        float clampValue = Mathf.Clamp(localValue, 0, borderValue);
+        float ratio = clampValue / borderValue;
         return ratio;
     }
 

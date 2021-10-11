@@ -1,20 +1,23 @@
-﻿using System.Collections;
+using System.Globalization;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndlessCorridorManager : MonoBehaviour {
+public class EndlessCorridorManager : MonoBehaviour
+{
 
     public EndlessCorridorHolder[] prefabList;
     public Scalable player;
 
-    public int createSize=5;
+    public int createSize = 5;
     LinkedList<EndlessCorridorHolder> createlist;
     public EndlessCorridorHolder Head;
     public EndlessCorridorHolder Tail;
     int halfIndex;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         initEC();
     }
 
@@ -25,7 +28,7 @@ public class EndlessCorridorManager : MonoBehaviour {
     }
 
     public bool doRescale = true;
-    
+
     void initEC()
     {
         createlist = new LinkedList<EndlessCorridorHolder>();
@@ -41,7 +44,7 @@ public class EndlessCorridorManager : MonoBehaviour {
         EndlessCorridorHolder refObj = initObj;
         for (int i = halfIndex - 1; i >= 0; i--)
         {
-            EndlessCorridorHolder newObj=createEcByRef(i, refObj, refObj.getHeadDummy(), 2.0f);
+            EndlessCorridorHolder newObj = createEcByRef(i, refObj, refObj.getHeadDummy(), 2.0f);
             createlist.AddFirst(newObj);
 
             refObj = newObj;
@@ -99,7 +102,7 @@ public class EndlessCorridorManager : MonoBehaviour {
         player.resetPos();
     }
 
-    EndlessCorridorHolder createEcByRef(int index, EndlessCorridorHolder refObj,Transform dummy,float ScaleValue)
+    EndlessCorridorHolder createEcByRef(int index, EndlessCorridorHolder refObj, Transform dummy, float ScaleValue)
     {
         float nowScale = refObj.getGlobalScale() * ScaleValue;
         EndlessCorridorHolder nowPrefab = getRandomEndlessCorridorPrefab();
@@ -132,7 +135,7 @@ public class EndlessCorridorManager : MonoBehaviour {
         Destroy(Tail.gameObject);
         Tail = createlist.Last.Value;
 
-        EndlessCorridorHolder newObj = createEcByRef(0, Head,Head.getHeadDummy(), 2.0f);
+        EndlessCorridorHolder newObj = createEcByRef(0, Head, Head.getHeadDummy(), 2.0f);
         createlist.AddFirst(newObj);
         Head = newObj;
     }
@@ -152,7 +155,7 @@ public class EndlessCorridorManager : MonoBehaviour {
         Destroy(Head.gameObject);
         Head = createlist.First.Value;
 
-        EndlessCorridorHolder newObj = createEcByRef(createSize-1, Tail, Tail.getTailDummy(), 0.5f);
+        EndlessCorridorHolder newObj = createEcByRef(createSize - 1, Tail, Tail.getTailDummy(), 0.5f);
         createlist.AddLast(newObj);
         Tail = newObj;
     }
