@@ -49,7 +49,7 @@
 				// 高度正規化後會落在-1~1間，但最後只能存0~1，所以要x0.5
 				strength=strength*0.5; 
 
-				float2 center=(0.5,0.5);
+				float2 center=float2(0.5,0.5);
 				float2 v =i.uv-center;
 				float r=length(v); // => \/ 0.5~0~0.5
 
