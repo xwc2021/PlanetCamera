@@ -129,6 +129,7 @@
      <Compile Include="Assets\DiyTerrain\ShowMeshBound.cs" />
      <Compile Include="Assets\scripts\Input\AndroidInput.cs" />
      <Compile Include="Assets\scripts\Factoryplugin\AddScalable.cs" />
+     <Compile Include="Assets\scripts\EndlessCorridor\DrawInstance.cs" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWallMask.shader" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWallUseMaskAndDepthTexture.shader" />
      <None Include="Assets\DiyTerrain\shaders\ToSpherePBR.shader" />
@@ -140,6 +141,7 @@
      <None Include="Assets\DiyTerrain\shaders\brush\StitchingUp.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\brush_dot.shader" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWall.shader" />
+     <None Include="Assets\fbx\ColorInstance.shader" />
      <None Include="Assets\materials\mirror.shader" />
      <None Include="Assets\materials\BehindTheWall\BehindTheWallUseMask.shader" />
      <None Include="Assets\Water\fetchWaveDataMirror.shader" />
