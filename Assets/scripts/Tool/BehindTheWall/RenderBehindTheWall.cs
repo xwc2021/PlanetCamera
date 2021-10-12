@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class RenderBehindTheWall : MonoBehaviour {
+public class RenderBehindTheWall : MonoBehaviour
+{
 
     MeshRenderer[] meshRenderers;
     MeshFilter[] meshFilters;
@@ -13,7 +14,6 @@ public class RenderBehindTheWall : MonoBehaviour {
     //這樣才能抽換
     delegate void DrawMeshFun(Mesh mesh, ref Matrix4x4 matrix);
     DrawMeshFun mDrawBehindTheWallFun;
-    DrawMeshFun mDrawMaskFun;
 
     void Awake()
     {
@@ -22,11 +22,10 @@ public class RenderBehindTheWall : MonoBehaviour {
         meshFilters = GetComponentsInChildren<MeshFilter>();
         skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         bakeMeshs = new Mesh[skinnedMeshRenderers.Length];
-        for (var i=0;i< bakeMeshs.Length;i++)
+        for (var i = 0; i < bakeMeshs.Length; i++)
             bakeMeshs[i] = new Mesh();
 
         mDrawBehindTheWallFun = RenderBehindTheWallCommandBuffer.getInstance().DrawBehindTheWall;
-        mDrawMaskFun = RenderBehindTheWallCommandBuffer.getInstance().DrawMask;   
     }
 
     RenderBehindTheWallCamera.QueueOrderForMainBody queueOrderForMainBody;
@@ -60,18 +59,18 @@ public class RenderBehindTheWall : MonoBehaviour {
     void DrawAll(DrawMeshFun fun)
     {
         foreach (var mf in meshFilters)
-            DrawMesh(mf,fun);
+            DrawMesh(mf, fun);
 
         for (var i = 0; i < skinnedMeshRenderers.Length; i++)
             DrawSkin(skinnedMeshRenderers[i], bakeMeshs[i], fun);
     }
 
-    void BackSkinMesh(SkinnedMeshRenderer skinnedMeshRenderer,Mesh mesh)
+    void BackSkinMesh(SkinnedMeshRenderer skinnedMeshRenderer, Mesh mesh)
     {
         skinnedMeshRenderer.BakeMesh(mesh);
     }
 
-    void DrawSkin(SkinnedMeshRenderer skinnedMeshRenderer,Mesh mesh,DrawMeshFun fun)
+    void DrawSkin(SkinnedMeshRenderer skinnedMeshRenderer, Mesh mesh, DrawMeshFun fun)
     {
         //因為BakeMesh後模型會包含縮放的結果
         //而localToWorldMatrix也會包含縮放
@@ -98,7 +97,8 @@ public class RenderBehindTheWall : MonoBehaviour {
         fun(mesh, ref matrix);
     }
 
-    void DrawMesh(MeshFilter meshFilter, DrawMeshFun fun) {
+    void DrawMesh(MeshFilter meshFilter, DrawMeshFun fun)
+    {
         var mesh = meshFilter.mesh;
         var matrix = meshFilter.transform.localToWorldMatrix;
         fun(mesh, ref matrix);
@@ -109,9 +109,6 @@ public class RenderBehindTheWall : MonoBehaviour {
         //只需要BackSkinMesh一次
         for (var i = 0; i < skinnedMeshRenderers.Length; i++)
             BackSkinMesh(skinnedMeshRenderers[i], bakeMeshs[i]);
-
-        if (queueOrderForMainBody == RenderBehindTheWallCamera.QueueOrderForMainBody.MainBodyAfterMask)
-            DrawAll(mDrawMaskFun);
 
         DrawAll(mDrawBehindTheWallFun);
     }
