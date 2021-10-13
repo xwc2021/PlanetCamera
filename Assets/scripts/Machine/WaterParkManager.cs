@@ -106,7 +106,7 @@ public class WaterParkManager : MonoBehaviour
     float L;
     void Awake()
     {
-        DrawInstance.initMatrix(showW * showH, true);
+        DrawInstance.getWorker(DrawInstance.KEY_water_park_block).initMatrix(showW * showH, true);
         waterHeightSetter = new WaterHeightSetter[showW, showH];
         terrainHeightField = new int[showW, showH];
         waterHeightField = new float[showW, showH];
@@ -142,7 +142,7 @@ public class WaterParkManager : MonoBehaviour
                 newGround.transform.localPosition = newPos;
                 newGround.name = "obj[" + x + "," + z + "]";
 
-                DrawInstance.pushTrasform(newGround.transform);
+                DrawInstance.getWorker(DrawInstance.KEY_water_park_block).pushTrasform(newGround.transform);
             }
         }
 
@@ -165,7 +165,7 @@ public class WaterParkManager : MonoBehaviour
 
         nowWater[flow_index_x, flow_index_z] += waterFollowPerSecond * Time.deltaTime;
 
-        DrawInstance.draw(mesh, materials);
+        DrawInstance.getWorker(DrawInstance.KEY_water_park_block).draw(mesh, materials);
     }
 
     public Mesh mesh;

@@ -15,6 +15,11 @@ public class EndlessCorridorManager : MonoBehaviour
     public EndlessCorridorHolder Tail;
     int halfIndex;
 
+    void Awake()
+    {
+        DrawInstance.getWorker(DrawInstance.KEY_bike).initMatrix(10000, false);
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -63,6 +68,9 @@ public class EndlessCorridorManager : MonoBehaviour
         Tail = refObj;
     }
 
+    public Mesh mesh;
+    public Material[] materials;
+
     bool doWorldReScale = false;
     float scaleValue;
     private void LateUpdate()
@@ -72,6 +80,8 @@ public class EndlessCorridorManager : MonoBehaviour
             worldReSacle(scaleValue);
             doWorldReScale = false;
         }
+
+        DrawInstance.getWorker(DrawInstance.KEY_bike).draw(mesh, materials);
     }
 
     public void CallWorldReSacle(float value)
