@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaterParkManager : MonoBehaviour {
+public class WaterParkManager : MonoBehaviour
+{
 
     [SerializeField]
     WaterHeightSetter groundPrefab;
@@ -24,7 +25,7 @@ public class WaterParkManager : MonoBehaviour {
 
     WaterHeightSetter[,] waterHeightSetter;
 
-    float[,] nowWater,newWater;
+    float[,] nowWater, newWater;
     float[,] waterHeightField;
     float[,] waterHeightField2;
     int[,] terrainHeightField;
@@ -34,10 +35,10 @@ public class WaterParkManager : MonoBehaviour {
         waterFollowPerSecond = value;
     }
 
-    float getTotalHeight(int x, int z,float refHeight)
+    float getTotalHeight(int x, int z, float refHeight)
     {
         if (x < 0 || x >= showW || z < 0 || z >= showH)
-            return refHeight-0.25f;//這樣才不會積水
+            return refHeight - 0.25f;//這樣才不會積水
 
         float waterH = nowWater[x, z];
         float totalH = waterH + terrainHeightField[x, z];
@@ -53,20 +54,20 @@ public class WaterParkManager : MonoBehaviour {
         float terrainHeight = terrainHeightField[x, z];
         float nowHeight = waterHeight + terrainHeight;
 
-        float left=getTotalHeight(x - 1, z, nowHeight);
-        float right=getTotalHeight(x + 1, z, nowHeight);
-        float down = getTotalHeight(x , z-1, nowHeight);
+        float left = getTotalHeight(x - 1, z, nowHeight);
+        float right = getTotalHeight(x + 1, z, nowHeight);
+        float down = getTotalHeight(x, z - 1, nowHeight);
         float up = getTotalHeight(x, z + 1, nowHeight);
 
-        float right_down = getTotalHeight(x+1, z - 1, nowHeight);
-        float right_up = getTotalHeight(x+1, z + 1, nowHeight);
-        float left_down = getTotalHeight(x-1, z -1, nowHeight);
-        float left_up = getTotalHeight(x-1, z + 1, nowHeight);
+        float right_down = getTotalHeight(x + 1, z - 1, nowHeight);
+        float right_up = getTotalHeight(x + 1, z + 1, nowHeight);
+        float left_down = getTotalHeight(x - 1, z - 1, nowHeight);
+        float left_up = getTotalHeight(x - 1, z + 1, nowHeight);
 
         float average = 0;
 
-        average = (nowHeight + left + right + down + up+ right_down+ right_up+ left_down+ left_up) / 9;
-        newWater[x, z] = Mathf.Max(average- terrainHeight,0);//不可能<0
+        average = (nowHeight + left + right + down + up + right_down + right_up + left_down + left_up) / 9;
+        newWater[x, z] = Mathf.Max(average - terrainHeight, 0);//不可能<0
         return newWater[x, z];
     }
 
@@ -77,7 +78,7 @@ public class WaterParkManager : MonoBehaviour {
         newWater = temp;
     }
 
-    float getWave1(int x ,int z)
+    float getWave1(int x, int z)
     {
         float t = (float)x / W;
         float h = 6 * Mathf.Sin(4 * Mathf.PI * t);
@@ -91,15 +92,17 @@ public class WaterParkManager : MonoBehaviour {
         return h;
     }
 
-    float getHill(int x, int z,int hX,int hZ,int height)
+    float getHill(int x, int z, int hX, int hZ, int height)
     {
-        int far = Mathf.Abs(hX - x)+ Mathf.Abs(hZ - z);
+        int far = Mathf.Abs(hX - x) + Mathf.Abs(hZ - z);
         float h = Mathf.Max(0, height - far);
         return h;
     }
 
     float L;
-    void Awake () {
+    void Awake()
+    {
+        DrawInstance.initMatrix();
         waterHeightSetter = new WaterHeightSetter[showW, showH];
         terrainHeightField = new int[showW, showH];
         waterHeightField = new float[showW, showH];
@@ -113,27 +116,29 @@ public class WaterParkManager : MonoBehaviour {
         {
             for (int z = 0; z < showH; z++)
             {
-                
-                WaterHeightSetter newGround =GameObject.Instantiate<WaterHeightSetter>(groundPrefab, this.transform);
+
+                WaterHeightSetter newGround = GameObject.Instantiate<WaterHeightSetter>(groundPrefab, this.transform);
                 waterHeightSetter[x, z] = newGround;
 
                 float h = 0;
-                h+=getWave1(x, z);
-                h+= getWave2(x, z);
+                h += getWave1(x, z);
+                h += getWave2(x, z);
 
                 h += -getHill(x, z, 25, 25, 5);
                 h += -getHill(x, z, 20, 25, 5);
                 h += -getHill(x, z, 15, 22, 7);
                 h += -getHill(x, z, 10, 17, 10);
 
-                h +=getHill(x, z, 35, 20, 10);
+                h += getHill(x, z, 35, 20, 10);
                 h += getHill(x, z, 35, 25, 10);
                 h += getHill(x, z, 35, 35, 10);
                 terrainHeightField[x, z] = (int)h;
                 Vector3 newPos = new Vector3(x, (int)h, z);
 
                 newGround.transform.localPosition = newPos;
-                newGround.name = "obj["+x + "," + z+"]";
+                newGround.name = "obj[" + x + "," + z + "]";
+
+                DrawInstance.pushTrasform(newGround.transform);
             }
         }
 
@@ -153,6 +158,11 @@ public class WaterParkManager : MonoBehaviour {
 
         swapBuffer();
 
-        nowWater[11, 24] += waterFollowPerSecond*Time.deltaTime;
+        nowWater[11, 24] += waterFollowPerSecond * Time.deltaTime;
+
+        DrawInstance.draw(mesh, materials);
     }
+
+    public Mesh mesh;
+    public Material[] materials;
 }

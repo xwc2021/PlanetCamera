@@ -22,13 +22,16 @@ public class DrawInstance
         DrawInstance.matrixList = new List<Matrix4x4>(DrawInstance.transformList.Count);
     }
 
-    public static void updateMatrix()
+    public static void updateMatrix(int from, int to)
     {
+        var max = DrawInstance.transformList.Count;
         DrawInstance.matrixList.Clear();
-        var count = DrawInstance.transformList.Count;
         var test_m = new Matrix4x4(new Vector4(1, 0, 0, 0), new Vector4(0, 1, 0, 0), new Vector4(0, 0, 1, 0), new Vector4(0, 10, 0, 1));
-        for (var i = 0; i < count; ++i)
+        for (var i = from; i < to; ++i)
         {
+            if (i >= max) // 超過了
+                break;
+
             var m = DrawInstance.transformList[i].localToWorldMatrix;
             DrawInstance.matrixList.Add(m);
         }
@@ -36,9 +39,23 @@ public class DrawInstance
 
     public static void draw(Mesh instanceMesh, Material[] instanceMaterial)
     {
-        // Debug.Log(DrawInstanceBike.matrixList.Count);
-        var count = instanceMaterial.Length;
-        for (var i = 0; i < count; ++i)
-            Graphics.DrawMeshInstanced(instanceMesh, i, instanceMaterial[i], DrawInstance.matrixList);
+        var count = DrawInstance.transformList.Count;
+        var batch_count = (count / 1023) + 1;
+        var len = 1023;
+        var from = 0;
+        var to = len;
+        for (var i = 0; i < batch_count; ++i)
+        {
+            DrawInstance.updateMatrix(from, to);
+
+            var m_count = instanceMaterial.Length;
+            for (var j = 0; j < m_count; ++j)
+                Graphics.DrawMeshInstanced(instanceMesh, j, instanceMaterial[j], DrawInstance.matrixList);
+
+            from += len;
+            to += len;
+        }
+
+
     }
 }
