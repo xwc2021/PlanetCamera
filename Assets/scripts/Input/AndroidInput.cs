@@ -50,9 +50,14 @@ public class AndroidInput : MonoBehaviour, InputProxy
     {
         isFire = !isFire;
         var colors = btn.colors;
-        colors.normalColor = isFire ? Color.yellow : Color.gray;
-        colors.highlightedColor = isFire ? Color.yellow : Color.gray;
+        var now_color = isFire ? Color.yellow : Color.green;
+        colors.normalColor = now_color;
+        colors.pressedColor = now_color;
+        colors.selectedColor = now_color;
+        colors.highlightedColor = now_color;
         btn.colors = colors;
+
+        Debug.Log("click");
     }
 
     float scale = 0.25f;
