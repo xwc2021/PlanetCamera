@@ -27,6 +27,11 @@ public class DrawInstance
     List<Transform> transformList = new List<Transform>();
     bool is_static = false;
 
+    public int getCount()
+    {
+        return this.transformList.Count;
+    }
+
     public void pushTrasform(Transform t)
     {
         transformList.Add(t);

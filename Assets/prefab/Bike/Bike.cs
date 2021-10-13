@@ -11,4 +11,9 @@ public class Bike : MonoBehaviour
         meshRenderer.enabled = false;
         DrawInstance.getWorker(DrawInstance.KEY_bike).pushTrasform(transform);
     }
+
+    void OnDestroy()
+    {
+        DrawInstance.getWorker(DrawInstance.KEY_bike).removeTrasform(transform);
+    }
 }

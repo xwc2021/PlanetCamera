@@ -68,6 +68,7 @@ public class EndlessCorridorManager : MonoBehaviour
         Tail = refObj;
     }
 
+    public int count;
     public Mesh mesh;
     public Material[] materials;
 
@@ -81,7 +82,9 @@ public class EndlessCorridorManager : MonoBehaviour
             doWorldReScale = false;
         }
 
-        DrawInstance.getWorker(DrawInstance.KEY_bike).draw(mesh, materials);
+        var worker = DrawInstance.getWorker(DrawInstance.KEY_bike);
+        worker.draw(mesh, materials);
+        count = worker.getCount();
     }
 
     public void CallWorldReSacle(float value)
