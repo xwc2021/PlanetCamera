@@ -30,8 +30,12 @@ public class WaterParkManager : MonoBehaviour
     float[,] waterHeightField2;
     int[,] terrainHeightField;
 
-    public void resetWaterFollowPerSecond(float value)
+    int flow_index_x;
+    int flow_index_z;
+    public void resetWaterFollowPerSecond(float value, int x, int z)
     {
+        flow_index_x = x;
+        flow_index_z = z;
         waterFollowPerSecond = value;
     }
 
@@ -102,7 +106,7 @@ public class WaterParkManager : MonoBehaviour
     float L;
     void Awake()
     {
-        DrawInstance.initMatrix();
+        DrawInstance.initMatrix(showW * showH, true);
         waterHeightSetter = new WaterHeightSetter[showW, showH];
         terrainHeightField = new int[showW, showH];
         waterHeightField = new float[showW, showH];
@@ -147,6 +151,7 @@ public class WaterParkManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // todo: 之後可以改到shader做
         for (int x = 0; x < showW; x++)
         {
             for (int z = 0; z < showH; z++)
@@ -158,7 +163,7 @@ public class WaterParkManager : MonoBehaviour
 
         swapBuffer();
 
-        nowWater[11, 24] += waterFollowPerSecond * Time.deltaTime;
+        nowWater[flow_index_x, flow_index_z] += waterFollowPerSecond * Time.deltaTime;
 
         DrawInstance.draw(mesh, materials);
     }

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaterTrigger : MonoBehaviour {
+public class WaterTrigger : MonoBehaviour
+{
 
     [SerializeField]
     WaterParkManager waterParkManager;
@@ -10,13 +11,23 @@ public class WaterTrigger : MonoBehaviour {
     [SerializeField]
     float waterFollowPerSecond = 5;
 
-    private void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision collision)
     {
-        waterParkManager.resetWaterFollowPerSecond(waterFollowPerSecond);
+        if (collision.gameObject.tag != TagDefined.Player)
+            return;
+
+        int x = (int)this.transform.position.x;
+        int z = (int)this.transform.position.z;
+        waterParkManager.resetWaterFollowPerSecond(waterFollowPerSecond, x, z);
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnCollisionExit(Collision collision)
     {
-        waterParkManager.resetWaterFollowPerSecond(0);
+        if (collision.gameObject.tag != TagDefined.Player)
+            return;
+
+        int x = (int)this.transform.position.x;
+        int z = (int)this.transform.position.z;
+        waterParkManager.resetWaterFollowPerSecond(0, x, z);
     }
 }

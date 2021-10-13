@@ -5,8 +5,9 @@ using UnityEngine;
 public class DrawInstance
 {
     // 之後再來試試 為什麼直接呼叫Graphics.DrawMeshInstanced沒效果
-    static List<Matrix4x4> matrixList;
+    static List<Matrix4x4>[] matrixList;
     static List<Transform> transformList = new List<Transform>();
+    static bool is_static = false;
     public static void pushTrasform(Transform t)
     {
         DrawInstance.transformList.Add(t);
@@ -17,15 +18,21 @@ public class DrawInstance
         DrawInstance.transformList.Remove(t);
     }
 
-    public static void initMatrix()
+    public static void initMatrix(int draw_count, bool is_static)
     {
-        DrawInstance.matrixList = new List<Matrix4x4>(DrawInstance.transformList.Count);
+        // static 只會更新 matrix 1次
+        DrawInstance.is_static = is_static;
+
+        var batch = (draw_count / 1023) + 1;
+        DrawInstance.matrixList = new List<Matrix4x4>[batch];
+        for (var i = 0; i < batch; ++i)
+            DrawInstance.matrixList[i] = new List<Matrix4x4>();
     }
 
-    public static void updateMatrix(int from, int to)
+    public static void updateMatrix(int from, int to, List<Matrix4x4> list)
     {
         var max = DrawInstance.transformList.Count;
-        DrawInstance.matrixList.Clear();
+        list.Clear();
         var test_m = new Matrix4x4(new Vector4(1, 0, 0, 0), new Vector4(0, 1, 0, 0), new Vector4(0, 0, 1, 0), new Vector4(0, 10, 0, 1));
         for (var i = from; i < to; ++i)
         {
@@ -33,10 +40,11 @@ public class DrawInstance
                 break;
 
             var m = DrawInstance.transformList[i].localToWorldMatrix;
-            DrawInstance.matrixList.Add(m);
+            list.Add(m);
         }
     }
 
+    public static bool is_dirty = true;
     public static void draw(Mesh instanceMesh, Material[] instanceMaterial)
     {
         var count = DrawInstance.transformList.Count;
@@ -46,16 +54,17 @@ public class DrawInstance
         var to = len;
         for (var i = 0; i < batch_count; ++i)
         {
-            DrawInstance.updateMatrix(from, to);
+            if (!DrawInstance.is_static || (DrawInstance.is_static && DrawInstance.is_dirty))
+                DrawInstance.updateMatrix(from, to, DrawInstance.matrixList[i]);
 
             var m_count = instanceMaterial.Length;
             for (var j = 0; j < m_count; ++j)
-                Graphics.DrawMeshInstanced(instanceMesh, j, instanceMaterial[j], DrawInstance.matrixList);
+                Graphics.DrawMeshInstanced(instanceMesh, j, instanceMaterial[j], DrawInstance.matrixList[i]);
 
             from += len;
             to += len;
         }
 
-
+        DrawInstance.is_dirty = false;
     }
 }
