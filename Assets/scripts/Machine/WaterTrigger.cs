@@ -16,9 +16,7 @@ public class WaterTrigger : MonoBehaviour
         if (collision.gameObject.tag != TagDefined.Player)
             return;
 
-        int x = (int)this.transform.position.x;
-        int z = (int)this.transform.position.z;
-        waterParkManager.resetWaterFollowPerSecond(waterFollowPerSecond, x, z);
+        waterParkManager.resetWaterFollowPerSecond(waterFollowPerSecond);
     }
 
     void OnCollisionExit(Collision collision)
@@ -26,8 +24,6 @@ public class WaterTrigger : MonoBehaviour
         if (collision.gameObject.tag != TagDefined.Player)
             return;
 
-        int x = (int)this.transform.position.x;
-        int z = (int)this.transform.position.z;
-        waterParkManager.resetWaterFollowPerSecond(0, x, z);
+        waterParkManager.resetWaterFollowPerSecond(0);
     }
 }

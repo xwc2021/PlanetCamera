@@ -32,10 +32,10 @@ public class WaterParkManager : MonoBehaviour
 
     int flow_index_x;
     int flow_index_z;
-    public void resetWaterFollowPerSecond(float value, int x, int z)
+    public void resetWaterFollowPerSecond(float value)
     {
-        flow_index_x = x;
-        flow_index_z = z;
+        flow_index_x = Random.Range(0, showW);
+        flow_index_z = Random.Range(0, showH);
         waterFollowPerSecond = value;
     }
 
