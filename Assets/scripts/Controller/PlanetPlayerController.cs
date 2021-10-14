@@ -1,9 +1,4 @@
-﻿//#define FollowCameraInLateUpdate
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface MoveController
 {
@@ -109,11 +104,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         planetMovable.setupGravity();
         planetMovable.setupRequireData();
 
-#if (FollowCameraInLateUpdate)
-        syncPositionByPlatformLerp();
-#else
         syncPositionByPlatform();
-#endif
+
         planetMovable.executeGravityForce();
         planetMovable.executeMoving();
 
@@ -260,7 +252,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     RecordPositionDiff platform;
     public void setPlatform(RecordPositionDiff pPlatform)
     {
-        syncDiff = Vector3.zero;
         platform = pPlatform;
     }
 
@@ -279,25 +270,5 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
         rigid.position += platform.getDiff();
         //transform.position += platform.getDiff();
-    }
-
-    public Vector3 syncDiff;
-    public float syncSpeed = 5;
-    void syncPositionByPlatformLerp()
-    {
-        if (platform == null)
-            return;
-
-
-        syncDiff += platform.getDiff();
-
-        Vector3 nowPos = rigid.position;
-        Vector3 targetPos = nowPos + syncDiff;
-        Vector3 newPos = Vector3.Lerp(nowPos, targetPos, syncSpeed * Time.fixedDeltaTime);
-        Vector3 notCompletePart = targetPos - newPos;
-        syncDiff = notCompletePart;
-        print("notCompletePart=" + notCompletePart);
-
-        rigid.position = newPos;
     }
 }

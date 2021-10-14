@@ -1,12 +1,7 @@
-﻿//#define FollowCameraInLateUpdate
-
-
+﻿
 using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
-using System;
-
-
 
 public class CameraPivot : MonoBehaviour
 {
@@ -105,22 +100,10 @@ public class CameraPivot : MonoBehaviour
         cameraTargetRot = yaw * cameraTargetRot;
     }
 
-#if (FollowCameraInLateUpdate)
-
-    //Time.deltaTime is smart
-    //https://docs.unity3d.com/ScriptReference/Time-deltaTime.html
-    private void LateUpdate()
-    {
-        updateCamera();
-    }
-#else
     private void FixedUpdate()
     {
         updateCamera();
     }
-#endif
-
-
 
     private void Start()
     {

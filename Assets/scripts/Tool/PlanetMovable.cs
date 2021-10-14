@@ -1,9 +1,5 @@
-﻿//#define FollowCameraInLateUpdate
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityStandardAssets.CrossPlatformInput;
 
 public interface InputProxy
 {
@@ -71,12 +67,7 @@ public class PlanetMovable : MonoBehaviour
         moveController = GetComponent<MoveController>();
         Debug.Assert(moveController != null);
 
-#if (FollowCameraInLateUpdate)
-
-    rigid.interpolation = RigidbodyInterpolation.Interpolate;
-#else
         rigid.interpolation = RigidbodyInterpolation.None;
-#endif
     }
 
     public void ResetGravityGenetrator(GroundGravityGenerator gg)
