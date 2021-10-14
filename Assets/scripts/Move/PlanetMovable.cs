@@ -1,26 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public interface InputProxy
-{
-    Vector2 getHV();
-    bool pressJump();
-    bool pressFire();
-    bool holdFire();
-    float yawScale();
-    float pitchScale();
-    bool enableControlUI();
-}
-
-public interface MoveForceParameter
-{
-    float getMoveForceStrength(bool isOnAir, bool isTurble);
-    float getGravityForceStrength(bool isOnAir);
-    float getJumpForceStrength(bool isTurble);
-    void setRigidbodyParamter(Rigidbody rigid);
-}
-
-
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
 public class PlanetMovable : MonoBehaviour

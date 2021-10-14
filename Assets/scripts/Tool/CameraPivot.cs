@@ -23,7 +23,7 @@ public class CameraPivot : MonoBehaviour
     Vector3 recordParentInitUp;
     Vector3 recordPos;
     Quaternion cameraTargetRot;
-    Transform myParent;
+    Transform myParent; // CameraTarget
     Transform CAMERA;
     Camera c;
 
@@ -108,16 +108,6 @@ public class CameraPivot : MonoBehaviour
     private void Start()
     {
         transform.parent = null;
-
-        //StartCoroutine(doSomethingAfterFixedUpdate());
-    }
-
-    IEnumerator doSomethingAfterFixedUpdate()
-    {
-        yield return new WaitForFixedUpdate();
-        updateCamera();
-
-        StartCoroutine(doSomethingAfterFixedUpdate());
     }
 
     public void setFollowHighSpeed(bool b)
@@ -191,22 +181,23 @@ public class CameraPivot : MonoBehaviour
     public float toSpeed;
     void updateCamera()
     {
-
         inputProxy = ppController.getInputProxy();
+        float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y") * inputProxy.pitchScale();
+        float deltaX = CrossPlatformInputManager.GetAxis("Mouse X") * inputProxy.yawScale();
+
         Debug.Assert(inputProxy != null);
 
         bool doYawFollow;
         doPosFollow(out doYawFollow);
 
         //pitch旋轉
-        float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y") * inputProxy.pitchScale();
+
         addPitch(perPitchDegreen * deltaY * Time.deltaTime);
         Quaternion pitch = Quaternion.Euler(localNowPitchDegree, 0, 0);
 
         if (!lockYaw)
         {
             //yaw旋轉
-            float deltaX = CrossPlatformInputManager.GetAxis("Mouse X") * inputProxy.yawScale();
             Quaternion yaw = Quaternion.AngleAxis(perYawDegreen * deltaX * Time.deltaTime, recordParentInitUp);
             cameraTargetRot = yaw * cameraTargetRot;
 

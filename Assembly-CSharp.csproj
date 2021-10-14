@@ -113,7 +113,7 @@
      <Compile Include="Assets\Prefab\machine\Portal\SyncCamera.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\SphereTerrainPiece.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\SinMove.cs" />
-     <Compile Include="Assets\scripts\Tool\PlanetMovable.cs" />
+     <Compile Include="Assets\scripts\Move\PlanetMovable.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\SetParent.cs" />
      <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintSelf.cs" />
      <Compile Include="Assets\Prefab\Facotry\CreatePlayer.cs" />
@@ -132,6 +132,8 @@
      <Compile Include="Assets\Pack\DiyTerrain\Script\ShowMeshBound.cs" />
      <Compile Include="Assets\scripts\Input\AndroidInput.cs" />
      <Compile Include="Assets\scripts\Level\ManyBike.cs" />
+     <Compile Include="Assets\scripts\Move\InputProxy.cs" />
+     <Compile Include="Assets\scripts\Move\MoveForceParameter.cs" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSphere.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSpherePBR.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\brush\brush_fill.shader" />
