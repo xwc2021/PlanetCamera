@@ -38,10 +38,10 @@
   <ItemGroup>
      <Compile Include="Assets\scripts\GravityGenerator\Editor\TorusGravityGeneratorGizmoDrawer.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\Editor\CreateGravitySensorEditor.cs" />
-     <Compile Include="Assets\Test\PeekTanget\Editor\PeekGeoEditor.cs" />
-     <Compile Include="Assets\DiyTerrain\Editor\SphereTerrainBrushControllerEditor.cs" />
+     <Compile Include="Assets\Pack_Test\PeekTanget\Editor\PeekGeoEditor.cs" />
+     <Compile Include="Assets\Pack_DiyTerrain\Editor\SphereTerrainBrushControllerEditor.cs" />
      <Compile Include="Assets\scripts\Tool\Editor\PlanetMovableInspector.cs" />
-     <Compile Include="Assets\DiyTerrain\Editor\SphereTerrainEditor.cs" />
+     <Compile Include="Assets\Pack_DiyTerrain\Editor\SphereTerrainEditor.cs" />
      <Compile Include="Assets\scripts\help\Editor\AlignPlanetCenterEditor.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.20f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
