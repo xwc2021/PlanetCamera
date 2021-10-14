@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class PCInput : MonoBehaviour,  InputProxy
+public class PCInput : InputProxy
 {
     bool InputProxy.pressJump()
     {

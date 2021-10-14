@@ -6,7 +6,7 @@ using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class AndroidInput : MonoBehaviour, InputProxy
+public class AndroidInput : InputProxy
 {
     bool isFire;
     bool isJump;

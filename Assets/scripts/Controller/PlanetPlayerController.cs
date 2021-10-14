@@ -20,7 +20,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     PlanetMovable planetMovable;
 
     public bool adjustCameraWhenMove = true;
-    InputProxy inputProxy;
     public Transform m_Cam;
     Rigidbody rigid;
     Animator animator;
@@ -35,15 +34,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         multiplayerCameraManager = GetComponent<MultiplayerCameraManager>();
 
         //print("cameraBehavior="+cameraBehavior);
-
-#if (UNITY_ANDROID)
-        AndroidInput androidInput = GetComponent<AndroidInput>();
-        inputProxy = androidInput as InputProxy;
-#else
-        PCInput pcInput = GetComponent<PCInput>();
-        inputProxy = pcInput as InputProxy;
-#endif
-        Debug.Assert(inputProxy != null);
+        var inputProxy = InputManager.getInputProxy();
         if (inputProxy.enableControlUI())
         {
             canvas.SetActive(true);
@@ -55,11 +46,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         onAirHash = Animator.StringToHash("Base Layer.onAir");
 
         getCamera();
-    }
-
-    public InputProxy getInputProxy()
-    {
-        return inputProxy;
     }
 
     public void getCamera()
@@ -196,7 +182,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         // |frame1| |frame2||frame3||frame4|
         //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
         if (!doJump)
-            doJump = inputProxy.pressJump();
+            doJump = InputManager.getInputProxy().pressJump();
     }
 
     //https://msdn.microsoft.com/zh-tw/library/14akc2c7.aspx
@@ -223,7 +209,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Vector3 MoveController.getMoveForce()
     {
         //取得輸入
-        Vector2 hv = inputProxy.getHV();
+        Vector2 hv = InputManager.getInputProxy().getHV();
         hv.Normalize();
         float h = hv.x;
         float v = hv.y;
@@ -246,7 +232,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     bool MoveController.doTurbo()
     {
-        return inputProxy.holdFire();
+        return InputManager.getInputProxy().holdFire();
     }
 
     RecordPositionDiff platform;
