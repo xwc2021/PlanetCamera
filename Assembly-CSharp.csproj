@@ -41,7 +41,7 @@
      <Compile Include="Assets\scripts\Factoryplugin\BigPlayer.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\GroundGravityGenerator.cs" />
      <Compile Include="Assets\DiyTerrain\SphereTerrain.cs" />
-     <Compile Include="Assets\Water\AnimateWave.cs" />
+     <Compile Include="Assets\Water\scripts\AnimateWave.cs" />
      <Compile Include="Assets\Obj_Prefab\Bike\Bike.cs" />
      <Compile Include="Assets\scripts\AnimationState\Finn\OnAirState.cs" />
      <Compile Include="Assets\scripts\Tool\GeometryTool.cs" />
@@ -51,7 +51,7 @@
      <Compile Include="Assets\scripts\AnimationState\QBox\QBoxFinal.cs" />
      <Compile Include="Assets\scripts\Machine\DestoryGameObject.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\GravityField.cs" />
-     <Compile Include="Assets\Water\WaterRange.cs" />
+     <Compile Include="Assets\Water\scripts\WaterRange.cs" />
      <Compile Include="Assets\scripts\Factoryplugin\FourtyFiveDegree.cs" />
      <Compile Include="Assets\scripts\AnimationState\QBox\QBoxDoScale.cs" />
      <Compile Include="Assets\scripts\AnimationState\MovePlatform\MoveMachineWaitAtOriginal.cs" />
@@ -101,7 +101,7 @@
      <Compile Include="Assets\scripts\AnimationState\QBox\QBoxReady.cs" />
      <Compile Include="Assets\scripts\help\AlignPlanetCenter.cs" />
      <Compile Include="Assets\scripts\Tool\RayPeaker.cs" />
-     <Compile Include="Assets\Water\AnimateEmissive.cs" />
+     <Compile Include="Assets\Water\scripts\AnimateEmissive.cs" />
      <Compile Include="Assets\BehindTheWall\RenderBehindTheWallCamera.cs" />
      <Compile Include="Assets\scripts\help\MeasuringJumpHeight.cs" />
      <Compile Include="Assets\scripts\Machine\RecordPositionDiff.cs" />
@@ -136,15 +136,14 @@
      <None Include="Assets\DiyTerrain\shaders\ToSpherePBR.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\brush_fill.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\StitchingDown.shader" />
-     <None Include="Assets\Water\fetchWaveData.shader" />
-     <None Include="Assets\Water\Test\NewSurfaceShader.shader" />
+     <None Include="Assets\Water\Materials\fetchWaveData.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\StitchingLeft.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\StitchingUp.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\brush_dot.shader" />
      <None Include="Assets\BehindTheWall\BehindTheWall.shader" />
      <None Include="Assets\Mirror\mirror.shader" />
-     <None Include="Assets\Water\fetchWaveDataMirror.shader" />
-     <None Include="Assets\Water\wave.shader" />
+     <None Include="Assets\Water\Materials\fetchWaveDataMirror.shader" />
+     <None Include="Assets\Water\Materials\wave.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\StitchingRight.shader" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.20f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
