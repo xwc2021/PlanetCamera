@@ -36,13 +36,13 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\scripts\Factoryplugin\SetMirrorCamera.cs" />
+     <Compile Include="Assets\Prefab\Facotry\Factoryplugin\SetMirrorCamera.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\MeshGravityGenerator.cs" />
-     <Compile Include="Assets\scripts\Factoryplugin\BigPlayer.cs" />
+     <Compile Include="Assets\Prefab\Facotry\Factoryplugin\BigPlayer.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\GroundGravityGenerator.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\SphereTerrain.cs" />
      <Compile Include="Assets\Pack\Water\scripts\AnimateWave.cs" />
-     <Compile Include="Assets\Prefab\Bike\Bike.cs" />
+     <Compile Include="Assets\Prefab\Item\Bike\Bike.cs" />
      <Compile Include="Assets\Prefab\Character\Finn\OnAirState.cs" />
      <Compile Include="Assets\scripts\Tool\GeometryTool.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\CreateGravitySensor.cs" />
@@ -52,13 +52,13 @@
      <Compile Include="Assets\scripts\Level\DestoryGameObject.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\GravityField.cs" />
      <Compile Include="Assets\Pack\Water\scripts\WaterRange.cs" />
-     <Compile Include="Assets\scripts\Factoryplugin\FourtyFiveDegree.cs" />
+     <Compile Include="Assets\Prefab\Facotry\Factoryplugin\FourtyFiveDegree.cs" />
      <Compile Include="Assets\Prefab\machine\QBox\Script\QBoxDoScale.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineWaitAtOriginal.cs" />
      <Compile Include="Assets\Pack\WaterPark\WaterTrigger.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\DrawMeshAABB.cs" />
      <Compile Include="Assets\scripts\MoveForceMonitor\MoveForceSetting.cs" />
-     <Compile Include="Assets\scripts\Factoryplugin\CreateLinedUp.cs" />
+     <Compile Include="Assets\Prefab\Facotry\Factoryplugin\CreateLinedUp.cs" />
      <Compile Include="Assets\scripts\Tool\TheTopOne.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\SphereTerrainBrushController.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorManager.cs" />
@@ -74,7 +74,7 @@
      <Compile Include="Assets\scripts\Tool\AvatarSync.cs" />
      <Compile Include="Assets\scripts\Controller\RigidbodyWrapper.cs" />
      <Compile Include="Assets\Pack\Test\PeekTanget\scripts\RotateByAxis.cs" />
-     <Compile Include="Assets\scripts\Factoryplugin\AddScalable.cs" />
+     <Compile Include="Assets\Prefab\Facotry\Factoryplugin\AddScalable.cs" />
      <Compile Include="Assets\scripts\Controller\SurfaceFollowHelper.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\TorusGravityGenerator.cs" />
      <Compile Include="Assets\Pack\Test\PeekTanget\scripts\NormalMapAxis.cs" />
@@ -92,7 +92,7 @@
      <Compile Include="Assets\scripts\Level\DoRotation.cs" />
      <Compile Include="Assets\Pack\WaterPark\WaterHeightSetter.cs" />
      <Compile Include="Assets\scripts\Level\DisalbeAirCableMotor.cs" />
-     <Compile Include="Assets\scripts\Level\DominoSpwan.cs" />
+     <Compile Include="Assets\Prefab\Domino\DominoSpwan.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\PlanetGravityGenerator.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineBack2Original.cs" />
      <Compile Include="Assets\scripts\Shared\LayerDefined.cs" />
@@ -116,14 +116,14 @@
      <Compile Include="Assets\scripts\Tool\PlanetMovable.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\SetParent.cs" />
      <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintSelf.cs" />
-     <Compile Include="Assets\scripts\Factory\CreatePlayer.cs" />
-     <Compile Include="Assets\scripts\Level\Domino.cs" />
+     <Compile Include="Assets\Prefab\Facotry\CreatePlayer.cs" />
+     <Compile Include="Assets\Prefab\Domino\Domino.cs" />
      <Compile Include="Assets\scripts\Input\JoyStickControlPanel.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorHolder.cs" />
      <Compile Include="Assets\Pack\Test\Rotation\TestRotationAxis.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineInitWait.cs" />
      <Compile Include="Assets\scripts\Shared\SharedTool.cs" />
-     <Compile Include="Assets\scripts\Tool\DrawAABB.cs" />
+     <Compile Include="Assets\scripts\help\DrawAABB.cs" />
      <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintCollision.cs" />
      <Compile Include="Assets\Pack\Mirror\MirrorCamera.cs" />
      <Compile Include="Assets\scripts\Tool\MultiplayerCameraManager.cs" />
