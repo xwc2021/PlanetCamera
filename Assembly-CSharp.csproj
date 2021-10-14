@@ -42,7 +42,7 @@
      <Compile Include="Assets\scripts\GravityGenerator\GroundGravityGenerator.cs" />
      <Compile Include="Assets\DiyTerrain\SphereTerrain.cs" />
      <Compile Include="Assets\Water\AnimateWave.cs" />
-     <Compile Include="Assets\prefab\Bike\Bike.cs" />
+     <Compile Include="Assets\Obj_Prefab\Bike\Bike.cs" />
      <Compile Include="Assets\scripts\AnimationState\Finn\OnAirState.cs" />
      <Compile Include="Assets\scripts\Tool\GeometryTool.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\CreateGravitySensor.cs" />
@@ -110,7 +110,7 @@
      <Compile Include="Assets\scripts\EndlessCorridor\Scalable.cs" />
      <Compile Include="Assets\scripts\Input\PCInput.cs" />
      <Compile Include="Assets\scripts\Tool\SetCameraPivot.cs" />
-     <Compile Include="Assets\prefab\machine\Portal\SyncCamera.cs" />
+     <Compile Include="Assets\Obj_Prefab\machine\Portal\SyncCamera.cs" />
      <Compile Include="Assets\DiyTerrain\SphereTerrainPiece.cs" />
      <Compile Include="Assets\scripts\Machine\SinMove.cs" />
      <Compile Include="Assets\scripts\Tool\PlanetMovable.cs" />
@@ -131,7 +131,7 @@
      <Compile Include="Assets\DiyTerrain\Brush.cs" />
      <Compile Include="Assets\DiyTerrain\ShowMeshBound.cs" />
      <Compile Include="Assets\scripts\Input\AndroidInput.cs" />
-     <Compile Include="Assets\prefab\Bike\ManyBike.cs" />
+     <Compile Include="Assets\Obj_Prefab\Bike\ManyBike.cs" />
      <None Include="Assets\DiyTerrain\shaders\ToSphere.shader" />
      <None Include="Assets\DiyTerrain\shaders\ToSpherePBR.shader" />
      <None Include="Assets\DiyTerrain\shaders\brush\brush_fill.shader" />
