@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetMirrorCamera : MonoBehaviour,FactoryPlugin {
+public class SetMirrorCamera : MonoBehaviour, FactoryPlugin
+{
 
     public MirrorCamera mirrorCamera;
     public void doIt(GameObject gameObject)
     {
-        Camera camera =gameObject.GetComponentInChildren<Camera>();
+        Camera camera = FindObjectOfType<CameraPivot>().getCamera();
         Debug.Assert(camera != null);
         mirrorCamera.refCamera = camera;
     }

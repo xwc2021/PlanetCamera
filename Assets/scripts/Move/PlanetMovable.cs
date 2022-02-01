@@ -35,7 +35,7 @@ public class PlanetMovable : MonoBehaviour
 
 
     // Use this for initialization
-    void Awake()
+    public void init()
     {
         rigid = GetComponent<Rigidbody>();
         Debug.Assert(moveForceParameterRepository != null);

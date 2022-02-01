@@ -5,13 +5,15 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
-public class StandingController : MonoBehaviour,MoveController {
+public class StandingController : MonoBehaviour, MoveController
+{
 
     PlanetMovable planetMovable;
 
     private void Awake()
     {
         planetMovable = GetComponent<PlanetMovable>();
+        planetMovable.init();
     }
 
     bool MoveController.doTurbo()

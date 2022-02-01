@@ -37,25 +37,19 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         var inputProxy = InputManager.getInputProxy();
         if (inputProxy.enableControlUI())
         {
-            canvas.SetActive(true);
-            eventSystem.SetActive(true);
+            // canvas.SetActive(true);
+            // eventSystem.SetActive(true);
         }
 
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         onAirHash = Animator.StringToHash("Base Layer.onAir");
 
-        getCamera();
     }
 
-    public void getCamera()
+    public void setCamera(Transform camera)
     {
-        if (m_Cam == null)
-        {
-            Camera c = GetComponentInChildren<Camera>();
-            //在Multiplayer模式可能取不到，因為被disable掉了
-            m_Cam = c != null ? c.transform : null;
-        }
+        m_Cam = camera;
     }
 
     void setAnimatorMoving()

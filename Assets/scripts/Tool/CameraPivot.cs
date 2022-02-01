@@ -5,6 +5,16 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraPivot : MonoBehaviour
 {
+    public Transform getCameraTransform()
+    {
+        return realCamera;
+    }
+
+    public Camera getCamera()
+    {
+        return c;
+    }
+
     /* 第1人稱Camera相關 */
     public Transform firstPersonModel;
     public bool firstPersonMode = false;
@@ -83,13 +93,13 @@ public class CameraPivot : MonoBehaviour
     static public float rotateMinBorader = -60;
     public float localNowPitchDegree;
 
-    // Use this for initialization
-    void Awake()
+    public void bind(Transform cameraTarget, Transform collisionRayTarget)
     {
-        Debug.Assert(collisionRayTarget != null);
-
-        cameraTarget = transform.parent;
+        this.cameraTarget = cameraTarget;
         cameraTargetRot = cameraTarget.rotation;
+
+        this.collisionRayTarget = collisionRayTarget;
+
         realCamera = transform.GetChild(0);
         c = realCamera.GetComponent<Camera>();
         recordPos = transform.position;
@@ -103,6 +113,11 @@ public class CameraPivot : MonoBehaviour
         localNowPitchDegree = transform.localRotation.eulerAngles.x;
         setFollowSpeed(false);
     }
+
+    // private void Start()
+    // {
+    //     transform.parent = null;
+    // }
 
     public void resetRecordPos(Vector3 player, float scaleR)
     {
@@ -136,11 +151,6 @@ public class CameraPivot : MonoBehaviour
     private void FixedUpdate()
     {
         updateCamera();
-    }
-
-    private void Start()
-    {
-        transform.parent = null;
     }
 
     // 平台有開啟cameraFollowUsingHighSpeed時

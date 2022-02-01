@@ -17,6 +17,7 @@ public class FollowerController : MonoBehaviour, MoveController
     private void Awake()
     {
         planetMovable = GetComponent<PlanetMovable>();
+        planetMovable.init();
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
     }
