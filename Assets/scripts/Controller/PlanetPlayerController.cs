@@ -37,8 +37,8 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         var inputProxy = InputManager.getInputProxy();
         if (inputProxy.enableControlUI())
         {
-            // canvas.SetActive(true);
-            // eventSystem.SetActive(true);
+            canvas.SetActive(true);
+            eventSystem.SetActive(true);
         }
 
         rigid = GetComponent<Rigidbody>();
@@ -138,13 +138,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
                 doJump = false;
             }
         }
-        else
-        {
-            //不是ladding時按下doJump，也要把doJump設為false
-            //不然的話會一直持續到當ladding為true再進行跳躍
-            if (doJump)
-                doJump = false;
-        }
     }
 
     void processLadding()
@@ -168,13 +161,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     void Update()
     {
         //這邊要加上if (!doJump)的判斷，因為：
-        //如果在|frame1|按下跳，其實會在|frame2|的Update裡才執行GetButtonDown檢查(在同個Frame裡FixedUpdate會先於Update執行)
-        //這時GetButtonDown為true，但要等到|frame3|才會執行到fixedUPdate
-        //如果|frame3|裡沒有fixedUpdate，接著還是會執行Update，這時GetButtonDown檢查已經變成false了
-        //所以到|frame4|時執行fixedUpdate還是不會跳
+        // 如果在|frame1|GetButtonDown為true，但在|frame1|沒有執行FixedUpdate
+        // 這樣到了|frame2|GetButtonDown為false，就不會跳了
 
-        // |frame1| |frame2||frame3||frame4|
-        //http://gpnnotes.blogspot.tw/2017/04/blog-post_22.html
         if (!doJump)
             doJump = InputManager.getInputProxy().pressJump();
     }

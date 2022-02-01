@@ -60,6 +60,7 @@
      <Compile Include="Assets\scripts\MoveForceMonitor\MoveForceSetting.cs" />
      <Compile Include="Assets\Prefab\Facotry\Factoryplugin\CreateLinedUp.cs" />
      <Compile Include="Assets\scripts\Tool\TheTopOne.cs" />
+     <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\ThirdPerson.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\SphereTerrainBrushController.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorManager.cs" />
      <Compile Include="Assets\Pack\WaterPark\WaterParkManager.cs" />
@@ -85,6 +86,7 @@
      <Compile Include="Assets\scripts\Level\Door.cs" />
      <Compile Include="Assets\scripts\Shared\TagDefined.cs" />
      <Compile Include="Assets\Pack\Test\PeekTanget\scripts\PeekGeo.cs" />
+     <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerBasicCode.cs" />
      <Compile Include="Assets\scripts\Move\MoveForceParameter.cs" />
      <Compile Include="Assets\Pack\Test\Rotation\TestRotationEularAngle.cs" />
      <Compile Include="Assets\Prefab\machine\QBox\Script\QuestionBox.cs" />
@@ -121,11 +123,11 @@
      <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintSelf.cs" />
      <Compile Include="Assets\Prefab\Facotry\CreatePlayer.cs" />
      <Compile Include="Assets\Prefab\Domino\Domino.cs" />
-     <Compile Include="Assets\scripts\Input\JoyStickControlPanel.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorHolder.cs" />
      <Compile Include="Assets\Pack\Test\Rotation\TestRotationAxis.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineInitWait.cs" />
      <Compile Include="Assets\scripts\Shared\SharedTool.cs" />
+     <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerMoveCode.cs" />
      <Compile Include="Assets\scripts\help\DrawAABB.cs" />
      <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintCollision.cs" />
      <Compile Include="Assets\Pack\Mirror\MirrorCamera.cs" />
@@ -133,11 +135,7 @@
      <Compile Include="Assets\scripts\Controller\FollowerController.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\Brush.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\ShowMeshBound.cs" />
-     <Compile Include="Assets\scripts\Input\AndroidInput.cs" />
      <Compile Include="Assets\scripts\Level\ManyBike.cs" />
-     <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerMoveCode.cs" />
-     <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerBasicCode.cs" />
-     <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\ThirdPerson.cs" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSphere.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSpherePBR.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\brush\brush_fill.shader" />

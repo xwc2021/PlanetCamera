@@ -3,11 +3,10 @@ public class InputManager
     static InputProxy inputProxy;
     public static InputProxy getInputProxy()
     {
-#if (UNITY_ANDROID)
-        inputProxy=new AndroidInput();
-#else
+        if (inputProxy != null)
+            return inputProxy;
+
         inputProxy = new PCInput();
-#endif
         return inputProxy;
     }
 }
