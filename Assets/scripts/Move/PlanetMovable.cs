@@ -35,7 +35,7 @@ public class PlanetMovable : MonoBehaviour
 
 
     // Use this for initialization
-    public void init()
+    public void init(MoveController moveController)
     {
         rigid = GetComponent<Rigidbody>();
         Debug.Assert(moveForceParameterRepository != null);
@@ -44,10 +44,8 @@ public class PlanetMovable : MonoBehaviour
         contactPointGround = new List<ContactPoint[]>();
         contactPointWall = new List<ContactPoint[]>();
 
-        moveController = GetComponent<MoveController>();
-        Debug.Assert(moveController != null);
-
         rigid.interpolation = RigidbodyInterpolation.None;
+        this.moveController = moveController;
     }
 
     public void ResetGravityGenetrator(GroundGravityGenerator gg)

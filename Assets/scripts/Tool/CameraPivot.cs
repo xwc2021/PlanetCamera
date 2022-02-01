@@ -98,6 +98,9 @@ public class CameraPivot : MonoBehaviour
         this.cameraTarget = cameraTarget;
         cameraTargetRot = cameraTarget.rotation;
 
+        this.transform.position = cameraTarget.transform.position;
+        this.transform.rotation = cameraTargetRot;
+
         this.collisionRayTarget = collisionRayTarget;
 
         realCamera = transform.GetChild(0);

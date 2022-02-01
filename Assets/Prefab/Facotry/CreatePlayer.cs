@@ -55,7 +55,7 @@ public class CreatePlayer : MonoBehaviour
         planetPlayerController.measuringJumpHeight = measuringJumpHeight;
         planetPlayerController.setCamera(cameraPivot.getCameraTransform());
 
-        planetMovable.init();
+        planetMovable.init(planetPlayerController);
 
         // plugin 的部分
         int pluginSide = factoryPloginSocket.Length;
