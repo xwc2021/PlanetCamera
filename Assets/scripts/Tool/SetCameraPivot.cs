@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetCameraPivot : MonoBehaviour {
-
+public class SetCameraPivot : MonoBehaviour
+{
     public CameraPivot cameraPivot;
-    public void setFollowHighSpeed(bool b)
+    public void setFollowSpeed(bool b)
     {
-        cameraPivot.setFollowHighSpeed(b);
+        cameraPivot.setFollowSpeed(b);
     }
 }

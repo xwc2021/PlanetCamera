@@ -5,15 +5,6 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraPivot : MonoBehaviour
 {
-    public bool posFollowLerp = true;
-    public float posFollowSpeed = 5;
-    public float perPitchDegreen = 200;
-    public float perYawDegreen = 600;
-    public bool lockYaw = false;
-
-    public float yawFollowSpeed = 1.5f;
-    public float rotateFollowSpeed = 5;
-
     /* 第1人稱Camera相關 */
     public Transform firstPersonModel;
     public bool firstPersonMode = false;
@@ -31,14 +22,20 @@ public class CameraPivot : MonoBehaviour
     Vector3 recordPos;
     Quaternion cameraTargetRot;
     public Transform cameraTarget; // camera跟隨的目標
+    public bool posFollowLerp = true;
+    float posFollowSpeed = 5;
 
-    public bool doCameraCollison = true;
-    public Transform collisionRef;
+    public float yawFollowSpeed = 1.5f;
+    public float rotateFollowSpeed = 5;
+
+    /* camera碰撞相關 */
+    public bool isDoCameraCollision = true;
+    public Transform collisionRayTarget;
     public Transform fakeCamera; // 處理cameraCollison，實際發射線的位置
     Transform realCamera;
     Camera c;
 
-    /* camera 距離相關 */
+    /* camera距離相關 */
     float fixedR;// camera沒有發生Collison時的距離
     public float cameraMinDistance = 1.0f;
     float R; // Camera 到 cameraTarget的距離
@@ -49,7 +46,11 @@ public class CameraPivot : MonoBehaviour
     public void resetTargetRScale(float s) { RScale = s; }
     public void resetRScale() { RScale = 1; }
 
-    /* pitch相關 */
+    /* yaw、pitch相關 */
+    public float perPitchDegreen = 200;
+    public float perYawDegreen = 600;
+    public bool lockYaw = false;
+
     static public float rotateMaxBorader = 240;
     static public float rotateMinBorader = -60;
     public float localNowPitchDegree;
@@ -57,7 +58,7 @@ public class CameraPivot : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        Debug.Assert(collisionRef != null);
+        Debug.Assert(collisionRayTarget != null);
 
         cameraTarget = transform.parent;
         cameraTargetRot = cameraTarget.rotation;
@@ -66,13 +67,13 @@ public class CameraPivot : MonoBehaviour
         recordPos = transform.position;
         R = Mathf.Abs(realCamera.localPosition.z);
 
-        if (doCameraCollison)
+        if (isDoCameraCollision)
             fixedR = Mathf.Abs(fakeCamera.localPosition.z);
         recordParentInitUp = cameraTarget.up;
 
         //記錄一開始的pitch值
         localNowPitchDegree = transform.localRotation.eulerAngles.x;
-        toSpeed = posFollowSpeed;
+        setFollowSpeed(false);
     }
 
 
@@ -117,25 +118,26 @@ public class CameraPivot : MonoBehaviour
 
     // 平台有開啟cameraFollowUsingHighSpeed時
     // 跳上平台，讓Camera加速，會產生一種著地速度感
-    public void setFollowHighSpeed(bool b)
+    public void setFollowSpeed(bool useHighSpeed)
     {
         if (!posFollowLerp)
             return;
 
-        if (b)
-            toSpeed = 300;
+        if (useHighSpeed)
+            hopeSpeed = 300;
         else
-            toSpeed = 5;
+            hopeSpeed = 5;
     }
 
     void doPosFollow(out bool doYawFollow)
     {
-        posFollowSpeed = Mathf.Lerp(posFollowSpeed, toSpeed, Time.deltaTime);
-
         Vector3 old = recordPos;
 
         if (posFollowLerp)
+        {
+            posFollowSpeed = Mathf.Lerp(posFollowSpeed, hopeSpeed, Time.deltaTime);
             recordPos = Vector3.Lerp(recordPos, cameraTarget.position, posFollowSpeed * Time.deltaTime);
+        }
         else
             recordPos = cameraTarget.position;
 
@@ -185,7 +187,7 @@ public class CameraPivot : MonoBehaviour
             autoYawFollowTurnDiff = Quaternion.identity;
     }
 
-    public float toSpeed;
+    public float hopeSpeed;
     void updateCamera()
     {
         var inputProxy = InputManager.getInputProxy();
@@ -225,7 +227,7 @@ public class CameraPivot : MonoBehaviour
         {
             adjustDistanceToTarget();
 
-            if (doCameraCollison)
+            if (isDoCameraCollision)
                 doCameraCollision();
         }
         else
@@ -254,7 +256,7 @@ public class CameraPivot : MonoBehaviour
         //Debug.DrawLine(CAMERA.transform.position, cameraCenterBottom,Color.green);
 
         float ep = 0.1f;
-        Vector3 from = collisionRef.position + collisionRef.up * ep;//從3D model的底部開始
+        Vector3 from = collisionRayTarget.position + collisionRayTarget.up * ep;//從3D model的底部開始
         Vector3 dir = cameraCenterBottom - from;
         float rayCastDistance = dir.magnitude;
         dir.Normalize();

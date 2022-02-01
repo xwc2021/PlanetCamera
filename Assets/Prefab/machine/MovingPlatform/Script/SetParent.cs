@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetParent : MonoBehaviour {
+public class SetParent : MonoBehaviour
+{
 
     [SerializeField]
-    bool cameraFollowUsingHighSpeed=false;
+    bool cameraFollowUsingHighSpeed = false;
 
     void OnTriggerStay(Collider other)
     {
-        if(!TagDefined.canOnMovableSet(other.gameObject.tag))
-             return;
+        if (!TagDefined.canOnMovableSet(other.gameObject.tag))
+            return;
 
         other.transform.parent = transform;
 
@@ -18,7 +19,7 @@ public class SetParent : MonoBehaviour {
         {
             SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
             if (setCameraPivot != null)
-                setCameraPivot.setFollowHighSpeed(true);
+                setCameraPivot.setFollowSpeed(true);
         }
     }
 
@@ -33,7 +34,7 @@ public class SetParent : MonoBehaviour {
         {
             SetCameraPivot setCameraPivot = other.gameObject.GetComponent<SetCameraPivot>();
             if (setCameraPivot != null)
-                setCameraPivot.setFollowHighSpeed(false);
-        }     
+                setCameraPivot.setFollowSpeed(false);
+        }
     }
 }
