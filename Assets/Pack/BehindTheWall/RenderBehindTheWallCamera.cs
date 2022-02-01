@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
+﻿using UnityEngine;
 
 public class RenderBehindTheWallCamera : MonoBehaviour
 {
-
     public enum QueueOrderForMainBody { MainBodyAfterBehindWall = 2999 }
 
     //[SerializeField]
@@ -19,11 +14,5 @@ public class RenderBehindTheWallCamera : MonoBehaviour
     {
         var instance = RenderBehindTheWallCommandBuffer.getInstance();
         instance.SetRequired(m_MaterialDrawBehindTheWall, queueOrderForMainBody);
-    }
-
-    void OnPostRender()
-    {
-        var instance = RenderBehindTheWallCommandBuffer.getInstance();
-        instance.clearCommand();
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 
 public class RenderBehindTheWallCommandBuffer
 {
@@ -37,13 +34,6 @@ public class RenderBehindTheWallCommandBuffer
     public void DrawBehindTheWall(Mesh mesh, ref Matrix4x4 matrix)
     {
         GraphicsDrawMesh(mesh, ref matrix, materialDrawBehindTheWall);
-    }
-
-
-    public void clearCommand()
-    {
-        if (cam)
-            cam.RemoveCommandBuffers(CameraEvent.BeforeForwardAlpha);
     }
 
     public void GraphicsDrawMesh(Mesh mesh, ref Matrix4x4 matrix, Material material)

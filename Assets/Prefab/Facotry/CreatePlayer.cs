@@ -38,6 +38,7 @@ public class CreatePlayer : MonoBehaviour
         moveForceParameterRepository.transform.parent = gameObject.transform;
         moveForceParameterRepository.transform.localPosition = Vector3.zero;
 
+        gameObject.AddComponent<RenderBehindTheWall>();
         gameObject.AddComponent<SetCameraPivot>();
         var measuringJumpHeight = gameObject.AddComponent<MeasuringJumpHeight>();
 
