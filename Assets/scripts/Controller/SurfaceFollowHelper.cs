@@ -4,7 +4,8 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
-public class SurfaceFollowHelper : MonoBehaviour {
+public class SurfaceFollowHelper : MonoBehaviour
+{
 
     public CameraPivot cameraPivot;
     PlanetMovable planetMovable;
@@ -52,7 +53,7 @@ public class SurfaceFollowHelper : MonoBehaviour {
             //print("rotDegree=" + rotDegree);
             Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
 
-            cameraPivot.setSurfaceRotate(true, q);
+            cameraPivot.setSurfaceAdjust(true, q);
             previousGroundUp = groundUp;//有轉動才更新
         }
     }
