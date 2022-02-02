@@ -1,7 +1,5 @@
 ﻿
 using UnityEngine;
-using System.Collections;
-using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraPivot : MonoBehaviour
 {
@@ -92,6 +90,13 @@ public class CameraPivot : MonoBehaviour
     static public float rotateMaxBorader = 240;
     static public float rotateMinBorader = -60;
     public float localNowPitchDegree;
+
+    /* input */
+    Vector2 lookVec;
+    public Vector2 LookVec // property
+    {
+        set { lookVec = value; }
+    }
 
     public void bind(Transform cameraTarget, Transform collisionRayTarget)
     {
@@ -229,11 +234,9 @@ public class CameraPivot : MonoBehaviour
 
     void updateCamera()
     {
-        var inputProxy = InputManager.getInputProxy();
-        float deltaY = -CrossPlatformInputManager.GetAxis("Mouse Y") * inputProxy.pitchScale();
-        float deltaX = CrossPlatformInputManager.GetAxis("Mouse X") * inputProxy.yawScale();
-
-        Debug.Assert(inputProxy != null);
+        float scale = 0.5f;
+        float deltaY = -lookVec.y * scale;
+        float deltaX = lookVec.x * scale;
 
         bool isTriggerYawFollow;
         doPosFollow(out isTriggerYawFollow);
@@ -324,7 +327,8 @@ public class CameraPivot : MonoBehaviour
 
     void adjustDistanceToTarget()
     {
-        float Rscale = Input.GetAxis("Mouse ScrollWheel");
+        // todo 取得輸入
+        float Rscale = 0;
         R += Rdiff * Rscale * Time.deltaTime;
         R = Mathf.Max(cameraMinDistance, R);
 

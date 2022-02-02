@@ -42,7 +42,7 @@ Shader "Custom/ToSpherePBR" {
 			float halfResolution =0.5*_BoxWidth;
 			float2 index =v.xz+float2(halfResolution,halfResolution);// 0~1023
 
-			// Todo: 讀取高度圖
+			// 讀取高度圖
 			
 			float onePixel = 1.0/_resolution;
 			float halfPixel = 0.5*onePixel;

@@ -113,8 +113,8 @@ public class PlanetMovable : MonoBehaviour
             ContactPoint[] cp = contactPointGround[x];
             for (int i = 0; i < cp.Length; i++)
             {
-                Vector3 diif = cp[i].point - transform.position;
-                float height = Vector3.Dot(groundUp, diif);
+                Vector3 diff = cp[i].point - transform.position;
+                float height = Vector3.Dot(groundUp, diff);
                 if (height < 0.15f)
                 {
                     return true;
@@ -134,8 +134,8 @@ public class PlanetMovable : MonoBehaviour
             ContactPoint[] cp = contactPointWall[x];
             for (int i = 0; i < cp.Length; i++)
             {
-                Vector3 diif = cp[i].point - transform.position;
-                float height = Vector3.Dot(groundUp, diif);
+                Vector3 diff = cp[i].point - transform.position;
+                float height = Vector3.Dot(groundUp, diff);
                 if (height > 0.15f && height < 1.0f)
                 {
                     touchWallNormal = cp[i].normal;

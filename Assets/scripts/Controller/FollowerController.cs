@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityStandardAssets.CrossPlatformInput;
-using System;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]

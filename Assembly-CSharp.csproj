@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_2020_3_26;UNITY_2020_3;UNITY_2020;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;USE_SEARCH_ENGINE_API;SCENE_TEMPLATE_MODULE;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE;PLATFORM_STANDALONE_WIN;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;CROSS_PLATFORM_INPUT;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_2020_3_26;UNITY_2020_3;UNITY_2020;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;USE_SEARCH_ENGINE_API;SCENE_TEMPLATE_MODULE;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE;PLATFORM_STANDALONE_WIN;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;CROSS_PLATFORM_INPUT;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -64,7 +64,6 @@
      <Compile Include="Assets\Pack\DiyTerrain\Script\SphereTerrainBrushController.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorManager.cs" />
      <Compile Include="Assets\Pack\WaterPark\WaterParkManager.cs" />
-     <Compile Include="Assets\Pack\Test\PeekTanget\scripts\RotateByAxis2.cs" />
      <Compile Include="Assets\scripts\Tool\SlopeForceMonitor.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\MovingPlatform.cs" />
      <Compile Include="Assets\Pack\BehindTheWall\RenderBehindTheWallCommandBuffer.cs" />
@@ -74,18 +73,15 @@
      <Compile Include="Assets\scripts\Level\EnableAirCableCarMotor.cs" />
      <Compile Include="Assets\scripts\Tool\AvatarSync.cs" />
      <Compile Include="Assets\scripts\Controller\RigidbodyWrapper.cs" />
-     <Compile Include="Assets\Pack\Test\PeekTanget\scripts\RotateByAxis.cs" />
      <Compile Include="Assets\Prefab\Facotry\Factoryplugin\AddScalable.cs" />
      <Compile Include="Assets\scripts\Controller\SurfaceFollowHelper.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\TorusGravityGenerator.cs" />
-     <Compile Include="Assets\Pack\Test\PeekTanget\scripts\NormalMapAxis.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorTriggerBox.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineWaitAtTarget.cs" />
      <Compile Include="Assets\scripts\Controller\PlanetPlayerController.cs" />
      <Compile Include="Assets\scripts\Level\PosFollow.cs" />
      <Compile Include="Assets\scripts\Level\Door.cs" />
      <Compile Include="Assets\scripts\Shared\TagDefined.cs" />
-     <Compile Include="Assets\Pack\Test\PeekTanget\scripts\PeekGeo.cs" />
      <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerBasicCode.cs" />
      <Compile Include="Assets\scripts\Move\MoveForceParameter.cs" />
      <Compile Include="Assets\Pack\Test\Rotation\TestRotationEularAngle.cs" />
@@ -95,7 +91,6 @@
      <Compile Include="Assets\scripts\Level\DoRotation.cs" />
      <Compile Include="Assets\Pack\WaterPark\WaterHeightSetter.cs" />
      <Compile Include="Assets\scripts\Level\DisalbeAirCableMotor.cs" />
-     <Compile Include="Assets\scripts\Input\InputManager.cs" />
      <Compile Include="Assets\Prefab\Domino\DominoSpwan.cs" />
      <Compile Include="Assets\scripts\GravityGenerator\PlanetGravityGenerator.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineBack2Original.cs" />
@@ -112,15 +107,12 @@
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineMove2Target.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\CoroutineMove.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\Scalable.cs" />
-     <Compile Include="Assets\scripts\Move\InputProxy.cs" />
-     <Compile Include="Assets\scripts\Input\PCInput.cs" />
      <Compile Include="Assets\scripts\Tool\SetCameraPivot.cs" />
      <Compile Include="Assets\Prefab\machine\Portal\SyncCamera.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\SphereTerrainPiece.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\SinMove.cs" />
      <Compile Include="Assets\scripts\Move\PlanetMovable.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\SetParent.cs" />
-     <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintSelf.cs" />
      <Compile Include="Assets\Prefab\Facotry\CreatePlayer.cs" />
      <Compile Include="Assets\Prefab\Domino\Domino.cs" />
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorHolder.cs" />
@@ -129,13 +121,12 @@
      <Compile Include="Assets\scripts\Shared\SharedTool.cs" />
      <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerMoveCode.cs" />
      <Compile Include="Assets\scripts\help\DrawAABB.cs" />
-     <Compile Include="Assets\Pack\Test\Collision\TestOnCollisionEnterPrintCollision.cs" />
      <Compile Include="Assets\Pack\Mirror\MirrorCamera.cs" />
-     <Compile Include="Assets\scripts\Tool\MultiplayerCameraManager.cs" />
      <Compile Include="Assets\scripts\Controller\FollowerController.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\Brush.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\ShowMeshBound.cs" />
      <Compile Include="Assets\scripts\Level\ManyBike.cs" />
+     <Compile Include="Assets\scripts\Input\InputHub.cs" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSphere.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSpherePBR.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\brush\brush_fill.shader" />
@@ -734,56 +725,29 @@
     <Reference Include="Unity.VSCode.Editor">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.2D.Tilemap.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.2D.Tilemap.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Shaders">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Purchasing.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\com.unity.multiplayer-hlapi.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.SecurityStub">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Purchasing.SecurityStub.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Advertisements">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Advertisements.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    <Reference Include="Unity.Searcher.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.multiplayer-weaver.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\com.unity.multiplayer-weaver.Editor.dll</HintPath>
+    <Reference Include="Unity.InputSystem">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
@@ -794,11 +758,11 @@
     <Reference Include="Analytics">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Analytics.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.SpatialTracking">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.SpatialTracking.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpatialTracking">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Analytics.DataPrivacy.dll</HintPath>
@@ -806,11 +770,53 @@
     <Reference Include="com.unity.multiplayer-hlapi.Runtime">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Mathematics">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Purchasing.Codeless">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Purchasing.Codeless.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Monetization">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Monetization.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Tilemap.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.2D.Tilemap.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.multiplayer-hlapi.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\com.unity.multiplayer-hlapi.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualStudio.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PlasticSCM.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.multiplayer-weaver.Editor">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\com.unity.multiplayer-weaver.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.SecurityCore">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Purchasing.SecurityCore.dll</HintPath>
@@ -818,14 +824,8 @@
     <Reference Include="Unity.RenderPipelines.Universal.Editor">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Purchasing.Codeless">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Purchasing.Codeless.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.XR.LegacyInputHelpers">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
@@ -838,12 +838,6 @@
     </Reference>
     <Reference Include="UnityEditor.XR.LegacyInputHelpers">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Monetization">
-        <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEngine.Monetization.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Purchasing">
         <HintPath>C:\MyProj\PlanetCamera\Library\ScriptAssemblies\UnityEditor.Purchasing.dll</HintPath>
@@ -859,10 +853,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{5924371d-f591-2dd5-da3f-385acbec7492}</Project>
-      <Name>Assembly-CSharp-firstpass</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -13,9 +13,7 @@ public interface MoveController
 public class PlanetPlayerController : MonoBehaviour, MoveController
 {
     SurfaceFollowHelper surfaceFollowHelper;
-    MultiplayerCameraManager multiplayerCameraManager;
-    public GameObject canvas;
-    public GameObject eventSystem;
+
     public MeasuringJumpHeight measuringJumpHeight;
     PlanetMovable planetMovable;
 
@@ -25,21 +23,29 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     Animator animator;
     int onAirHash;
 
+    /* input 相關*/
     bool doJump = false;
+    bool doTurble = false;
+    public bool DoTurbe
+    {
+        set { doTurble = value; }
+    }
+    Vector2 moveVec;
+    public Vector2 MoveVec // property
+    {
+        set { moveVec = value; }
+    }
+
+    bool MoveController.doTurbo()
+    {
+        return doTurble;
+    }
+
     // Use this for initialization
     void Awake()
     {
         planetMovable = GetComponent<PlanetMovable>();
         surfaceFollowHelper = GetComponent<SurfaceFollowHelper>();
-        multiplayerCameraManager = GetComponent<MultiplayerCameraManager>();
-
-        //print("cameraBehavior="+cameraBehavior);
-        var inputProxy = InputManager.getInputProxy();
-        if (inputProxy.enableControlUI())
-        {
-            canvas.SetActive(true);
-            eventSystem.SetActive(true);
-        }
 
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
@@ -68,17 +74,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         animator.SetBool("onAir", false);
     }
 
-    void syncAnimatorAndRot()
-    {
-        if (multiplayerCameraManager != null)
-        {
-            bool moving = animator.GetBool("moving");
-            bool doJump = animator.GetBool("doJump");
-            bool onAir = animator.GetBool("onAir");
-            multiplayerCameraManager.CmdSyncAnimatorAndRot(moving, doJump, onAir, transform.rotation);
-        }
-    }
-
     void FixedUpdate()
     {
         planetMovable.setupGravity();
@@ -95,15 +90,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         processJump();
         processLadding();
 
-        syncAnimatorAndRot();
-
         //從Update移到FixedUpdate
         //因為無法保證FixedUpdate在第1個frame一定會執行到
         if (surfaceFollowHelper != null)
             surfaceFollowHelper.doAdjustByGroundUp();
     }
-
-
 
     void processWallJump()
     {
@@ -138,6 +129,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
                 doJump = false;
             }
         }
+        else
+        {
+            // 在空中跳，就取消
+            doJump = false;
+        }
     }
 
     void processLadding()
@@ -157,18 +153,11 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         }
     }
 
-
-    void Update()
+    public void triggerJump()
     {
-        //這邊要加上if (!doJump)的判斷，因為：
-        // 如果在|frame1|GetButtonDown為true，但在|frame1|沒有執行FixedUpdate
-        // 這樣到了|frame2|GetButtonDown為false，就不會跳了
-
-        if (!doJump)
-            doJump = InputManager.getInputProxy().pressJump();
+        doJump = true;
     }
 
-    //https://msdn.microsoft.com/zh-tw/library/14akc2c7.aspx
     void doDegreeLock(ref float h, ref float v)
     {
         //16個方向移動
@@ -177,10 +166,9 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         float degree = Mathf.Rad2Deg * Mathf.Atan2(v, h);
 
         float extraDegree = degree % snapDegree;
-
         float extraRad = extraDegree * Mathf.Deg2Rad;
 
-        //作旋轉修正
+        // 作旋轉修正(這是複數乘法，複數相乘=>角度相加，長度相乘)
         float newH = h * Mathf.Cos(-extraRad) + v * -Mathf.Sin(-extraRad);
         float newV = h * Mathf.Sin(-extraRad) + v * Mathf.Cos(-extraRad);
 
@@ -191,8 +179,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     public bool doDergeeLock = false;
     Vector3 MoveController.getMoveForce()
     {
-        //取得輸入
-        Vector2 hv = InputManager.getInputProxy().getHV();
+        Vector2 hv = moveVec;
         hv.Normalize();
         float h = hv.x;
         float v = hv.y;
@@ -213,11 +200,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         return Vector3.zero;
     }
 
-    bool MoveController.doTurbo()
-    {
-        return InputManager.getInputProxy().holdFire();
-    }
-
     RecordPositionDiff platform;
     public void setPlatform(RecordPositionDiff pPlatform)
     {
@@ -231,7 +213,6 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     //when using "set parent method" to move player on MovingPlatform.
     //this method will not be called.
-
     void syncPositionByPlatform()
     {
         if (platform == null)
