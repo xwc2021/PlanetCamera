@@ -8,7 +8,7 @@ public class SlopeForceMonitor : MonoBehaviour
     public Vector3 getPartOfGravityForceStrengthAlongSlope(float GravityForceStrength, Vector3 groundUp, Vector3 SlopeUp)
     {
         //重力 = 垂直於斜坡的分力+沿著斜坡的分力
-        float cosValue = Vector3.Dot(groundUp, SlopeUp);
+        float cosValue = Vector3.Dot(groundUp, SlopeUp); // 和Dot(-groundUp, -SlopeUp)結果一樣
         float perpendicularStrength = GravityForceStrength * cosValue;
 
         Vector3 f = GravityForceStrength * (-groundUp) - perpendicularStrength * (-SlopeUp);
@@ -20,18 +20,19 @@ public class SlopeForceMonitor : MonoBehaviour
     public Vector3 modifyMoveForce(Vector3 moveForceWithStrength, float GravityForceStrength, Vector3 groundUp, Vector3 SlopeUp)
     {
         // https://photos.app.goo.gl/ZPEjsEX5XryktCBv8
+        // fAlongSlopeStrength 是重力沿著斜坡的分力
+        Vector3 fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
+
         // moveForceWithStrength可以拆成2個力
         // moveForceWithStrength = moveForceWithStrengthALongSlop + moveForceHorizontal
 
         // 找出moveForceWithStrengthALongSlop
-        Vector3 planeTangentALongSlop = Vector3.Cross(groundUp, SlopeUp).normalized;
-        Vector3 moveForceWithStrengthALongSlop = Vector3.ProjectOnPlane(moveForceWithStrength, planeTangentALongSlop);
+        Vector3 planeNormal = Vector3.Cross(groundUp, SlopeUp).normalized;
+        Vector3 moveForceWithStrengthALongSlop = Vector3.ProjectOnPlane(moveForceWithStrength, planeNormal);
 
-        // fAlongSlopeStrength 是重力沿著斜坡的分力
-        Vector3 fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
         float dotValue = Vector3.Dot(fAlongSlope, moveForceWithStrengthALongSlop);
-        bool sameDir = dotValue > 0;
-        float sign = sameDir ? -1 : 1;
+        bool isMoveUp = dotValue > 0;
+        float sign = isMoveUp ? -1 : 1;
 
         // 當上坡時, 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop - fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
         // 當下坡時, 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop + fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
