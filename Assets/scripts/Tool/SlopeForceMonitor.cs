@@ -21,27 +21,21 @@ public class SlopeForceMonitor : MonoBehaviour
     {
         // https://photos.app.goo.gl/ZPEjsEX5XryktCBv8
         // fAlongSlopeStrength 是重力沿著斜坡的分力
-        Vector3 fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
+        var fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
 
         // moveForceWithStrength可以拆成2個力
         // moveForceWithStrength = moveForceWithStrengthALongSlop + moveForceHorizontal
+        var slopN = fAlongSlope.normalized;
+        var cosValue = Vector3.Dot(slopN, moveForceWithStrength);
+        var moveForceWithStrengthALongSlop = slopN * cosValue;
 
-        // 找出moveForceWithStrengthALongSlop
-        Vector3 planeNormal = Vector3.Cross(groundUp, SlopeUp).normalized;
-        Vector3 moveForceWithStrengthALongSlop = Vector3.ProjectOnPlane(moveForceWithStrength, planeNormal);
+        bool isMoveDown = cosValue > 0;
 
-        float dotValue = Vector3.Dot(fAlongSlope, moveForceWithStrengthALongSlop);
-        bool isMoveUp = dotValue > 0;
-        float sign = isMoveUp ? -1 : 1;
-
-        // 當上坡時, 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop - fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
-        // 當下坡時, 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop + fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
-        // 所以才會發現上坡比較慢，下坡比較快
-        // 為了讓上坡下坡和在地面時差不多，只要抵消掉fAlongSlope這項就行了
-
-        // 不知道是不是浮點誤差，有時fAlongSlope和moveForceWithStrengthALongSlop並沒有平行
-        // Vector3 finalMoveForce = moveForceWithStrength - sign * fAlongSlope;
-        Vector3 finalMoveForce = moveForceWithStrength + sign * fAlongSlope.magnitude * moveForceWithStrengthALongSlop.normalized;
+        // 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop + fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
+        // 上坡時，fAlongSlopeStrength會讓玩家減速
+        // 下坡時，fAlongSlopeStrength會讓玩家加速
+        // 為了讓上坡下坡速度固定，要想辦法抵消fAlongSlopeStrength
+        Vector3 finalMoveForce = moveForceWithStrength - fAlongSlope;
 
         float limitSpeed = Mathf.Min(finalMoveForce.magnitude, maxForceLimit);
         finalMoveForce = finalMoveForce.normalized * limitSpeed;

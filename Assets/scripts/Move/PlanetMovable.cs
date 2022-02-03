@@ -222,7 +222,7 @@ public class PlanetMovable : MonoBehaviour
         }
 
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
-        // print(rigid.velocity.magnitude);
+        print(rigid.velocity.magnitude);
     }
 
     public void executeJump()
