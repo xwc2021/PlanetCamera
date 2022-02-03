@@ -23,7 +23,6 @@ public class InputHub : MonoBehaviour
             getPlanetPlayerController().DoTurbe = true;
         else if (context.phase == InputActionPhase.Canceled)
             getPlanetPlayerController().DoTurbe = false;
-        print("onFire" + context.phase);
     }
 
     public void OnJump(InputAction.CallbackContext context)

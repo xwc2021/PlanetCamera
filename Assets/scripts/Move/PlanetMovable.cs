@@ -204,15 +204,13 @@ public class PlanetMovable : MonoBehaviour
             Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
         }
 
-        //更新面向begin
-        Vector3 forward2 = moveForce;
-        if (forward2 != Vector3.zero && !firstPersonMode)
+        //更新面向
+        if (moveForce != Vector3.zero && !firstPersonMode)
         {
-            Quaternion targetRotation2 = Quaternion.LookRotation(forward2, groundUp);
+            Quaternion targetRotation2 = Quaternion.LookRotation(moveForce, groundUp);
             Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
             transform.rotation = newRot;
         }
-        //更新面向end
 
         //addForce可以有疊加的效果
         MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
@@ -220,10 +218,11 @@ public class PlanetMovable : MonoBehaviour
         Vector3 moveForceWithStrength = moveForceStrength * moveForce;
         if (slopeForceMonitor != null && ladding)
         {
-            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForce, moveForceStrength, moveForceParameter.getGravityForceStrength(!ladding), groundUp, planeNormal);
+            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!ladding), groundUp, planeNormal);
         }
 
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
+        // print(rigid.velocity.magnitude);
     }
 
     public void executeJump()
