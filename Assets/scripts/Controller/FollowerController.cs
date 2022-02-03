@@ -29,7 +29,7 @@ public class FollowerController : MonoBehaviour, MoveController
         if (followTarget == null)
             return Vector3.zero;
 
-        Vector3 diff = followTarget.position - transform.position; ;
+        Vector3 diff = followTarget.position - followTarget.forward - transform.position; ;
         if (diff.magnitude < 0.5)
             return Vector3.zero;
 
