@@ -25,11 +25,10 @@ public class SlopeForceMonitor : MonoBehaviour
 
         // moveForceWithStrength可以拆成2個力
         // moveForceWithStrength = moveForceWithStrengthALongSlop + moveForceHorizontal
-        var slopN = fAlongSlope.normalized;
-        var cosValue = Vector3.Dot(slopN, moveForceWithStrength);
-        var moveForceWithStrengthALongSlop = slopN * cosValue;
 
-        bool isMoveDown = cosValue > 0;
+        // 投影到slopN方向找出分力moveForceWithStrengthALongSlop
+        var slopN = fAlongSlope.normalized;
+        var moveForceWithStrengthALongSlop = slopN * Vector3.Dot(slopN, moveForceWithStrength);
 
         // 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop + fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
         // 上坡時，fAlongSlopeStrength會讓玩家減速
