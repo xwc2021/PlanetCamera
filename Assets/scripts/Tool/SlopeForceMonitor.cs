@@ -25,10 +25,12 @@ public class SlopeForceMonitor : MonoBehaviour
 
         // moveForceWithStrength可以拆成2個力
         // moveForceWithStrength = moveForceWithStrengthALongSlop + moveForceHorizontal
-
         // 投影到slopN方向找出分力moveForceWithStrengthALongSlop
-        var slopN = fAlongSlope.normalized;
-        var moveForceWithStrengthALongSlop = slopN * Vector3.Dot(slopN, moveForceWithStrength);
+        // var slopN = fAlongSlope.normalized;
+        // var moveForceWithStrengthALongSlop = slopN * Vector3.Dot(slopN, moveForceWithStrength);
+        // Debug.DrawRay(transform.position + groundUp, moveForceWithStrengthALongSlop, Color.green);
+        // Debug.DrawRay(transform.position, SlopeUp, Color.yellow);
+        // Debug.DrawRay(transform.position, fAlongSlope, Color.red);
 
         // 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop + fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
         // 上坡時，fAlongSlopeStrength會讓玩家減速
@@ -38,10 +40,6 @@ public class SlopeForceMonitor : MonoBehaviour
 
         float limitSpeed = Mathf.Min(finalMoveForce.magnitude, maxForceLimit);
         finalMoveForce = finalMoveForce.normalized * limitSpeed;
-
-        // Debug.DrawRay(transform.position, SlopeUp, Color.yellow);
-        // Debug.DrawRay(transform.position, fAlongSlope, Color.red);
-        // Debug.DrawRay(transform.position + groundUp, moveForceWithStrengthALongSlop, Color.green);
         //print("上坡:"+!sameDir + " ForceAlongSlope=" + fAlongSlope.magnitude+" moveForce:" +moveForceStrength + " modifyMoveForce:" + finalMoveForce.magnitude);
         return finalMoveForce;
     }
