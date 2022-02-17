@@ -10,8 +10,6 @@ public class PlanetMovable : MonoBehaviour
     GroundGravityGenerator grounGravityGenerator;
     public MoveForceParameterRepository moveForceParameterRepository;
 
-    public MoveController moveController;
-
     Rigidbody rigid;
     public float rotationSpeed = 6f;
     public bool firstPersonMode = false;
@@ -35,7 +33,7 @@ public class PlanetMovable : MonoBehaviour
 
 
     // Use this for initialization
-    public void init(MoveController moveController)
+    public void init()
     {
         rigid = GetComponent<Rigidbody>();
         Debug.Assert(moveForceParameterRepository != null);
@@ -45,7 +43,6 @@ public class PlanetMovable : MonoBehaviour
         contactPointWall = new List<ContactPoint[]>();
 
         rigid.interpolation = RigidbodyInterpolation.None;
-        this.moveController = moveController;
     }
 
     public void ResetGravityGenetrator(GroundGravityGenerator gg)
@@ -173,8 +170,6 @@ public class PlanetMovable : MonoBehaviour
 
         //如果只用contact判定，下坡時可能contact為false
         ladding = contactGround || isHit;
-
-        isTurble = moveController.doTurbo();
     }
 
     public void executeGravityForce()
@@ -185,9 +180,8 @@ public class PlanetMovable : MonoBehaviour
         //Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
-    public void executeMoving()
+    public void executeMoving(Vector3 moveForce)
     {
-        Vector3 moveForce = moveController.getMoveForce();
         //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
 
         if (moveForce == Vector3.zero)
@@ -222,7 +216,7 @@ public class PlanetMovable : MonoBehaviour
         }
 
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
-        print(rigid.velocity.magnitude);
+        // print(rigid.velocity.magnitude);
     }
 
     public void executeJump()
@@ -259,5 +253,15 @@ public class PlanetMovable : MonoBehaviour
     public void resetGroundType(GroundType groundType)
     {
         moveForceParameterRepository.resetGroundType(groundType, rigid);
+    }
+
+    public Rigidbody Rigidbody
+    {
+        get => rigid;
+    }
+
+    public void setTurble(bool value)
+    {
+        isTurble = value;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
-public class RigidbodyWrapper : MonoBehaviour, MoveController
+public class RigidbodyWrapper : MonoBehaviour
 {
 
     PlanetMovable planetMovable;
@@ -17,15 +17,5 @@ public class RigidbodyWrapper : MonoBehaviour, MoveController
     {
         planetMovable.setupGravity();
         planetMovable.executeGravityForce();
-    }
-
-    bool MoveController.doTurbo()
-    {
-        return false;
-    }
-
-    Vector3 MoveController.getMoveForce()
-    {
-        return Vector3.zero;
     }
 }

@@ -1,16 +1,10 @@
 ﻿using UnityEngine;
 
-public interface MoveController
-{
-    Vector3 getMoveForce();
-    bool doTurbo();
-}
-
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlanetMovable))]
-public class PlanetPlayerController : MonoBehaviour, MoveController
+public class PlanetPlayerController : MonoBehaviour
 {
     SurfaceFollowHelper surfaceFollowHelper;
 
@@ -25,20 +19,14 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
 
     /* input 相關*/
     bool doJump = false;
-    bool doTurble = false;
-    public bool DoTurbe
+    public void setTurbo(bool value)
     {
-        set { doTurble = value; }
+        planetMovable.setTurble(value);
     }
     Vector2 moveVec;
     public Vector2 MoveVec // property
     {
         set { moveVec = value; }
-    }
-
-    bool MoveController.doTurbo()
-    {
-        return doTurble;
     }
 
     // Use this for initialization
@@ -82,7 +70,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
         syncPositionByPlatform();
 
         planetMovable.executeGravityForce();
-        planetMovable.executeMoving();
+        planetMovable.executeMoving(getMoveForce());
 
         setAnimatorMoving();
 
@@ -177,7 +165,7 @@ public class PlanetPlayerController : MonoBehaviour, MoveController
     }
 
     public bool doDergeeLock = false;
-    Vector3 MoveController.getMoveForce()
+    Vector3 getMoveForce()
     {
         Vector2 hv = moveVec;
         hv.Normalize();

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface FactoryPlugin
 {
@@ -48,6 +46,10 @@ public class CreatePlayer : MonoBehaviour
         var planetMovable = gameObject.AddComponent<PlanetMovable>();
         planetMovable.slopeForceMonitor = slopeForceMonitor;
         planetMovable.moveForceParameterRepository = moveForceParameterRepository;
+        planetMovable.init();
+
+        var avoidStickTool = gameObject.AddComponent<AvoidStickTool>();
+        avoidStickTool.pm = planetMovable;
 
         var surfaceFollowHelper = gameObject.AddComponent<SurfaceFollowHelper>();
         surfaceFollowHelper.cameraPivot = cameraPivot;
@@ -56,7 +58,7 @@ public class CreatePlayer : MonoBehaviour
         planetPlayerController.measuringJumpHeight = measuringJumpHeight;
         planetPlayerController.setCamera(cameraPivot.getCameraTransform());
 
-        planetMovable.init(planetPlayerController);
+
 
         // plugin 的部分
         int pluginSide = factoryPloginSocket.Length;

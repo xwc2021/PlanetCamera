@@ -5,7 +5,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
-public class StandingController : MonoBehaviour, MoveController
+public class StandingController : MonoBehaviour
 {
 
     PlanetMovable planetMovable;
@@ -13,12 +13,7 @@ public class StandingController : MonoBehaviour, MoveController
     private void Awake()
     {
         planetMovable = GetComponent<PlanetMovable>();
-        planetMovable.init(this);
-    }
-
-    bool MoveController.doTurbo()
-    {
-        return false;
+        planetMovable.init();
     }
 
     private void FixedUpdate()
@@ -26,10 +21,5 @@ public class StandingController : MonoBehaviour, MoveController
         planetMovable.setupGravity();
         planetMovable.setupRequireData();
         planetMovable.executeGravityForce();
-    }
-
-    Vector3 MoveController.getMoveForce()
-    {
-        return Vector3.zero;
     }
 }

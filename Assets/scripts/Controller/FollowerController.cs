@@ -4,7 +4,7 @@
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlanetMovable))]
-public class FollowerController : MonoBehaviour, MoveController
+public class FollowerController : MonoBehaviour
 {
     PlanetMovable planetMovable;
     public Transform followTarget;
@@ -14,17 +14,13 @@ public class FollowerController : MonoBehaviour, MoveController
     private void Awake()
     {
         planetMovable = GetComponent<PlanetMovable>();
-        planetMovable.init(this);
+        planetMovable.init();
+        planetMovable.setTurble(true);
         rigid = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
     }
 
-    bool MoveController.doTurbo()
-    {
-        return true;
-    }
-
-    Vector3 MoveController.getMoveForce()
+    Vector3 getMoveForce()
     {
         if (followTarget == null)
             return Vector3.zero;
@@ -48,7 +44,7 @@ public class FollowerController : MonoBehaviour, MoveController
         planetMovable.setupRequireData();
 
         planetMovable.executeGravityForce();
-        planetMovable.executeMoving();
+        planetMovable.executeMoving(getMoveForce());
 
         bool moving = rigid.velocity.magnitude > 0.05;
         animator.SetBool("moving", moving);
