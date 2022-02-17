@@ -118,7 +118,6 @@
      <Compile Include="Assets\Prefab\EndlessCorridor\EndlessCorridorHolder.cs" />
      <Compile Include="Assets\Pack\Test\Rotation\TestRotationAxis.cs" />
      <Compile Include="Assets\Prefab\machine\MovingPlatform\Script\AnimationState\MoveMachineInitWait.cs" />
-     <Compile Include="Assets\scripts\Shared\SharedTool.cs" />
      <Compile Include="Assets\Megumi_HighSchoolStudent\Script\New\PlayerMoveCode.cs" />
      <Compile Include="Assets\scripts\help\DrawAABB.cs" />
      <Compile Include="Assets\Pack\Mirror\MirrorCamera.cs" />

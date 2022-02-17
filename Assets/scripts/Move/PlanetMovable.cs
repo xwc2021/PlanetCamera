@@ -31,7 +31,6 @@ public class PlanetMovable : MonoBehaviour
     Vector3 planeNormal;
     Vector3 wallNormal;
 
-
     // Use this for initialization
     public void init()
     {

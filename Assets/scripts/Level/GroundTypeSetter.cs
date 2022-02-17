@@ -2,8 +2,6 @@
 
 public class GroundTypeSetter : MonoBehaviour
 {
-
-
     public GroundType groundType = GroundType.Ice;
 
     private void OnTriggerEnter(Collider other)

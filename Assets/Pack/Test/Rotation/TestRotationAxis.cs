@@ -19,7 +19,7 @@ public class TestRotationAxis : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //這樣在!dynamic時累積誤差會產生蝴蝶效應(當degree太大時，沒多久就會開始晃動)
+        // 這樣在!dynamic時累積誤差會產生蝴蝶效應(當degree太大時，沒多久就會開始晃動)
         Quaternion rotQ = bufferFlyEffect ? Quaternion.AngleAxis(degree, transform.right) : Quaternion.AngleAxis(degree, backupRight);
 
         if (!dynamic)
