@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class RecordPositionDiff : MonoBehaviour {
+public class RecordPositionDiff : MonoBehaviour
+{
 
     [SerializeField]
     RecordPositionDiff helper;
@@ -14,7 +13,8 @@ public class RecordPositionDiff : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void FixedUpdate () {
+    void FixedUpdate()
+    {
 
         Vector3 newPos = transform.position;
         diff = newPos - oldPos;
@@ -25,10 +25,6 @@ public class RecordPositionDiff : MonoBehaviour {
     {
         if (!TagDefined.canOnMovableSet(other.gameObject.tag))
             return;
-
-        PlanetPlayerController controller = other.gameObject.GetComponent<PlanetPlayerController>();
-        if (controller != null)
-            controller.setPlatform(this);
     }
 
     void OnTriggerExit(Collider other)
@@ -36,9 +32,6 @@ public class RecordPositionDiff : MonoBehaviour {
         if (!TagDefined.canOnMovableSet(other.gameObject.tag))
             return;
 
-        PlanetPlayerController controller = other.gameObject.GetComponent<PlanetPlayerController>();
-        if (controller != null)
-            controller.clearPlatform();
     }
 
     public Vector3 getDiff()

@@ -58,8 +58,6 @@ public class CreatePlayer : MonoBehaviour
         planetPlayerController.measuringJumpHeight = measuringJumpHeight;
         planetPlayerController.setCamera(cameraPivot.getCameraTransform());
 
-
-
         // plugin 的部分
         int pluginSide = factoryPloginSocket.Length;
         for (int i = 0; i < pluginSide; i++)
@@ -68,11 +66,5 @@ public class CreatePlayer : MonoBehaviour
             if (fg != null)
                 fg.doIt(gameObject);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

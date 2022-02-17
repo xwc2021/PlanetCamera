@@ -67,8 +67,6 @@ public class PlanetPlayerController : MonoBehaviour
         planetMovable.setupGravity();
         planetMovable.setupRequireData();
 
-        syncPositionByPlatform();
-
         planetMovable.executeGravityForce();
         planetMovable.executeMoving(getMoveForce());
 
@@ -78,8 +76,8 @@ public class PlanetPlayerController : MonoBehaviour
         processJump();
         processLadding();
 
-        //從Update移到FixedUpdate
-        //因為無法保證FixedUpdate在第1個frame一定會執行到
+        // 從Update移到FixedUpdate
+        // 因為無法保證FixedUpdate在第1個frame一定會執行到
         if (surfaceFollowHelper != null)
             surfaceFollowHelper.doAdjustByGroundUp();
     }
@@ -186,27 +184,5 @@ public class PlanetPlayerController : MonoBehaviour
         }
 
         return Vector3.zero;
-    }
-
-    RecordPositionDiff platform;
-    public void setPlatform(RecordPositionDiff pPlatform)
-    {
-        platform = pPlatform;
-    }
-
-    public void clearPlatform()
-    {
-        platform = null;
-    }
-
-    //when using "set parent method" to move player on MovingPlatform.
-    //this method will not be called.
-    void syncPositionByPlatform()
-    {
-        if (platform == null)
-            return;
-
-        rigid.position += platform.getDiff();
-        //transform.position += platform.getDiff();
     }
 }
