@@ -8,9 +8,21 @@ public class PlanetMovable : MonoBehaviour
     public SlopeForceMonitor slopeForceMonitor;
 
     GroundGravityGenerator grounGravityGenerator;
+    public void ResetGravityGenetrator(GroundGravityGenerator gg)
+    {
+        this.grounGravityGenerator = gg;
+    }
     public MoveForceParameterRepository moveForceParameterRepository;
+    public void resetGroundType(GroundType groundType)
+    {
+        moveForceParameterRepository.resetGroundType(groundType, rigid);
+    }
 
     Rigidbody rigid;
+    public Rigidbody Rigidbody
+    {
+        get => rigid;
+    }
     public float rotationSpeed = 6f;
     public bool firstPersonMode = false;
     public float backOffset = -0.1f;
@@ -20,14 +32,36 @@ public class PlanetMovable : MonoBehaviour
     List<ContactPoint[]> contactPointWall;
     bool contactGround;
     bool touchWall;
-    bool isHit = false;
-    bool ladding = false;
-    bool isTurble = false;
+    public bool TouchWall
+    {
+        get { return touchWall; }
+    }
 
+    bool ladding = false;
+    public bool Ladding
+    {
+        get { return ladding; }
+    }
+    bool isTurble = false;
+    public void setTurble(bool value)
+    {
+        isTurble = value;
+    }
+
+    bool isHitGround = false;
     static readonly float isHitDistance = 0.2f;
     public static readonly float rayCastDistanceToGround = 2;
+
     Vector3 groundUp;
+    public Vector3 GroundUp
+    {
+        get { return groundUp; }
+    }
     Vector3 gravityDir;
+    public Vector3 GravityDir
+    {
+        get { return gravityDir; }
+    }
     Vector3 planeNormal;
     Vector3 wallNormal;
 
@@ -44,11 +78,6 @@ public class PlanetMovable : MonoBehaviour
         rigid.interpolation = RigidbodyInterpolation.None;
     }
 
-    public void ResetGravityGenetrator(GroundGravityGenerator gg)
-    {
-        this.grounGravityGenerator = gg;
-    }
-
     private void Update()
     {
         //判定有沒有接觸
@@ -56,14 +85,14 @@ public class PlanetMovable : MonoBehaviour
         touchWall = isTouchWall();
     }
 
-    private void getGroundNormalNow(out bool isHit)
+    private void getGroundNormalNow(out bool isHitGround)
     {
         RaycastHit hit;
-        //https://www.youtube.com/watch?v=Cq_Wh8o96sc
+
         //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
         Vector3 from = transform.forward * backOffset + groundUp + transform.position;
         //Debug.DrawRay(from, -groundUp*2 , Color.red);
-        isHit = false;
+        isHitGround = false;
         int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.groundNotBlockCamera;
         planeNormal = groundUp;
         if (Physics.Raycast(from, -groundUp, out hit, rayCastDistanceToGround, layerMask))
@@ -76,7 +105,7 @@ public class PlanetMovable : MonoBehaviour
             //如果距離小於某個值就判定是在地面上
             if (height < isHitDistance)
             {
-                isHit = true;
+                isHitGround = true;
             }
         }
     }
@@ -116,12 +145,15 @@ public class PlanetMovable : MonoBehaviour
                     return true;
                 }
             }
-
         }
         return false;
     }
 
     Vector3 touchWallNormal;
+    public Vector3 TouchWallNormal
+    {
+        get { return touchWallNormal; }
+    }
     bool isTouchWall()
     {
         int listCount = contactPointWall.Count;
@@ -132,13 +164,12 @@ public class PlanetMovable : MonoBehaviour
             {
                 Vector3 diff = cp[i].point - transform.position;
                 float height = Vector3.Dot(groundUp, diff);
-                if (height > 0.15f && height < 1.0f)
+                if (height > 0.15f && height < 1.0f) // 玩家身高
                 {
                     touchWallNormal = cp[i].normal;
                     return true;
                 }
             }
-
         }
         return false;
     }
@@ -165,10 +196,10 @@ public class PlanetMovable : MonoBehaviour
         transform.rotation = targetRotation;
 
         //判定是否擊中平面
-        getGroundNormalNow(out isHit);
+        getGroundNormalNow(out isHitGround);
 
         //如果只用contact判定，下坡時可能contact為false
-        ladding = contactGround || isHit;
+        ladding = contactGround || isHitGround;
     }
 
     public void executeGravityForce()
@@ -182,7 +213,6 @@ public class PlanetMovable : MonoBehaviour
     public void executeMoving(Vector3 moveForce)
     {
         //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
-
         if (moveForce == Vector3.zero)
         {
             return;
@@ -222,45 +252,5 @@ public class PlanetMovable : MonoBehaviour
     {
         MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
         rigid.AddForce(moveForceParameter.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
-    }
-
-    public Vector3 GravityDir
-    {
-        get { return gravityDir; }
-    }
-
-    public Vector3 GroundUp
-    {
-        get { return groundUp; }
-    }
-
-    public Vector3 TouchWallNormal
-    {
-        get { return touchWallNormal; }
-    }
-
-    public bool Ladding
-    {
-        get { return ladding; }
-    }
-
-    public bool TouchWall
-    {
-        get { return touchWall; }
-    }
-
-    public void resetGroundType(GroundType groundType)
-    {
-        moveForceParameterRepository.resetGroundType(groundType, rigid);
-    }
-
-    public Rigidbody Rigidbody
-    {
-        get => rigid;
-    }
-
-    public void setTurble(bool value)
-    {
-        isTurble = value;
     }
 }

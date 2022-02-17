@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class AvoidStickTool : MonoBehaviour
 {
-
     public PlanetMovable pm;
     public bool addForceOnAir;
     public bool addForceMaybeStick;
@@ -62,6 +61,7 @@ public class AvoidStickTool : MonoBehaviour
         }
     }
 
+    // 這不需要吧
     public void alongSlopeOrGround(ref Vector3 moveForce, Vector3 planeNormal, Vector3 gravityDir)
     {
         addForceMaybeStick = false;
