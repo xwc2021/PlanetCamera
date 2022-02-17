@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CreateLinedUp : MonoBehaviour, FactoryPlugin
 {
-
     public MonoBehaviour factoryPloginSocket;
     public PlanetMovable source;
     public int count = 11;
@@ -29,6 +26,5 @@ public class CreateLinedUp : MonoBehaviour, FactoryPlugin
 
             target = pm.transform;
         }
-
     }
 }

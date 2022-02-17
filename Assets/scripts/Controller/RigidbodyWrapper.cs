@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(PlanetMovable))]
 public class RigidbodyWrapper : MonoBehaviour
 {
-
     PlanetMovable planetMovable;
     private void Awake()
     {

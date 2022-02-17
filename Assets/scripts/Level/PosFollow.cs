@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PosFollow : MonoBehaviour {
+public class PosFollow : MonoBehaviour
+{
 
     public Transform followTarget;
     public float speed;

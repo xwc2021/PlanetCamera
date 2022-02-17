@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class TestRotationEularAngle : MonoBehaviour
 {
-
     public float degree = 0;
     public bool dynamic = false;
     public bool global = true;
@@ -19,8 +17,8 @@ public class TestRotationEularAngle : MonoBehaviour
     void Update()
     {
 
-        Quaternion rotQ = Quaternion.Euler(degree,0,0);
-        
+        Quaternion rotQ = Quaternion.Euler(degree, 0, 0);
+
 
         if (!dynamic)
         {
@@ -40,8 +38,5 @@ public class TestRotationEularAngle : MonoBehaviour
             else
                 transform.rotation = transform.rotation * rotQ;
         }
-
-
-
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-
-public enum GroundType { Normal,NormalLowGravity, Ice, Seesaw }
+public enum GroundType { Normal, NormalLowGravity, Ice, Seesaw }
 
 public class MoveForceParameterRepository : MonoBehaviour
 {
@@ -15,7 +11,7 @@ public class MoveForceParameterRepository : MonoBehaviour
     public MoveForceSetting seesaw;
     public MoveForceSetting normalLowGravity;//可以用來防止卡斜坡(斜度不能太大)
 
-    public void resetGroundType(GroundType gType,Rigidbody rigid)
+    public void resetGroundType(GroundType gType, Rigidbody rigid)
     {
         groundType = gType;
         switch (groundType)

@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
-
 public class TestRotationAxis : MonoBehaviour
 {
-
     public float degree = 0;
     public bool dynamic = false;
     public bool global = true;
@@ -28,9 +25,7 @@ public class TestRotationAxis : MonoBehaviour
         if (!dynamic)
         {
             if (global)
-            {
                 transform.rotation = rotQ * backup;
-            }
             else
                 transform.rotation = backup * rotQ;
         }

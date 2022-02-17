@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class RenderBehindTheWallCommandBuffer
 {
     private static RenderBehindTheWallCommandBuffer instance;
@@ -44,5 +43,4 @@ public class RenderBehindTheWallCommandBuffer
             Graphics.DrawMesh(mesh, matrix, material, 0, cam, i);
         }
     }
-
 }

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MoveForceSetting : MonoBehaviour, MoveForceParameter
 {
-    public string name="";
     public float jumpForceLow = 1500;
     public float jumpForceHight = 1700;
 
@@ -20,7 +16,7 @@ public class MoveForceSetting : MonoBehaviour, MoveForceParameter
 
     public float drag = 4;
 
-    float MoveForceParameter.getMoveForceStrength(bool isOnAir,bool isTurbo)
+    float MoveForceParameter.getMoveForceStrength(bool isOnAir, bool isTurbo)
     {
         if (!isOnAir)
         {
@@ -38,7 +34,7 @@ public class MoveForceSetting : MonoBehaviour, MoveForceParameter
             else
                 return moveForceOnAirLow;
         }
-        
+
     }
 
     float MoveForceParameter.getGravityForceStrength(bool isOnAir)

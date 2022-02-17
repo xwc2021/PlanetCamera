@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class GroundTypeSetter : MonoBehaviour {
+public class GroundTypeSetter : MonoBehaviour
+{
 
-    
+
     public GroundType groundType = GroundType.Ice;
 
     private void OnTriggerEnter(Collider other)

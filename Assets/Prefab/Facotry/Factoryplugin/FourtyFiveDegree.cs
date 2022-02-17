@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FourtyFiveDegree : MonoBehaviour, FactoryPlugin
 {
-
     public float degree = 45;
     public void doIt(GameObject gameObject)
     {
+        // 鎖Camera
         CameraPivot cameraPivot = FindObjectOfType<CameraPivot>();
         Debug.Assert(cameraPivot != null);
         cameraPivot.lockYaw = true;

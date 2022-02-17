@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SlopeForceMonitor : MonoBehaviour
 {
-
     public Vector3 getPartOfGravityForceStrengthAlongSlope(float GravityForceStrength, Vector3 groundUp, Vector3 SlopeUp)
     {
         //重力 = 垂直於斜坡的分力+沿著斜坡的分力
@@ -23,16 +20,6 @@ public class SlopeForceMonitor : MonoBehaviour
         // fAlongSlopeStrength 是重力沿著斜坡的分力
         var fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
 
-        // moveForceWithStrength可以拆成2個力
-        // moveForceWithStrength = moveForceWithStrengthALongSlop + moveForceHorizontal
-        // 投影到slopN方向找出分力moveForceWithStrengthALongSlop
-        // var slopN = fAlongSlope.normalized;
-        // var moveForceWithStrengthALongSlop = slopN * Vector3.Dot(slopN, moveForceWithStrength);
-        // Debug.DrawRay(transform.position + groundUp, moveForceWithStrengthALongSlop, Color.green);
-        // Debug.DrawRay(transform.position, SlopeUp, Color.yellow);
-        // Debug.DrawRay(transform.position, fAlongSlope, Color.red);
-
-        // 玩家沿著fAlongSlope受的合力 = moveForceWithStrengthALongSlop + fAlongSlopeStrength - 摩擦力(重力垂直於斜坡的分力)
         // 上坡時，fAlongSlopeStrength會讓玩家減速
         // 下坡時，fAlongSlopeStrength會讓玩家加速
         // 為了讓上坡下坡速度固定，要想辦法抵消fAlongSlopeStrength

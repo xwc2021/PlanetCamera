@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class RenderBehindTheWallCamera : MonoBehaviour
 {
     public enum QueueOrderForMainBody { MainBodyAfterBehindWall = 2999 }

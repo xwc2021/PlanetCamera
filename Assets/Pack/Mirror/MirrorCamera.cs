@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
-
-public class MirrorCamera : MonoBehaviour {
+public class MirrorCamera : MonoBehaviour
+{
 
     public bool useObliqueMatrix = true;
     public Camera refCamera;
@@ -12,13 +11,15 @@ public class MirrorCamera : MonoBehaviour {
     Matrix4x4 P;
     Camera myCamera;
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         myCamera = GetComponent<Camera>();
         P = myCamera.projectionMatrix;
     }
-	
-	// Update is called once per frame
-	void LateUpdate () {
+
+    // Update is called once per frame
+    void LateUpdate()
+    {
         if (refCamera == null)
             return;
 
@@ -28,7 +29,7 @@ public class MirrorCamera : MonoBehaviour {
         transform.rotation = Quaternion.LookRotation(mirrorZ, mirrorY);
 
         //計算position
-        Vector3 temp = targetMirror.position-refCamera.transform.position ;
+        Vector3 temp = targetMirror.position - refCamera.transform.position;
         transform.position = targetMirror.position - Vector3.Reflect(temp, normal);
 
         //Debug.DrawLine(transform.position, transform.position+transform.forward*10, Color.green);

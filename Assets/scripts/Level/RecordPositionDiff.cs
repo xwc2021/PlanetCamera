@@ -2,9 +2,6 @@
 
 public class RecordPositionDiff : MonoBehaviour
 {
-
-    [SerializeField]
-    RecordPositionDiff helper;
     Vector3 oldPos;
     Vector3 diff;
     private void Awake()
@@ -41,7 +38,6 @@ public class RecordPositionDiff : MonoBehaviour
 
     public Vector3 getHelperDiff()
     {
-        Debug.Assert(helper != null);
-        return helper.getDiff();
+        return getDiff();
     }
 }

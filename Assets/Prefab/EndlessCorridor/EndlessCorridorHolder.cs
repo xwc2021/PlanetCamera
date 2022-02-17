@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EndlessCorridorHolder : MonoBehaviour
 {
-
     public Transform headDummy;
     public Transform tailDummy;
     public EndlessCorridorTriggerBox triggerbox;
-
 
     public void initEC(int index, EndlessCorridorManager ecManager, bool doRescale)
     {

@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
