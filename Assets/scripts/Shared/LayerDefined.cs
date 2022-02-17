@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LayerDefined  {
+public class LayerDefined
+{
 
     public static readonly int Simulate = LayerMask.NameToLayer("Simulate");
     public static readonly int GravitySensor = LayerMask.NameToLayer("GravitySensor");

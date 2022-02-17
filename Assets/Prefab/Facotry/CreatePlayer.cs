@@ -48,9 +48,6 @@ public class CreatePlayer : MonoBehaviour
         planetMovable.moveForceParameterRepository = moveForceParameterRepository;
         planetMovable.init();
 
-        var avoidStickTool = gameObject.AddComponent<AvoidStickTool>();
-        avoidStickTool.pm = planetMovable;
-
         var surfaceFollowHelper = gameObject.AddComponent<SurfaceFollowHelper>();
         surfaceFollowHelper.cameraPivot = cameraPivot;
 
