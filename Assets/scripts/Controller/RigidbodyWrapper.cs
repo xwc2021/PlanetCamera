@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
 public class RigidbodyWrapper : MonoBehaviour

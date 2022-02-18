@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class DoRotation : MonoBehaviour {
+﻿using UnityEngine;
+public class DoRotation : MonoBehaviour
+{
 
     public float speed = 10;
     float nowDegree = 0;

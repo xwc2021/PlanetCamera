@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class GroundTypeSetter : MonoBehaviour
 {
     public GroundType groundType = GroundType.Ice;

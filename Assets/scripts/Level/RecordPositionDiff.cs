@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class RecordPositionDiff : MonoBehaviour
 {
     Vector3 oldPos;

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class CameraPivot : MonoBehaviour
 {
     public Transform getCameraTransform()

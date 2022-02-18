@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public interface MoveForceParameter
 {
     float getMoveForceStrength(bool isOnAir, bool isTurble);

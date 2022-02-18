@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 public class TorusGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
     public float R = 10.0f;

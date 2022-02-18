@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(PlanetMovable))]
 public class SurfaceFollowHelper : MonoBehaviour
 {
-
     public CameraPivot cameraPivot;
     PlanetMovable planetMovable;
     Vector3 previousGroundUp;
@@ -19,42 +15,29 @@ public class SurfaceFollowHelper : MonoBehaviour
 
     public void doAdjustByGroundUp()
     {
-
-        //如果位置有更新，就更新FlowPoint
-        //透過groundUp和向量(nowPosition-previouPosistion)的外積，找出旋轉軸Z
-
+        // 找出旋轉軸Z
         Vector3 groundUp = planetMovable.GroundUp;
-
         Vector3 Z = Vector3.Cross(previousGroundUp, groundUp);
-        //Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
-        //Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
-        //Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
+        // Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
+        // Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
+        // Debug.DrawLine(transform.position, transform.position + groundUp * 16, Color.green);
 
-        //算出2個frame之間在planet上移動的角度差
+        // 找出旋轉角度
+        // http://answers.unity3d.com/questions/778626/mathfacos-1-return-nan.html
         float cosValue = Vector3.Dot(previousGroundUp, groundUp);
-
-        //http://answers.unity3d.com/questions/778626/mathfacos-1-return-nan.html
-        //上面說Dot有可能會>1或<-1
-        cosValue = Mathf.Max(-1.0f, cosValue);
-        cosValue = Mathf.Min(1.0f, cosValue);
-
+        cosValue = Mathf.Clamp(cosValue, -1.0f, 1.0f);
         float rotDegree = Mathf.Acos(cosValue) * Mathf.Rad2Deg;
-        //print("rotDegree=" + rotDegree);
+        // print("rotDegree=" + rotDegree);
 
-        if (float.IsNaN(rotDegree))
-        {
-            print("IsNaN");
-            return;
-        }
-
+        // 超過threshold才更新
         float threshold = 0.1f;
         if (rotDegree > threshold)
         {
             //print("rotDegree=" + rotDegree);
             Quaternion q = Quaternion.AngleAxis(rotDegree, Z);
-
             cameraPivot.setSurfaceAdjust(true, q);
-            previousGroundUp = groundUp;//有轉動才更新
+
+            previousGroundUp = groundUp;
         }
     }
 }

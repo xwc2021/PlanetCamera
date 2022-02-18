@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public enum GroundType { Normal, NormalLowGravity, Ice, Seesaw }
 
 public class MoveForceParameterRepository : MonoBehaviour

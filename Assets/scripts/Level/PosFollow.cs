@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-
 public class PosFollow : MonoBehaviour
 {
-
     public Transform followTarget;
     public float speed;
     private void FixedUpdate()

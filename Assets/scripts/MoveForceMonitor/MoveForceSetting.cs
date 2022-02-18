@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class MoveForceSetting : MonoBehaviour, MoveForceParameter
 {
     public float jumpForceLow = 1500;
@@ -34,7 +33,6 @@ public class MoveForceSetting : MonoBehaviour, MoveForceParameter
             else
                 return moveForceOnAirLow;
         }
-
     }
 
     float MoveForceParameter.getGravityForceStrength(bool isOnAir)

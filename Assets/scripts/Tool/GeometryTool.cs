@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class GeometryTool
 {
     // 之後再改成公式解

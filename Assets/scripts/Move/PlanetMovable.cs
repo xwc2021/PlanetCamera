@@ -319,6 +319,6 @@ public class PlanetMovable : MonoBehaviour
             return;
 
         moveForce = newMoveForce;
-        print("修改");
+        // print("修改");
     }
 }

@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class Door : MonoBehaviour
 {
-
     public string scene;
     private void OnTriggerEnter(Collider other)
     {

@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class GravityField : MonoBehaviour {
-
+﻿using UnityEngine;
+public class GravityField : MonoBehaviour
+{
     public MonoBehaviour groundGravityGenerator;
     GroundGravityGenerator iGroundGravityGenerator;
 
@@ -14,7 +11,7 @@ public class GravityField : MonoBehaviour {
 
     private void OnTriggerEnter(Collider collider)
     {
-        var planetMovable =collider.GetComponent<PlanetMovable>();
+        var planetMovable = collider.GetComponent<PlanetMovable>();
         if (planetMovable == null)
             return;
         planetMovable.ResetGravityGenetrator(iGroundGravityGenerator);

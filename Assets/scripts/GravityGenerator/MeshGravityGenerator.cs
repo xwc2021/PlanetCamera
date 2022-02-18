@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 //非球圓形星球：像是Donuts、Knot
 public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
     public bool averageSG = true;
     public float findingGravitySensorR = 4;
-    public Transform findingGravitySphere=null;
+    public Transform findingGravitySphere = null;
 
     Collider[] gs = new Collider[100];//大小看需求自己設定
     public Vector3 findGroundUp(ref Vector3 targetPos)
@@ -58,5 +54,4 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
 
         }
     }
-
 }
