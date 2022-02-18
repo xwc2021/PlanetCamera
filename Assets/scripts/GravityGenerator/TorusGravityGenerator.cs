@@ -3,7 +3,7 @@ public class TorusGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
     public float R = 10.0f;
     public float r = 2.0f;
-    public Vector3 findGroundUp(ref Vector3 targetPos)
+    public Vector3 findGroundUp(Vector3 headUp, ref Vector3 targetPos)
     {
         var v = transform.InverseTransformPoint(targetPos);
         var radian = Mathf.Atan2(v.y, v.x);

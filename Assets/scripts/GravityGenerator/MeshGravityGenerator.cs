@@ -4,19 +4,16 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
     public bool averageSG = true;
     public float findingGravitySensorR = 4;
-    public Transform findingGravitySphere = null;
 
     Collider[] gs = new Collider[100];//大小看需求自己設定
-    public Vector3 findGroundUp(ref Vector3 targetPos)
+    public Vector3 findGroundUp(Vector3 headUp, ref Vector3 targetPos)
     {
         int layerMask = 1 << LayerDefined.GravitySensor;
-        int overlapCount = Physics.OverlapSphereNonAlloc(transform.position, findingGravitySensorR, gs, layerMask);
-        //Debug.DrawLine(transform.position, transform.position + groundUp * findingGravitySensorR);
-
-        //print("overlapCount=" + overlapCount);
-
+        int overlapCount = Physics.OverlapSphereNonAlloc(targetPos, findingGravitySensorR, gs, layerMask);
+        print("overlapCount=" + overlapCount);
         if (overlapCount == 0)
-            return transform.up;
+            return headUp;
+        //Debug.DrawLine(transform.position, transform.position + groundUp * findingGravitySensorR);
 
         if (averageSG)
         {
@@ -25,11 +22,13 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             for (int i = 0; i < overlapCount; i++)
             {
                 Collider nowGS = gs[i];
+                Debug.DrawLine(nowGS.transform.position, nowGS.transform.position + nowGS.transform.forward * findingGravitySensorR);
+
                 sum = sum + nowGS.transform.forward;
             }
             sum = sum / overlapCount;
             sum.Normalize();
-            Debug.DrawLine(transform.position, transform.position + sum * 6, Color.green);
+            Debug.DrawLine(targetPos, targetPos + sum * 6, Color.green);
             return sum;
         }
         else
@@ -41,6 +40,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             for (int i = 0; i < overlapCount; i++)
             {
                 Collider nowGS = gs[i];
+                Debug.DrawLine(nowGS.transform.position, nowGS.transform.position + nowGS.transform.forward * findingGravitySensorR);
 
                 float nowDistance = (nowGS.transform.position - nowPos).sqrMagnitude;
                 if (nowDistance < nearestDistance)
@@ -51,7 +51,6 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             }
             Debug.DrawLine(nearestGS.transform.position, nearestGS.transform.position + nearestGS.transform.forward * findingGravitySensorR);
             return nearestGS.transform.forward;
-
         }
     }
 }

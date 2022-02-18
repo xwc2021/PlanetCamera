@@ -14,6 +14,7 @@ public class GravityField : MonoBehaviour
         var planetMovable = collider.GetComponent<PlanetMovable>();
         if (planetMovable == null)
             return;
+
         planetMovable.ResetGravityGenetrator(iGroundGravityGenerator);
     }
 }
