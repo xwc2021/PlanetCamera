@@ -11,7 +11,7 @@ public class RigidbodyWrapper : MonoBehaviour
 
     private void FixedUpdate()
     {
-        planetMovable.setupGravity();
+        planetMovable.setupGravityDir();
         planetMovable.executeGravityForce();
     }
 }

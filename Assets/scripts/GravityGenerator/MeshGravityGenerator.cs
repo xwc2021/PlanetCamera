@@ -6,13 +6,13 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
     public float findingGravitySensorR = 4;
 
     Collider[] gs = new Collider[100];//大小看需求自己設定
-    public Vector3 findGroundUp(Vector3 headUp, ref Vector3 targetPos)
+    public Vector3 findGravityDir(Vector3 headUp, ref Vector3 targetPos)
     {
         int layerMask = 1 << LayerDefined.GravitySensor;
         int overlapCount = Physics.OverlapSphereNonAlloc(targetPos, findingGravitySensorR, gs, layerMask);
         print("overlapCount=" + overlapCount);
         if (overlapCount == 0)
-            return headUp;
+            return -headUp;
         //Debug.DrawLine(transform.position, transform.position + groundUp * findingGravitySensorR);
 
         if (averageSG)
@@ -29,7 +29,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             sum = sum / overlapCount;
             sum.Normalize();
             Debug.DrawLine(targetPos, targetPos + sum * 6, Color.green);
-            return sum;
+            return -sum;
         }
         else
         {
@@ -50,7 +50,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
                 }
             }
             Debug.DrawLine(nearestGS.transform.position, nearestGS.transform.position + nearestGS.transform.forward * findingGravitySensorR);
-            return nearestGS.transform.forward;
+            return -nearestGS.transform.forward;
         }
     }
 }

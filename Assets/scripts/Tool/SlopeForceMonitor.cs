@@ -14,11 +14,11 @@ public class SlopeForceMonitor : MonoBehaviour
     }
 
     public float maxForceLimit = 120;
-    public Vector3 modifyMoveForce(Vector3 moveForceWithStrength, float GravityForceStrength, Vector3 groundUp, Vector3 SlopeUp)
+    public Vector3 modifyMoveForce(Vector3 moveForceWithStrength, float GravityForceStrength, Vector3 upDir, Vector3 SlopeUp)
     {
         // https://photos.app.goo.gl/ZPEjsEX5XryktCBv8
         // fAlongSlopeStrength 是重力沿著斜坡的分力
-        var fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, groundUp, SlopeUp);
+        var fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, upDir, SlopeUp);
 
         // 上坡時，fAlongSlopeStrength會讓玩家減速
         // 下坡時，fAlongSlopeStrength會讓玩家加速

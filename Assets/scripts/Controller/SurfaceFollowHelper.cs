@@ -16,7 +16,7 @@ public class SurfaceFollowHelper : MonoBehaviour
     public void doAdjustByGroundUp()
     {
         // 找出旋轉軸Z
-        Vector3 groundUp = planetMovable.GroundUp;
+        Vector3 groundUp = planetMovable.UpDir;
         Vector3 Z = Vector3.Cross(previousGroundUp, groundUp);
         // Debug.DrawLine(transform.position, transform.position + Z * 16, Color.blue);
         // Debug.DrawLine(transform.position, transform.position + previousGroundUp * 16, Color.red);
