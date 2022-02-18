@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-
 public class Scalable : MonoBehaviour
 {
-
     public CameraPivot cameraPivot;
     public void doScale(float scale)
     {

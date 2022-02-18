@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class MovingPlatform : MonoBehaviour {
+public class MovingPlatform : MonoBehaviour
+{
     public Transform moveTarget;
     public float movingTime = 3;
-    public float waitTimeAtTarget=0;
+    public float waitTimeAtTarget = 0;
     public float waitTimeAtOriginal = 0;
     public float waitTImeInit = 0;
     bool moving = false;
@@ -18,7 +17,8 @@ public class MovingPlatform : MonoBehaviour {
     Animator animator;
     private IEnumerator coroutine;
     // Use this for initialization
-    void Awake () {
+    void Awake()
+    {
 
         Debug.Assert(moveTarget != null);
 
@@ -46,7 +46,7 @@ public class MovingPlatform : MonoBehaviour {
         state3.movingPlatform = this;
 
         MoveMachineWaitAtOriginal state4 = animator.GetBehaviour<MoveMachineWaitAtOriginal>();
-        state4.movingPlatform = this; 
+        state4.movingPlatform = this;
     }
 
     private void FixedUpdate()
@@ -100,16 +100,14 @@ public class MovingPlatform : MonoBehaviour {
 
     void moveTo()
     {
-        debugPercentage = (Time.fixedTime - startMoveTime)/movingTime;
-        float t =Mathf.SmoothStep(0, 1, debugPercentage);
-        transform.position = Vector3.Lerp(from, to,t);
-;
+        debugPercentage = (Time.fixedTime - startMoveTime) / movingTime;
+        float t = Mathf.SmoothStep(0, 1, debugPercentage);
+        transform.position = Vector3.Lerp(from, to, t);
+
         if (debugPercentage > 1)
         {
             animator.SetBool("reach", true);
             moving = false;
-        }       
+        }
     }
-
-
 }

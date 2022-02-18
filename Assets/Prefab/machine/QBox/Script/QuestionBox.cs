@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class QuestionBox : MonoBehaviour {
-
+﻿using UnityEngine;
+public class QuestionBox : MonoBehaviour
+{
     bool doOnce = false;
     bool useTimer = false;
     float nowTime = 0;
@@ -29,12 +26,13 @@ public class QuestionBox : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
         initAnimator();
     }
 
     void OnTriggerEnter(Collider other)
-    { 
+    {
         if (other.tag != TagDefined.Player)
             return;
 
@@ -66,5 +64,4 @@ public class QuestionBox : MonoBehaviour {
     {
         doOnce = true;
     }
-
 }

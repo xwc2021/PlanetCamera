@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class FourtyFiveDegree : MonoBehaviour, FactoryPlugin
 {
     public float degree = 45;

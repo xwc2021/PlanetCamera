@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-
 public class Domino : MonoBehaviour
 {
-
     public float gravityScale = 0.05f;
     Vector3 gravityCenter;
     Rigidbody rigid;
@@ -24,6 +22,5 @@ public class Domino : MonoBehaviour
             Vector3 Force = gravityCenter - transform.position;
             rigid.AddForce(Force * gravityScale);
         }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class BigPlayer : MonoBehaviour, FactoryPlugin
 {
     [SerializeField]

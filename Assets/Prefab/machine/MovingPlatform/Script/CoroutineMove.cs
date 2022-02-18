@@ -1,8 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class CoroutineMove : MonoBehaviour {
+public class CoroutineMove : MonoBehaviour
+{
 
     [SerializeField]
     Transform target;
@@ -42,7 +41,7 @@ public class CoroutineMove : MonoBehaviour {
         while (true)
         {
             float t = (Time.time - startTime) / totlaTime;
-            transform.position =Vector3.Lerp(from, to, Mathf.SmoothStep(0, 1, t));
+            transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0, 1, t));
 
             if (t >= 1)
                 swap();

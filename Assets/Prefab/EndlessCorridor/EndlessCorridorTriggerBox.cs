@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-
 public class EndlessCorridorTriggerBox : MonoBehaviour
 {
-
-
     public EndlessCorridorManager ecManager;
     public EndlessCorridorHolder ec;
     public Transform borderLimit;

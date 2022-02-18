@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public interface FactoryPlugin
 {
     void doIt(GameObject gameObject);

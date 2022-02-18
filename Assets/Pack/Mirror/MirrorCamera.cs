@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 public class MirrorCamera : MonoBehaviour
 {
-
     public bool useObliqueMatrix = true;
     public Camera refCamera;
     public Transform targetMirror;

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 public class EndlessCorridorManager : MonoBehaviour
 {
-
     public EndlessCorridorHolder[] prefabList;
     public Scalable player;
 

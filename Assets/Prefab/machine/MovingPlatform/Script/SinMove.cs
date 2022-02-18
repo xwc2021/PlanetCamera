@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class SinMove : MonoBehaviour {
-
-    public bool useMovePositon=true;
+﻿using UnityEngine;
+public class SinMove : MonoBehaviour
+{
+    public bool useMovePositon = true;
     Vector3 recordPos;
     Rigidbody rigid;
     public float speed = 5;
@@ -15,7 +12,8 @@ public class SinMove : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void FixedUpdate () {
+    void FixedUpdate()
+    {
         Vector3 newPos = recordPos + 5 * Mathf.Sin(Time.fixedTime) * transform.right;
         if (useMovePositon)
             //rigid.position = newPos;
@@ -23,6 +21,6 @@ public class SinMove : MonoBehaviour {
         else
             //transform.position= newPos;
             transform.position = Vector3.Lerp(transform.position, newPos, Time.fixedDeltaTime * speed);
-            //rigid.position = newPos;
+        //rigid.position = newPos;
     }
 }

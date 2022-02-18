@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class CreateLinedUp : MonoBehaviour, FactoryPlugin
 {
     public MonoBehaviour factoryPloginSocket;

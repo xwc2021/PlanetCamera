@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-
 public class AddScalable : MonoBehaviour, FactoryPlugin
 {
-
     public EndlessCorridorManager ecManager;
     public void doIt(GameObject gameObject)
     {
