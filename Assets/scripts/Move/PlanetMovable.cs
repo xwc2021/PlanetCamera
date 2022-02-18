@@ -237,13 +237,13 @@ public class PlanetMovable : MonoBehaviour
     }
 
     /* 避免卡障礙物相關 */
-    void getHitWallNormal(out Vector3 wallNormal, out bool isHitWall)
+    void getObstacleNormal(out Vector3 obstacleNormal, out bool isHitWall)
     {
         int layerMask = 1 << LayerDefined.wall | 1 << LayerDefined.wallNotBlockCamera;
         RaycastHit hit;
 
         isHitWall = false;
-        wallNormal = Vector3.zero;
+        obstacleNormal = Vector3.zero;
 
         float SphereR = 0.24f;
         float forwardToWall = 0.5f;
@@ -266,7 +266,7 @@ public class PlanetMovable : MonoBehaviour
                 if (h > heightThreshold)
                 {
                     isHitWall = true;
-                    wallNormal = hit.normal;
+                    obstacleNormal = hit.normal;
                     Debug.DrawRay(hit.point, hit.normal * 2, Color.red);
                     Debug.DrawRay(from, transform.forward, Color.yellow);
                     return;
@@ -278,22 +278,22 @@ public class PlanetMovable : MonoBehaviour
     public void modifyMoveForceAlongObstacle(ref Vector3 moveForce)
     {
         bool isHit;
-        Vector3 wallNormal;
-        getHitWallNormal(out wallNormal, out isHit);
+        Vector3 obstacleNormal;
+        getObstacleNormal(out obstacleNormal, out isHit);
 
         if (!isHit)
             return;
 
-        wallNormal = Vector3.ProjectOnPlane(wallNormal, upDir);
-        Debug.DrawRay(transform.position, wallNormal, Color.red);
-        float dotValue = Vector3.Dot(moveForce, wallNormal);
+        obstacleNormal = Vector3.ProjectOnPlane(obstacleNormal, upDir);
+        Debug.DrawRay(transform.position, obstacleNormal, Color.red);
+        float dotValue = Vector3.Dot(moveForce, obstacleNormal);
 
         // 離開牆不用管
-        if (Vector3.Dot(moveForce.normalized, wallNormal) > 0)
+        if (Vector3.Dot(moveForce.normalized, obstacleNormal) > 0)
             return;
 
         // 消去和wallNormal垂直的分量
-        Vector3 newMoveForce = Vector3.ProjectOnPlane(moveForce, wallNormal);
+        Vector3 newMoveForce = Vector3.ProjectOnPlane(moveForce, obstacleNormal);
 
         // 如果移動的方向和wallNormal接近垂直，newMoveForce就可能變的很短
         if (newMoveForce.magnitude < 0.01f)
