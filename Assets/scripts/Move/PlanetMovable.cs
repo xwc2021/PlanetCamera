@@ -239,21 +239,19 @@ public class PlanetMovable : MonoBehaviour
     /* 避免卡障礙物相關 */
     void getObstacleNormal(out Vector3 obstacleNormal, out bool isHitWall)
     {
-        int layerMask = 1 << LayerDefined.wall | 1 << LayerDefined.wallNotBlockCamera;
-        RaycastHit hit;
-
         isHitWall = false;
         obstacleNormal = Vector3.zero;
+
+        int layerMask = 1 << LayerDefined.wall | 1 << LayerDefined.wallNotBlockCamera;
+        RaycastHit hit;
 
         float SphereR = 0.24f;
         float forwardToWall = 0.5f;
         float leftRightTowall = 0.2f;
         float[] rayCastDistanceToWall = { forwardToWall, forwardToWall, forwardToWall, leftRightTowall, leftRightTowall };
-
-
-        float heightThreshold = 0.1f;
-        float[] height = { 0.25f, 0.6f, 1.2f, 0.6f, 0.6f };
         Vector3[] dir = { transform.forward, transform.forward, transform.forward, transform.right, -transform.right };
+        float[] height = { 0.25f, 0.6f, 1.2f, 0.6f, 0.6f };
+        float heightThreshold = 0.1f;
         for (int i = 0; i < 5; i++)
         {
             Vector3 from = upDir * height[i] + transform.position;
@@ -261,9 +259,7 @@ public class PlanetMovable : MonoBehaviour
             if (Physics.SphereCast(from, SphereR, dir[i], out hit, rayCastDistanceToWall[i], layerMask))
             {
                 float h = Vector3.Dot(hit.point - transform.position, upDir);
-
-                //高過才算
-                if (h > heightThreshold)
+                if (h > heightThreshold) // 高過才算
                 {
                     isHitWall = true;
                     obstacleNormal = hit.normal;
