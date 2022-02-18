@@ -116,6 +116,8 @@ public class PlanetMovable : MonoBehaviour
     Vector3 groundNormal;
     private void getGroundNormalNow(out bool isHitGround)
     {
+        float isHitDistance = 0.2f;
+        float rayCastDistanceToGround = 2;
         RaycastHit hit;
 
         //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
@@ -159,25 +161,22 @@ public class PlanetMovable : MonoBehaviour
         upDir = -gravityDir;
     }
 
-    static readonly float isHitDistance = 0.2f;
-    static readonly float rayCastDistanceToGround = 2;
-
     public void setupContactData()
     {
-        //清空
+        // 清空
         contactPointGround.Clear();
         contactPointWall.Clear();
 
-        //設定面向
+        // 設定面向
         Vector3 forward = Vector3.Cross(transform.right, upDir);
         Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
         transform.rotation = targetRotation;
 
-        //判定是否擊中平面
+        // 判定是否擊中平面
         bool isHitGround;
         getGroundNormalNow(out isHitGround);
 
-        //如果只用contact判定，下坡時可能contact為false
+        // 如果只用contact判定，下坡時可能contact為false
         ladding = contactGround || isHitGround;
         // ladding = contactGround;
     }
@@ -187,7 +186,7 @@ public class PlanetMovable : MonoBehaviour
         // 如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
         rigid.AddForce(moveForceParameter.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
-        //Debug.DrawRay(transform.position, gravityDir, Color.green);
+        // Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
     public void executeMoving(Vector3 moveForce)
@@ -199,11 +198,10 @@ public class PlanetMovable : MonoBehaviour
         // 滑過障礙物
         modifyMoveForceAlongObstacle(ref moveForce);
 
-        // 在地面才作
+        // 貼著地面移動
         if (ladding)
         {
             moveForce = Vector3.ProjectOnPlane(moveForce, groundNormal);
-
             moveForce.Normalize();
             Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
         }
