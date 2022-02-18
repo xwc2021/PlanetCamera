@@ -5,18 +5,16 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Rigidbody))]
 public class PlanetMovable : MonoBehaviour
 {
-    Rigidbody rigid;
-    public SlopeForceMonitor slopeForceMonitor;
+    /* 重力相關 */
+    Vector3 gravityDir;
     GroundGravityGenerator grounGravityGenerator;
     public void ResetGravityGenetrator(GroundGravityGenerator gg)
     {
         this.grounGravityGenerator = gg;
     }
-    public MoveForceParameterRepository moveForceParameterRepository;
-    public void resetGroundType(GroundType groundType)
-    {
-        moveForceParameterRepository.resetGroundType(groundType, rigid);
-    }
+    Vector3 upDir; // 重力的反方向
+    public Vector3 UpDir { get { return upDir; } }
+    public SlopeForceMonitor slopeForceMonitor; // 計算重力斜坡分量
 
     public void init()
     {
@@ -30,23 +28,13 @@ public class PlanetMovable : MonoBehaviour
         rigid.interpolation = RigidbodyInterpolation.None;
     }
 
-    bool contactGround;
+    /* 接觸相關 */
     bool touchWall;
     public bool TouchWall { get { return touchWall; } }
 
+    bool contactGround;
     bool ladding = false;
-    public bool Ladding
-    {
-        get { return ladding; }
-    }
-    bool isTurble = false;
-    public void setTurble(bool value) { isTurble = value; }
-
-    Vector3 upDir; // 重力的反方向
-    public Vector3 UpDir { get { return upDir; } }
-    Vector3 gravityDir;
-
-    /* 接觸相關 */
+    public bool Ladding { get { return ladding; } }
 
     // 執行順序
     // https://docs.unity3d.com/Manual/ExecutionOrder.html
@@ -125,20 +113,6 @@ public class PlanetMovable : MonoBehaviour
         return false;
     }
 
-    /* 移動相關 called in FixedUpdate */
-    public float rotationSpeed = 6f;
-    public bool firstPersonMode = false;
-
-    public void setupGravityDir()
-    {
-        // 重力朝向:預設向下
-        var pos = transform.position;
-        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, ref pos) : -Vector3.up;
-        upDir = -gravityDir;
-    }
-
-    static readonly float isHitDistance = 0.2f;
-    static readonly float rayCastDistanceToGround = 2;
     Vector3 groundNormal;
     private void getGroundNormalNow(out bool isHitGround)
     {
@@ -165,6 +139,28 @@ public class PlanetMovable : MonoBehaviour
             }
         }
     }
+
+    /* 移動相關 called in FixedUpdate */
+    Rigidbody rigid;
+    public MoveForceParameterRepository moveForceParameterRepository;
+    public void resetGroundType(GroundType groundType)
+    {
+        moveForceParameterRepository.resetGroundType(groundType, rigid);
+    }
+    public float rotationSpeed = 6f;
+    public bool firstPersonMode = false;
+    bool isTurble = false;
+    public void setTurble(bool value) { isTurble = value; }
+    public void setupGravityDir()
+    {
+        // 重力朝向:預設向下
+        var pos = transform.position;
+        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, ref pos) : -Vector3.up;
+        upDir = -gravityDir;
+    }
+
+    static readonly float isHitDistance = 0.2f;
+    static readonly float rayCastDistanceToGround = 2;
 
     public void setupContactData()
     {
