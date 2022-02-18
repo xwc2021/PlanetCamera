@@ -14,11 +14,11 @@ public class SlopeForceMonitor : MonoBehaviour
     }
 
     public float maxForceLimit = 120;
-    public Vector3 modifyMoveForce(Vector3 moveForceWithStrength, float GravityForceStrength, Vector3 upDir, Vector3 SlopeUp)
+    public Vector3 modifyMoveForce(Vector3 moveForceWithStrength, float GravityForceStrength, Vector3 upDir, Vector3 slopeUp)
     {
         // https://photos.app.goo.gl/ZPEjsEX5XryktCBv8
         // fAlongSlopeStrength 是重力沿著斜坡的分力
-        var fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, upDir, SlopeUp);
+        var fAlongSlope = getPartOfGravityForceStrengthAlongSlope(GravityForceStrength, upDir, slopeUp);
 
         // 上坡時，fAlongSlopeStrength會讓玩家減速
         // 下坡時，fAlongSlopeStrength會讓玩家加速
@@ -27,7 +27,7 @@ public class SlopeForceMonitor : MonoBehaviour
 
         float limitSpeed = Mathf.Min(finalMoveForce.magnitude, maxForceLimit);
         finalMoveForce = finalMoveForce.normalized * limitSpeed;
-        //print("上坡:"+!sameDir + " ForceAlongSlope=" + fAlongSlope.magnitude+" moveForce:" +moveForceStrength + " modifyMoveForce:" + finalMoveForce.magnitude);
+        // print("上坡:" + !sameDir + " ForceAlongSlope=" + fAlongSlope.magnitude + " moveForce:" + moveForceStrength + " modifyMoveForce:" + finalMoveForce.magnitude);
         return finalMoveForce;
     }
 }

@@ -76,7 +76,7 @@ public class PlanetMovable : MonoBehaviour
     }
     private void Update()
     {
-        //判定有沒有接觸
+        // 判定有沒有接觸
         contactGround = isContactGround();
         touchWall = isTouchWall();
     }
@@ -146,7 +146,7 @@ public class PlanetMovable : MonoBehaviour
 
         //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
         float backOffset = -0.1f;
-        Vector3 from = transform.forward * backOffset + upDir + transform.position;
+        Vector3 from = transform.position + upDir + transform.forward * backOffset;
         //Debug.DrawRay(from, -upDir*2 , Color.red);
         isHitGround = false;
         int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.groundNotBlockCamera;
@@ -158,8 +158,8 @@ public class PlanetMovable : MonoBehaviour
 
             groundNormal = hit.normal;
 
-            //如果距離小於某個值就判定是在地面上
-            if (height < isHitDistance)
+            // 如果距離小於某個值就判定是在地面上
+            if (height < isHitDistance) // todo: 為什麼？
             {
                 isHitGround = true;
             }
@@ -183,6 +183,7 @@ public class PlanetMovable : MonoBehaviour
 
         //如果只用contact判定，下坡時可能contact為false
         ladding = contactGround || isHitGround;
+        // ladding = contactGround;
     }
 
     public void executeGravityForce()
