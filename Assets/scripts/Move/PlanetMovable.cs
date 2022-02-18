@@ -212,12 +212,12 @@ public class PlanetMovable : MonoBehaviour
 
     public void executeMoving(Vector3 moveForce)
     {
-        modifyMoveForceAlongWall(ref moveForce);
         //Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
         if (moveForce == Vector3.zero)
-        {
             return;
-        }
+
+        // 滑過Wall
+        modifyMoveForceAlongWall(ref moveForce);
 
         //在地面才作
         if (ladding)
