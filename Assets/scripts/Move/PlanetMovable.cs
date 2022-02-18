@@ -178,7 +178,7 @@ public class PlanetMovable : MonoBehaviour
     {
         // 地面朝向:預設向上
         var pos = transform.position;
-        groundUp = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGroundUp(transform.up, ref pos) : transform.up;
+        groundUp = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGroundUp(transform.up, ref pos) : Vector3.up;
 
         // 計算重力方向
         gravityDir = -groundUp;
