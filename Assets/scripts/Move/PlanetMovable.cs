@@ -23,8 +23,8 @@ public class PlanetMovable : MonoBehaviour
         Debug.Assert(moveForceParameterRepository != null);
         moveForceParameterRepository.resetGroundType(GroundType.Normal, rigid);
 
-        contactPointGround = new List<ContactPoint[]>();
-        contactPointWall = new List<ContactPoint[]>();
+        contactPointGround = new List<ContactPoint>();
+        contactPointWall = new List<ContactPoint>();
 
         rigid.interpolation = RigidbodyInterpolation.None;
     }
@@ -42,19 +42,32 @@ public class PlanetMovable : MonoBehaviour
     // FixedUpdate()
     // void OnCollisionStay(Collision collision)
     // Update()
-    List<ContactPoint[]> contactPointGround;
-    List<ContactPoint[]> contactPointWall;
+    List<ContactPoint> contactPointGround;
+    List<ContactPoint> contactPointWall;
 
-    // 這裡只有rigid和collider 
+    static float max_cos_value = Mathf.Cos(80 * Mathf.Deg2Rad);
+    static float min_cos_value = Mathf.Cos(100 * Mathf.Deg2Rad);
+    // 這裡只有rigid和collider相碰會觸發
     void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.layer == LayerDefined.Border || collision.gameObject.layer == LayerDefined.BorderBlockCamera)
         {
             //有可能同時碰到2個以上的物件，所以先收集起來
-            contactPointGround.Add(collision.contacts);
-            // contactPointWall.Add(collision.contacts);
+            var len = collision.contacts.Length;
+            for (var i = 0; i < len; ++i)
+            {
+                var cp = collision.contacts[i];
+
+                // 用角度來分類
+                var dotValue = Vector3.Dot(upDir, cp.normal);
+                if (dotValue > min_cos_value && dotValue < max_cos_value)
+                    contactPointWall.Add(cp);
+                else
+                    contactPointGround.Add(cp);
+            }
         }
     }
+
     private void Update()
     {
         // 判定有沒有接觸
@@ -70,13 +83,10 @@ public class PlanetMovable : MonoBehaviour
         bool contact = false;
         for (int x = 0; x < listCount; x++)
         {
-            ContactPoint[] cp = contactPointGround[x];
-            for (int i = 0; i < cp.Length; i++)
-            {
-                Debug.DrawRay(cp[i].point, cp[i].normal * debugLen);
-                contactGroundNormal = cp[i].normal;
-                contact = true;
-            }
+            var cp = contactPointGround[x];
+            Debug.DrawRay(cp.point, cp.normal * debugLen);
+            contactGroundNormal = cp.normal;
+            contact = true;
         }
         return contact;
     }
@@ -96,13 +106,10 @@ public class PlanetMovable : MonoBehaviour
         // 這裡是因為想看所有的contact Normal，不然不需要跑迴圈
         for (int x = 0; x < listCount; x++)
         {
-            ContactPoint[] cp = contactPointWall[x];
-            for (int i = 0; i < cp.Length; i++)
-            {
-                touchWallNormal = cp[i].normal;
-                Debug.DrawRay(cp[i].point, cp[i].normal * debugLen);
-                touch = true;
-            }
+            var cp = contactPointWall[x];
+            touchWallNormal = cp.normal;
+            Debug.DrawRay(cp.point, cp.normal * debugLen, Color.cyan);
+            touch = true;
         }
         return touch;
     }
@@ -121,7 +128,7 @@ public class PlanetMovable : MonoBehaviour
         heightToFloor = float.PositiveInfinity;
 
         RaycastHit hit;
-        int layerMask = 1 << LayerDefined.Border;
+        int layerMask = 1 << LayerDefined.Border | 1 << LayerDefined.BorderBlockCamera;
         if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
         {
             heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
