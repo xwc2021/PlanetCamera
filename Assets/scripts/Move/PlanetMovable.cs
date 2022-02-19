@@ -30,8 +30,6 @@ public class PlanetMovable : MonoBehaviour
     }
 
     /* 接觸相關 */
-    bool ladding = false;
-    public bool Ladding { get { return ladding; } }
 
     // 執行順序
     // https://docs.unity3d.com/Manual/ExecutionOrder.html
@@ -66,8 +64,9 @@ public class PlanetMovable : MonoBehaviour
         touchWall = isTouchWall();
     }
 
+    public bool Ladding { get { return contactGround; } }
     bool contactGround;
-
+    Vector3 contactGroundNormal;
     bool isContactGround()
     {
         int listCount = contactPointGround.Count;
@@ -78,6 +77,7 @@ public class PlanetMovable : MonoBehaviour
             for (int i = 0; i < cp.Length; i++)
             {
                 Debug.DrawRay(cp[i].point, cp[i].normal * debugLen);
+                contactGroundNormal = cp[i].normal;
                 contact = true;
             }
         }
@@ -111,7 +111,6 @@ public class PlanetMovable : MonoBehaviour
     }
 
     public float heightToFloor;
-    Vector3 hitFloorNormal;
     void hitFloor()
     {
         float rayCastDistance = 5;
@@ -121,17 +120,11 @@ public class PlanetMovable : MonoBehaviour
         Vector3 from = transform.position + upDir * rayFromUpOffset + transform.forward * rayFromForwardOffset;
         Debug.DrawRay(from, -upDir * rayCastDistance, Color.yellow);
 
-        heightToFloor = float.PositiveInfinity;
-        hitFloorNormal = upDir;
-
         RaycastHit hit;
+        heightToFloor = float.PositiveInfinity;
         int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.groundNotBlockCamera;
         if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
-        {
-            hitFloorNormal = hit.normal;
             heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
-            Debug.DrawRay(hit.point, hit.normal * debugLen, Color.black);
-        }
     }
 
     /* 移動相關 called in FixedUpdate */
@@ -167,17 +160,13 @@ public class PlanetMovable : MonoBehaviour
         // 擊中地板
         hitFloor();
         var isTouchFloor = heightToFloor < 0.1f;
-
-        // 如果只用contact判定，下坡時可能contact為false
-        ladding = contactGround || isTouchFloor;
-        // ladding = contactGround;
     }
 
     public void executeGravityForce()
     {
         // 如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
-        rigid.AddForce(moveForceParameter.getGravityForceStrength(!ladding) * gravityDir, ForceMode.Acceleration);
+        rigid.AddForce(moveForceParameter.getGravityForceStrength(!Ladding) * gravityDir, ForceMode.Acceleration);
         // Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
@@ -190,10 +179,10 @@ public class PlanetMovable : MonoBehaviour
         // 滑過障礙物
         modifyMoveForceAlongObstacle(ref moveForce);
 
-        // 貼著地面移動
-        if (ladding)
+        // 貼著地板移動
+        if (Ladding)
         {
-            moveForce = Vector3.ProjectOnPlane(moveForce, hitFloorNormal);
+            moveForce = Vector3.ProjectOnPlane(moveForce, contactGroundNormal);
             moveForce.Normalize();
             Debug.DrawRay(transform.position + transform.up, moveForce * debugLen, Color.blue);
         }
@@ -208,12 +197,12 @@ public class PlanetMovable : MonoBehaviour
 
         // 取得移動的力
         MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
-        float moveForceStrength = moveForceParameter.getMoveForceStrength(!ladding, isTurble);
+        float moveForceStrength = moveForceParameter.getMoveForceStrength(!Ladding, isTurble);
         Vector3 moveForceWithStrength = moveForceStrength * moveForce;
 
         // 處理斜坡
-        if (slopeForceMonitor != null && ladding)
-            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!ladding), upDir, hitFloorNormal);
+        if (slopeForceMonitor != null && Ladding)
+            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!Ladding), upDir, contactGroundNormal);
 
         // 移動
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
