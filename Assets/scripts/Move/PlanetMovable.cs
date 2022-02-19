@@ -48,6 +48,11 @@ public class PlanetMovable : MonoBehaviour
     static float max_cos_value = Mathf.Cos(80 * Mathf.Deg2Rad);
     static float min_cos_value = Mathf.Cos(100 * Mathf.Deg2Rad);
     // 這裡只有rigid和collider相碰會觸發
+    bool isWallNormal(Vector3 normal)
+    {
+        var dotValue = Vector3.Dot(upDir, normal);
+        return (dotValue > min_cos_value && dotValue < max_cos_value);
+    }
     void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.layer == LayerDefined.Border || collision.gameObject.layer == LayerDefined.BorderBlockCamera)
@@ -57,10 +62,7 @@ public class PlanetMovable : MonoBehaviour
             for (var i = 0; i < len; ++i)
             {
                 var cp = collision.contacts[i];
-
-                // 用角度來分類
-                var dotValue = Vector3.Dot(upDir, cp.normal);
-                if (dotValue > min_cos_value && dotValue < max_cos_value)
+                if (isWallNormal(cp.normal))
                     contactPointWall.Add(cp);
                 else
                     contactPointGround.Add(cp);
@@ -223,13 +225,19 @@ public class PlanetMovable : MonoBehaviour
         rigid.AddForce(moveForceParameter.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
     }
 
+    /* 避免卡障礙物相關 */
     public void modifyMoveForceAlongObstacle(ref Vector3 moveForce)
     {
-        // 直接拿touchWall的資料
-        if (!touchWall)
+        bool isGet;
+        Vector3 obstacleNormal;
+        getObstacleNormalFromTouchWallNormal(out obstacleNormal, out isGet);
+        // getObstacleNormalFromRayHit(out obstacleNormal, out isGet);
+
+        if (!isGet)
             return;
 
-        var obstacleNormal = Vector3.ProjectOnPlane(touchWallNormal, upDir);
+        // 投影到移動平面
+        obstacleNormal = Vector3.ProjectOnPlane(touchWallNormal, upDir);
         Debug.DrawRay(transform.position, obstacleNormal * debugLen, Color.red);
 
         // 離開牆不用處理
@@ -245,5 +253,43 @@ public class PlanetMovable : MonoBehaviour
 
         moveForce = modifyMoveForce;
         // print("修改");
+    }
+
+    // 直接拿touchWall的資料
+    void getObstacleNormalFromTouchWallNormal(out Vector3 obstacleNormal, out bool isGet)
+    {
+
+        isGet = touchWall;
+        obstacleNormal = touchWallNormal;
+    }
+
+    // 比較吃效能，但移動起來更加絲滑
+    void getObstacleNormalFromRayHit(out Vector3 obstacleNormal, out bool isGet)
+    {
+        isGet = false;
+        obstacleNormal = Vector3.zero;
+
+        int layerMask = 1 << LayerDefined.Border | 1 << LayerDefined.BorderBlockCamera;
+        RaycastHit hit;
+
+        float SphereR = 0.24f;
+        float forwardToWall = 0.5f;
+        float leftRightTowall = 0.2f;
+        float[] rayCastDistanceToWall = { forwardToWall, forwardToWall, forwardToWall, leftRightTowall, leftRightTowall };
+        Vector3[] dir = { transform.forward, transform.forward, transform.forward, transform.right, -transform.right };
+        float[] height = { 0.25f, 0.6f, 1.2f, 0.6f, 0.6f };
+
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 from = upDir * height[i] + transform.position;
+            Debug.DrawRay(from, dir[i] * rayCastDistanceToWall[i], Color.green);
+            if (Physics.SphereCast(from, SphereR, dir[i], out hit, rayCastDistanceToWall[i], layerMask) && isWallNormal(hit.normal))
+            {
+                isGet = true;
+                obstacleNormal = hit.normal;
+                Debug.DrawRay(hit.point, hit.normal * debugLen, Color.yellow);
+                return;
+            }
+        }
     }
 }
