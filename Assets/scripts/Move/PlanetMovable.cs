@@ -129,7 +129,7 @@ public class PlanetMovable : MonoBehaviour
         upDir = -gravityDir;
     }
 
-    public void setupContactData()
+    public void setupContactDataAndHeadUp()
     {
         // 清空
         contactPointGround.Clear();

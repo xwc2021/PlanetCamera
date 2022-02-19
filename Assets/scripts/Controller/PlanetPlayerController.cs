@@ -91,7 +91,7 @@ public class PlanetPlayerController : MonoBehaviour
     void FixedUpdate()
     {
         planetMovable.setupGravityDir();
-        planetMovable.setupContactData();
+        planetMovable.setupContactDataAndHeadUp();
 
         planetMovable.executeGravityForce();
         planetMovable.executeMoving(getMoveForceFromInput());
