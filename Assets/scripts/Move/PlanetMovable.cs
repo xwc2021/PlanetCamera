@@ -20,8 +20,9 @@ public class PlanetMovable : MonoBehaviour
     public void init()
     {
         rigid = GetComponent<Rigidbody>();
-        Debug.Assert(moveForceParameterRepository != null);
-        moveForceParameterRepository.resetGroundType(GroundType.Normal, rigid);
+
+        if (moveForceParameterRepository)
+            moveForceParameterRepository.resetGroundType(GroundType.Normal, rigid);
 
         contactPointGround = new List<ContactPoint>();
         contactPointWall = new List<ContactPoint>();
@@ -30,20 +31,11 @@ public class PlanetMovable : MonoBehaviour
     }
 
     /* 接觸相關 */
+    bool doContactDetect;
     public bool Ladding
     {
         get { return contactGround || (heightToFloor < 0.1f); }
     }
-
-    /* 接觸相關：rigid on collder */
-
-    // 執行順序
-    // https://docs.unity3d.com/Manual/ExecutionOrder.html
-    // FixedUpdate()
-    // void OnCollisionStay(Collision collision)
-    // Update()
-    List<ContactPoint> contactPointGround;
-    List<ContactPoint> contactPointWall;
 
     static float max_cos_value = Mathf.Cos(80 * Mathf.Deg2Rad);
     static float min_cos_value = Mathf.Cos(100 * Mathf.Deg2Rad);
@@ -53,18 +45,37 @@ public class PlanetMovable : MonoBehaviour
         return (dotValue > min_cos_value && dotValue < max_cos_value);
     }
 
+    /* 接觸相關：rigid on collder */
+
+    // https://docs.unity3d.com/Manual/ExecutionOrder.html
+    // 執行順序
+    // FixedUpdate()：呼叫setupUpForPawn()
+    // OnCollisionStay()：先收集contanct資訊並分類
+    // Update()：判定是那種接觸
+
+    // 放contact資訊
+    List<ContactPoint> contactPointGround;
+    List<ContactPoint> contactPointWall;
+
+    // 收集contanct資訊並分類(有可能同時碰到2個以上的物件)
     // 這裡只有rigid和collider相碰會觸發
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.layer == LayerDefined.Border || collision.gameObject.layer == LayerDefined.BorderBlockCamera)
+        if (!doContactDetect)
+            return;
+
+        var layer = collision.gameObject.layer;
+        if (layer == LayerDefined.Border || layer == LayerDefined.BorderBlockCamera || layer == LayerDefined.BorderNoAvoid)
         {
-            //有可能同時碰到2個以上的物件，所以先收集起來
             var len = collision.contacts.Length;
             for (var i = 0; i < len; ++i)
             {
                 var cp = collision.contacts[i];
                 if (isWallNormal(cp.normal))
-                    contactPointWall.Add(cp);
+                {
+                    if (layer != LayerDefined.BorderNoAvoid)
+                        contactPointWall.Add(cp);
+                }
                 else
                     contactPointGround.Add(cp);
             }
@@ -73,7 +84,10 @@ public class PlanetMovable : MonoBehaviour
 
     private void Update()
     {
-        // 判定有沒有接觸
+        if (!doContactDetect)
+            return;
+
+        // 判定是那種接觸
         contactGround = isContactGround();
         touchWall = isTouchWall();
     }
@@ -84,6 +98,7 @@ public class PlanetMovable : MonoBehaviour
     {
         int listCount = contactPointGround.Count;
         bool contact = false;
+        // 因為想看所有的contactGroundNormal，不然不需要跑迴圈
         for (int x = 0; x < listCount; x++)
         {
             var cp = contactPointGround[x];
@@ -106,7 +121,7 @@ public class PlanetMovable : MonoBehaviour
     {
         int listCount = contactPointWall.Count;
         bool touch = false;
-        // 這裡是因為想看所有的contact Normal，不然不需要跑迴圈
+        // 因為想看所有的touchWallNormal，不然不需要跑迴圈
         for (int x = 0; x < listCount; x++)
         {
             var cp = contactPointWall[x];
@@ -139,6 +154,42 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
+    /* 移動相關：準備工具 called in FixedUpdate */
+    public void preProcess(bool doContactDetect, bool standUp)
+    {
+        setupGravityDir();
+
+        this.doContactDetect = doContactDetect;
+        if (doContactDetect)
+            setupUpForContact();
+
+        if (standUp)
+        {
+            // 設定面向
+            Vector3 forward = Vector3.Cross(transform.right, upDir);
+            Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
+            transform.rotation = targetRotation;
+        }
+    }
+
+    void setupGravityDir()
+    {
+        // 重力朝向:預設向下
+        var pos = transform.position;
+        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, ref pos) : -Vector3.up;
+        upDir = -gravityDir;
+    }
+
+    void setupUpForContact()
+    {
+        // 準備 (rigid on collider)
+        contactPointGround.Clear();
+        contactPointWall.Clear();
+
+        // 擊地板 (rigid on rigid)
+        hitFloor();
+    }
+
     /* 移動相關 called in FixedUpdate */
     Rigidbody rigid;
     public MoveForceParameterRepository moveForceParameterRepository;
@@ -150,34 +201,19 @@ public class PlanetMovable : MonoBehaviour
     public bool firstPersonMode = false;
     bool isTurble = false;
     public void setTurble(bool value) { isTurble = value; }
-    public void setupGravityDir()
-    {
-        // 重力朝向:預設向下
-        var pos = transform.position;
-        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, ref pos) : -Vector3.up;
-        upDir = -gravityDir;
-    }
-
-    public void setupContactDataAndHeadUp()
-    {
-        // 清空
-        contactPointGround.Clear();
-        contactPointWall.Clear();
-
-        // 設定面向
-        Vector3 forward = Vector3.Cross(transform.right, upDir);
-        Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
-        transform.rotation = targetRotation;
-
-        // 擊中地板
-        hitFloor();
-    }
 
     public void executeGravityForce()
     {
+        if (moveForceParameterRepository == null)
+        {
+            rigid.AddForce(10 * gravityDir, ForceMode.Acceleration);
+            return;
+        }
+
         // 如果在空中的重力加速度和在地面上時一樣，就會覺的太快落下
         MoveForceParameter moveForceParameter = moveForceParameterRepository.getMoveForceParameter();
         rigid.AddForce(moveForceParameter.getGravityForceStrength(!Ladding) * gravityDir, ForceMode.Acceleration);
+
         // Debug.DrawRay(transform.position, gravityDir, Color.green);
     }
 
@@ -226,13 +262,16 @@ public class PlanetMovable : MonoBehaviour
         rigid.AddForce(moveForceParameter.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
     }
 
+    public bool avoidObstacleQuickMethod = true;
     /* 避免卡障礙物相關 */
     public void modifyMoveForceAlongObstacle(ref Vector3 moveForce)
     {
         bool isGet;
         Vector3 obstacleNormal;
-        getObstacleNormalFromTouchWallNormal(out obstacleNormal, out isGet);
-        // getObstacleNormalFromRayHit(out obstacleNormal, out isGet);
+        if (avoidObstacleQuickMethod)
+            getObstacleNormalFromTouchWallNormal(out obstacleNormal, out isGet);
+        else
+            getObstacleNormalFromSphereCast(out obstacleNormal, out isGet);
 
         if (!isGet)
             return;
@@ -265,7 +304,7 @@ public class PlanetMovable : MonoBehaviour
     }
 
     // 比較吃效能，但移動起來更加絲滑
-    void getObstacleNormalFromRayHit(out Vector3 obstacleNormal, out bool isGet)
+    void getObstacleNormalFromSphereCast(out Vector3 obstacleNormal, out bool isGet)
     {
         isGet = false;
         obstacleNormal = Vector3.zero;

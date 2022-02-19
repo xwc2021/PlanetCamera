@@ -14,8 +14,7 @@ public class StandingController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        planetMovable.setupGravityDir();
-        planetMovable.setupContactDataAndHeadUp();
+        planetMovable.preProcess(false, true);
         planetMovable.executeGravityForce();
     }
 }

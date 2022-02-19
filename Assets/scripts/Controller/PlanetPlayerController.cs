@@ -90,12 +90,10 @@ public class PlanetPlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        planetMovable.setupGravityDir();
-        planetMovable.setupContactDataAndHeadUp();
+        planetMovable.preProcess(true, true);
 
         planetMovable.executeGravityForce();
         planetMovable.executeMoving(getMoveForceFromInput());
-
         setAnimatorMoving();
 
         processWallJump();

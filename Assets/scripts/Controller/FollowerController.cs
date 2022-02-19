@@ -40,8 +40,7 @@ public class FollowerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        planetMovable.setupGravityDir();
-        planetMovable.setupContactDataAndHeadUp();
+        planetMovable.preProcess(false, true);
 
         planetMovable.executeGravityForce();
         planetMovable.executeMoving(getMoveForce());
