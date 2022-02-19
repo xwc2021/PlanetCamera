@@ -224,7 +224,7 @@ public class PlanetMovable : MonoBehaviour
             return;
 
         // 滑過障礙物
-        modifyMoveForceAlongObstacle(ref moveForce);
+        avoidObstacle(ref moveForce);
 
         // 貼著地板移動
         if (Ladding)
@@ -263,8 +263,8 @@ public class PlanetMovable : MonoBehaviour
     }
 
     public bool avoidObstacleQuickMethod = true;
-    /* 避免卡障礙物相關 */
-    public void modifyMoveForceAlongObstacle(ref Vector3 moveForce)
+    /* 滑過障礙物相關 */
+    public void avoidObstacle(ref Vector3 moveForce)
     {
         bool isGet;
         Vector3 obstacleNormal;
