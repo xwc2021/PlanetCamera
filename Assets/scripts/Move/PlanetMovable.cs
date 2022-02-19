@@ -96,21 +96,18 @@ public class PlanetMovable : MonoBehaviour
     bool isTouchWall()
     {
         int listCount = contactPointWall.Count;
+        bool touch = false;
         for (int x = 0; x < listCount; x++)
         {
             ContactPoint[] cp = contactPointWall[x];
             for (int i = 0; i < cp.Length; i++)
             {
-                Vector3 diff = cp[i].point - transform.position;
-                float height = Vector3.Dot(upDir, diff);
-                if (height > 0.15f && height < 1.0f) // 玩家身高
-                {
-                    touchWallNormal = cp[i].normal;
-                    return true;
-                }
+                touchWallNormal = cp[i].normal;
+                Debug.DrawLine(cp[i].point, cp[i].point + cp[i].normal * 5);
+                touch = true;
             }
         }
-        return false;
+        return touch;
     }
 
     Vector3 groundNormal;
@@ -234,66 +231,27 @@ public class PlanetMovable : MonoBehaviour
         rigid.AddForce(moveForceParameter.getJumpForceStrength(isTurble) * -gravityDir, ForceMode.Acceleration);
     }
 
-    /* 避免卡障礙物相關 */
-    void getObstacleNormal(out Vector3 obstacleNormal, out bool isHitWall)
-    {
-        isHitWall = false;
-        obstacleNormal = Vector3.zero;
-
-        int layerMask = 1 << LayerDefined.wall | 1 << LayerDefined.wallNotBlockCamera;
-        RaycastHit hit;
-
-        float SphereR = 0.24f;
-        float forwardToWall = 0.5f;
-        float leftRightTowall = 0.2f;
-        float[] rayCastDistanceToWall = { forwardToWall, forwardToWall, forwardToWall, leftRightTowall, leftRightTowall };
-        Vector3[] dir = { transform.forward, transform.forward, transform.forward, transform.right, -transform.right };
-        float[] height = { 0.25f, 0.6f, 1.2f, 0.6f, 0.6f };
-        float heightThreshold = 0.1f;
-        for (int i = 0; i < 5; i++)
-        {
-            Vector3 from = upDir * height[i] + transform.position;
-            Debug.DrawRay(from, dir[i] * rayCastDistanceToWall[i], Color.green);
-            if (Physics.SphereCast(from, SphereR, dir[i], out hit, rayCastDistanceToWall[i], layerMask))
-            {
-                float h = Vector3.Dot(hit.point - transform.position, upDir);
-                if (h > heightThreshold) // 高過才算
-                {
-                    isHitWall = true;
-                    obstacleNormal = hit.normal;
-                    Debug.DrawRay(hit.point, hit.normal * 2, Color.red);
-                    Debug.DrawRay(from, transform.forward, Color.yellow);
-                    return;
-                }
-            }
-        }
-    }
-
     public void modifyMoveForceAlongObstacle(ref Vector3 moveForce)
     {
-        bool isHit;
-        Vector3 obstacleNormal;
-        getObstacleNormal(out obstacleNormal, out isHit);
-
-        if (!isHit)
+        // 直接拿touchWall的資料
+        if (!touchWall)
             return;
 
-        obstacleNormal = Vector3.ProjectOnPlane(obstacleNormal, upDir);
+        var obstacleNormal = Vector3.ProjectOnPlane(touchWallNormal, upDir);
         Debug.DrawRay(transform.position, obstacleNormal, Color.red);
-        float dotValue = Vector3.Dot(moveForce, obstacleNormal);
 
-        // 離開牆不用管
+        // 離開牆不用處理
         if (Vector3.Dot(moveForce.normalized, obstacleNormal) > 0)
             return;
 
         // 消去和wallNormal垂直的分量
-        Vector3 newMoveForce = Vector3.ProjectOnPlane(moveForce, obstacleNormal);
+        Vector3 modifyMoveForce = Vector3.ProjectOnPlane(moveForce, obstacleNormal);
 
         // 如果移動的方向和wallNormal接近垂直，newMoveForce就可能變的很短
-        if (newMoveForce.magnitude < 0.01f)
+        if (modifyMoveForce.magnitude < 0.01f)
             return;
 
-        moveForce = newMoveForce;
+        moveForce = modifyMoveForce;
         // print("修改");
     }
 }
