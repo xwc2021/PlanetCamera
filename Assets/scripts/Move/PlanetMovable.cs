@@ -110,23 +110,6 @@ public class PlanetMovable : MonoBehaviour
         return touch;
     }
 
-    public float heightToFloor;
-    void hitFloor()
-    {
-        float rayCastDistance = 5;
-        float rayFromUpOffset = 1;
-        float rayFromForwardOffset = -0.1f; //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
-
-        Vector3 from = transform.position + upDir * rayFromUpOffset + transform.forward * rayFromForwardOffset;
-        Debug.DrawRay(from, -upDir * rayCastDistance, Color.yellow);
-
-        RaycastHit hit;
-        heightToFloor = float.PositiveInfinity;
-        int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.groundNotBlockCamera;
-        if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
-            heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
-    }
-
     /* 移動相關 called in FixedUpdate */
     Rigidbody rigid;
     public MoveForceParameterRepository moveForceParameterRepository;
@@ -156,10 +139,6 @@ public class PlanetMovable : MonoBehaviour
         Vector3 forward = Vector3.Cross(transform.right, upDir);
         Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
         transform.rotation = targetRotation;
-
-        // 擊中地板
-        hitFloor();
-        var isTouchFloor = heightToFloor < 0.1f;
     }
 
     public void executeGravityForce()
