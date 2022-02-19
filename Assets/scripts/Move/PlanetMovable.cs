@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Rigidbody))]
 public class PlanetMovable : MonoBehaviour
 {
+    static float debugLen = 5;
     /* 重力相關 */
     Vector3 gravityDir;
     GroundGravityGenerator grounGravityGenerator;
@@ -29,10 +30,6 @@ public class PlanetMovable : MonoBehaviour
     }
 
     /* 接觸相關 */
-    bool touchWall;
-    public bool TouchWall { get { return touchWall; } }
-
-    bool contactGround;
     bool ladding = false;
     public bool Ladding { get { return ladding; } }
 
@@ -69,24 +66,26 @@ public class PlanetMovable : MonoBehaviour
         touchWall = isTouchWall();
     }
 
+    bool contactGround;
+
     bool isContactGround()
     {
         int listCount = contactPointGround.Count;
+        bool contact = false;
         for (int x = 0; x < listCount; x++)
         {
             ContactPoint[] cp = contactPointGround[x];
             for (int i = 0; i < cp.Length; i++)
             {
-                Vector3 diff = cp[i].point - transform.position;
-                float height = Vector3.Dot(upDir, diff);
-                if (height < 0.15f)
-                {
-                    return true;
-                }
+                Debug.DrawRay(cp[i].point, cp[i].normal * debugLen);
+                contact = true;
             }
         }
-        return false;
+        return contact;
     }
+
+    bool touchWall;
+    public bool TouchWall { get { return touchWall; } }
 
     Vector3 touchWallNormal;
     public Vector3 TouchWallNormal
@@ -97,45 +96,41 @@ public class PlanetMovable : MonoBehaviour
     {
         int listCount = contactPointWall.Count;
         bool touch = false;
+        // 這裡是因為想看所有的contact Normal，不然不需要跑迴圈
         for (int x = 0; x < listCount; x++)
         {
             ContactPoint[] cp = contactPointWall[x];
             for (int i = 0; i < cp.Length; i++)
             {
                 touchWallNormal = cp[i].normal;
-                Debug.DrawLine(cp[i].point, cp[i].point + cp[i].normal * 5);
+                Debug.DrawRay(cp[i].point, cp[i].normal * debugLen);
                 touch = true;
             }
         }
         return touch;
     }
 
-    Vector3 groundNormal;
-    private void getGroundNormalNow(out bool isHitGround)
+    public float heightToFloor;
+    Vector3 hitFloorNormal;
+    void hitFloor()
     {
-        float isHitDistance = 0.2f;
-        float rayCastDistanceToGround = 2;
+        float rayCastDistance = 5;
+        float rayFromUpOffset = 1;
+        float rayFromForwardOffset = -0.1f; //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
+
+        Vector3 from = transform.position + upDir * rayFromUpOffset + transform.forward * rayFromForwardOffset;
+        Debug.DrawRay(from, -upDir * rayCastDistance, Color.yellow);
+
+        heightToFloor = float.PositiveInfinity;
+        hitFloorNormal = upDir;
+
         RaycastHit hit;
-
-        //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
-        float backOffset = -0.1f;
-        Vector3 from = transform.position + upDir + transform.forward * backOffset;
-        //Debug.DrawRay(from, -upDir*2 , Color.red);
-        isHitGround = false;
         int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.groundNotBlockCamera;
-        groundNormal = upDir;
-        if (Physics.Raycast(from, -upDir, out hit, rayCastDistanceToGround, layerMask))
+        if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
         {
-            Vector3 diff = hit.point - transform.position;
-            float height = Vector3.Dot(diff, upDir);
-
-            groundNormal = hit.normal;
-
-            // 如果距離小於某個值就判定是在地面上
-            if (height < isHitDistance) // todo: 為什麼？
-            {
-                isHitGround = true;
-            }
+            hitFloorNormal = hit.normal;
+            heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
+            Debug.DrawRay(hit.point, hit.normal * debugLen, Color.black);
         }
     }
 
@@ -169,12 +164,12 @@ public class PlanetMovable : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
         transform.rotation = targetRotation;
 
-        // 判定是否擊中平面
-        bool isHitGround;
-        getGroundNormalNow(out isHitGround);
+        // 擊中地板
+        hitFloor();
+        var isTouchFloor = heightToFloor < 0.1f;
 
         // 如果只用contact判定，下坡時可能contact為false
-        ladding = contactGround || isHitGround;
+        ladding = contactGround || isTouchFloor;
         // ladding = contactGround;
     }
 
@@ -188,7 +183,7 @@ public class PlanetMovable : MonoBehaviour
 
     public void executeMoving(Vector3 moveForce)
     {
-        // Debug.DrawLine(transform.position, transform.position + moveForce * 10, Color.blue);
+        // Debug.DrawRay(transform.position, moveForce * debugLen * 2, Color.blue);
         if (moveForce == Vector3.zero)
             return;
 
@@ -198,9 +193,9 @@ public class PlanetMovable : MonoBehaviour
         // 貼著地面移動
         if (ladding)
         {
-            moveForce = Vector3.ProjectOnPlane(moveForce, groundNormal);
+            moveForce = Vector3.ProjectOnPlane(moveForce, hitFloorNormal);
             moveForce.Normalize();
-            Debug.DrawRay(transform.position + transform.up, moveForce * 5, Color.blue);
+            Debug.DrawRay(transform.position + transform.up, moveForce * debugLen, Color.blue);
         }
 
         // 更新面向
@@ -218,7 +213,7 @@ public class PlanetMovable : MonoBehaviour
 
         // 處理斜坡
         if (slopeForceMonitor != null && ladding)
-            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!ladding), upDir, groundNormal);
+            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!ladding), upDir, hitFloorNormal);
 
         // 移動
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
@@ -238,7 +233,7 @@ public class PlanetMovable : MonoBehaviour
             return;
 
         var obstacleNormal = Vector3.ProjectOnPlane(touchWallNormal, upDir);
-        Debug.DrawRay(transform.position, obstacleNormal, Color.red);
+        Debug.DrawRay(transform.position, obstacleNormal * debugLen, Color.red);
 
         // 離開牆不用處理
         if (Vector3.Dot(moveForce.normalized, obstacleNormal) > 0)
