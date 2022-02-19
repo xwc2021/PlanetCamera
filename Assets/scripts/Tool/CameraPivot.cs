@@ -288,10 +288,10 @@ public class CameraPivot : MonoBehaviour
         float rayCastDistance = dir.magnitude;
         dir.Normalize();
 
-        int layerMask = 1 << LayerDefined.ground | 1 << LayerDefined.wall;
+        int layerMask = 1 << LayerDefined.BlockCamera | 1 << LayerDefined.BorderBlockCamera;
         RaycastHit hit;
         float distance = 0;
-        //Debug.DrawLine(from, cameraCenterBottom, Color.green);
+        // Debug.DrawLine(from, cameraCenterBottom, Color.green);
         if (Physics.Raycast(from, dir, out hit, rayCastDistance, layerMask))
         {
             //Debug.DrawRay(hit.point,  hit.normal, Color.red);
@@ -319,7 +319,7 @@ public class CameraPivot : MonoBehaviour
             float finalR = Mathf.Min(fixedR - distance, R);
             finalR = Mathf.Max(finalR, cameraMinDistance);
             realCamera.localPosition = new Vector3(0, 0, -finalR * RScale);
-            //print("hit"+ finalR);
+            // print("hit" + finalR);
         }
     }
 

@@ -30,6 +30,12 @@ public class PlanetMovable : MonoBehaviour
     }
 
     /* 接觸相關 */
+    public bool Ladding
+    {
+        get { return contactGround || (heightToFloor < 0.1f); }
+    }
+
+    /* 接觸相關：rigid on collder */
 
     // 執行順序
     // https://docs.unity3d.com/Manual/ExecutionOrder.html
@@ -38,23 +44,15 @@ public class PlanetMovable : MonoBehaviour
     // Update()
     List<ContactPoint[]> contactPointGround;
     List<ContactPoint[]> contactPointWall;
+
+    // 這裡只有rigid和collider 
     void OnCollisionStay(Collision collision)
     {
-        bool ground = collision.gameObject.layer == LayerDefined.ground;
-        bool groundNotBlockCamera = collision.gameObject.layer == LayerDefined.groundNotBlockCamera;
-
-        if (ground || groundNotBlockCamera)
+        if (collision.gameObject.layer == LayerDefined.Border || collision.gameObject.layer == LayerDefined.BorderBlockCamera)
         {
             //有可能同時碰到2個以上的物件，所以先收集起來
             contactPointGround.Add(collision.contacts);
-        }
-
-        bool wall = collision.gameObject.layer == LayerDefined.wall;
-        bool wallNotBlockCamera = collision.gameObject.layer == LayerDefined.wallNotBlockCamera;
-        if (wall | wallNotBlockCamera)
-        {
-            //有可能同時碰到2個以上的物件，所以先收集起來
-            contactPointWall.Add(collision.contacts);
+            // contactPointWall.Add(collision.contacts);
         }
     }
     private void Update()
@@ -64,7 +62,6 @@ public class PlanetMovable : MonoBehaviour
         touchWall = isTouchWall();
     }
 
-    public bool Ladding { get { return contactGround; } }
     bool contactGround;
     Vector3 contactGroundNormal;
     bool isContactGround()
@@ -110,6 +107,28 @@ public class PlanetMovable : MonoBehaviour
         return touch;
     }
 
+    /* 接觸相關：rigid on rigid (跳上摩天輪和電纜需要) */
+    public float heightToFloor;
+    void hitFloor()
+    {
+        float rayCastDistance = 5;
+        float rayFromUpOffset = 1;
+        float rayFromForwardOffset = -0.1f; //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
+
+        Vector3 from = transform.position + upDir * rayFromUpOffset + transform.forward * rayFromForwardOffset;
+        Debug.DrawRay(from, -upDir * rayCastDistance, Color.yellow);
+
+        heightToFloor = float.PositiveInfinity;
+
+        RaycastHit hit;
+        int layerMask = 1 << LayerDefined.Border;
+        if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
+        {
+            heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
+            Debug.DrawRay(hit.point, hit.normal * debugLen, Color.black);
+        }
+    }
+
     /* 移動相關 called in FixedUpdate */
     Rigidbody rigid;
     public MoveForceParameterRepository moveForceParameterRepository;
@@ -139,6 +158,9 @@ public class PlanetMovable : MonoBehaviour
         Vector3 forward = Vector3.Cross(transform.right, upDir);
         Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
         transform.rotation = targetRotation;
+
+        // 擊中地板
+        hitFloor();
     }
 
     public void executeGravityForce()
