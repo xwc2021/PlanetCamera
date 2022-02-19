@@ -47,12 +47,13 @@ public class PlanetMovable : MonoBehaviour
 
     static float max_cos_value = Mathf.Cos(80 * Mathf.Deg2Rad);
     static float min_cos_value = Mathf.Cos(100 * Mathf.Deg2Rad);
-    // 這裡只有rigid和collider相碰會觸發
     bool isWallNormal(Vector3 normal)
     {
         var dotValue = Vector3.Dot(upDir, normal);
         return (dotValue > min_cos_value && dotValue < max_cos_value);
     }
+
+    // 這裡只有rigid和collider相碰會觸發
     void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.layer == LayerDefined.Border || collision.gameObject.layer == LayerDefined.BorderBlockCamera)
