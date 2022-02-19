@@ -172,12 +172,15 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
+    static Color orange = new Color(1, 165.0f / 255, 0);
     void setupGravityDir()
     {
         // 重力朝向:預設向下
         var pos = transform.position;
         gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, ref pos) : -Vector3.up;
         upDir = -gravityDir;
+
+        Debug.DrawRay(pos, upDir * debugLen * 2, orange);
     }
 
     void setupUpForContact()

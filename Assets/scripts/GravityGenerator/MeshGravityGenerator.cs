@@ -28,7 +28,6 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             }
             sum = sum / overlapCount;
             sum.Normalize();
-            Debug.DrawLine(targetPos, targetPos + sum * 6, Color.green);
             return -sum;
         }
         else
