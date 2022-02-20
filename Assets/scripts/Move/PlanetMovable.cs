@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Rigidbody))]
 public class PlanetMovable : MonoBehaviour
 {
-    static float debugLen = 5;
+    static float debugLen = 2;
     /* 重力相關 */
     Vector3 gravityDir;
     GroundGravityGenerator grounGravityGenerator;
@@ -51,7 +51,7 @@ public class PlanetMovable : MonoBehaviour
     // 執行順序
     // FixedUpdate()：呼叫setupUpForPawn()
     // OnCollisionStay()：先收集contanct資訊並分類
-    // Update()：判定是那種接觸
+    // Update()：判定有沒有接觸
 
     // 放contact資訊
     List<ContactPoint> contactPointGround;
@@ -87,27 +87,35 @@ public class PlanetMovable : MonoBehaviour
         if (!doContactDetect)
             return;
 
-        // 判定是那種接觸
-        contactGround = isContactGround();
-        touchWall = isTouchWall();
+        // 判定有沒有接觸
+        contactGround = hasContact(contactPointGround, ref contactGroundNormal, Color.white);
+        touchWall = hasContact(contactPointWall, ref touchWallNormal, Color.cyan);
     }
 
-    bool contactGround;
-    Vector3 contactGroundNormal;
-    bool isContactGround()
+    bool touchGravityGenerator = false;
+    Vector3 touchGravityGeneratorNormal;
+
+    bool hasContact(List<ContactPoint> list, ref Vector3 contactNormal, Color color)
     {
-        int listCount = contactPointGround.Count;
+        int listCount = list.Count;
         bool contact = false;
-        // 因為想看所有的contactGroundNormal，不然不需要跑迴圈
+        // 想看所有的contactGroundNormal
         for (int x = 0; x < listCount; x++)
         {
-            var cp = contactPointGround[x];
-            Debug.DrawRay(cp.point, cp.normal * debugLen);
-            contactGroundNormal = cp.normal;
+            var cp = list[x];
+
+            if (color != Color.black)
+                Debug.DrawRay(cp.point, cp.normal * debugLen, color);
+
+            contactNormal = cp.normal;
             contact = true;
         }
         return contact;
     }
+
+    bool contactGround;
+    Vector3 contactGroundNormal;
+
 
     bool touchWall;
     public bool TouchWall { get { return touchWall; } }
@@ -116,20 +124,6 @@ public class PlanetMovable : MonoBehaviour
     public Vector3 TouchWallNormal
     {
         get { return touchWallNormal; }
-    }
-    bool isTouchWall()
-    {
-        int listCount = contactPointWall.Count;
-        bool touch = false;
-        // 因為想看所有的touchWallNormal，不然不需要跑迴圈
-        for (int x = 0; x < listCount; x++)
-        {
-            var cp = contactPointWall[x];
-            touchWallNormal = cp.normal;
-            Debug.DrawRay(cp.point, cp.normal * debugLen, Color.cyan);
-            touch = true;
-        }
-        return touch;
     }
 
     /* 接觸相關：rigid on rigid (跳上摩天輪和電纜需要) */
@@ -168,16 +162,19 @@ public class PlanetMovable : MonoBehaviour
             // 設定面向
             Vector3 forward = Vector3.Cross(transform.right, upDir);
             Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
-            transform.rotation = targetRotation;
+
+            if (Ladding)
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime);
+            else transform.rotation = targetRotation;
         }
     }
 
-    static Color orange = new Color(1, 165.0f / 255, 0);
+    static Color orange = new Color(229.0f / 255, 83.0f / 255, 0);
     void setupGravityDir()
     {
         // 重力朝向:預設向下
         var pos = transform.position;
-        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, ref pos) : -Vector3.up;
+        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, pos) : -Vector3.up;
         upDir = -gravityDir;
 
         Debug.DrawRay(pos, upDir * debugLen * 2, orange);
@@ -218,6 +215,11 @@ public class PlanetMovable : MonoBehaviour
         rigid.AddForce(moveForceParameter.getGravityForceStrength(!Ladding) * gravityDir, ForceMode.Acceleration);
 
         // Debug.DrawRay(transform.position, gravityDir, Color.green);
+
+        // 三軸
+        // Debug.DrawRay(transform.position, transform.up * 2, Color.green);
+        // Debug.DrawRay(transform.position, transform.forward, Color.blue);
+        // Debug.DrawRay(transform.position, transform.right, Color.red);
     }
 
     public void executeMoving(Vector3 moveForce)
@@ -241,8 +243,7 @@ public class PlanetMovable : MonoBehaviour
         if (moveForce != Vector3.zero && !firstPersonMode)
         {
             Quaternion targetRotation2 = Quaternion.LookRotation(moveForce, upDir);
-            Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRotation2, Time.deltaTime * rotationSpeed);
-            transform.rotation = newRot;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation2, Time.fixedDeltaTime * rotationSpeed);
         }
 
         // 取得移動的力
