@@ -92,9 +92,6 @@ public class PlanetMovable : MonoBehaviour
         touchWall = hasContact(contactPointWall, ref touchWallNormal, Color.cyan);
     }
 
-    bool touchGravityGenerator = false;
-    Vector3 touchGravityGeneratorNormal;
-
     bool hasContact(List<ContactPoint> list, ref Vector3 contactNormal, Color color)
     {
         int listCount = list.Count;
@@ -115,7 +112,6 @@ public class PlanetMovable : MonoBehaviour
 
     bool contactGround;
     Vector3 contactGroundNormal;
-
 
     bool touchWall;
     public bool TouchWall { get { return touchWall; } }
