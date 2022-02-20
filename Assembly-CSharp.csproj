@@ -45,7 +45,6 @@
      <Compile Include="Assets\Prefab\Item\Bike\Bike.cs" />
      <Compile Include="Assets\Prefab\Character\Finn\OnAirState.cs" />
      <Compile Include="Assets\scripts\Tool\GeometryTool.cs" />
-     <Compile Include="Assets\scripts\GravityGenerator\CreateGravitySensor.cs" />
      <Compile Include="Assets\scripts\Level\GroundTypeSetter.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\DrawHeightCamera.cs" />
      <Compile Include="Assets\Prefab\machine\QBox\Script\QBoxFinal.cs" />

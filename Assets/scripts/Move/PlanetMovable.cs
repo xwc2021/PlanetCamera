@@ -128,13 +128,11 @@ public class PlanetMovable : MonoBehaviour
     {
         float rayCastDistance = 5;
         float rayFromUpOffset = 1;
-        float rayFromForwardOffset = -0.1f; //往後退一步，下斜坡不卡住(因為在交界處有如果直直往下打可能打中斜坡)
 
-        Vector3 from = transform.position + upDir * rayFromUpOffset + transform.forward * rayFromForwardOffset;
+        Vector3 from = transform.position + upDir * rayFromUpOffset;
         Debug.DrawRay(from, -upDir * rayCastDistance, Color.yellow);
 
-        heightToFloor = float.PositiveInfinity;
-
+        heightToFloor = float.MaxValue;
         RaycastHit hit;
         int layerMask = 1 << LayerDefined.Border | 1 << LayerDefined.BorderBlockCamera;
         if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
