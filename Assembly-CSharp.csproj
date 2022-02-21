@@ -123,6 +123,7 @@
      <Compile Include="Assets\Pack\DiyTerrain\Script\Brush.cs" />
      <Compile Include="Assets\Pack\DiyTerrain\Script\ShowMeshBound.cs" />
      <Compile Include="Assets\scripts\Level\ManyBike.cs" />
+     <Compile Include="Assets\scripts\GravityGenerator\GravitySensor.cs" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSphere.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\ToSpherePBR.shader" />
      <None Include="Assets\Pack\DiyTerrain\shaders\brush\brush_fill.shader" />

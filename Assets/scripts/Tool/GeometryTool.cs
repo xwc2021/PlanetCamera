@@ -97,4 +97,41 @@ public class GeometryTool
         else
             GeometryTool.GetShootingRayPerspective(mousePos, out from, out dir);
     }
+
+    // 這些點z都是0
+    static void CalculateBarycentricCoordinates(Vector3 s0, Vector3 s1, Vector3 s2, Vector3 P, ref bool success, out float α, out float β, out float γ)
+    {
+        var diff = P - s0;
+
+        // https://1.bp.blogspot.com/-csct6vAS1vs/YajSLKgW1WI/AAAAAAABDd8/shSLs78p274fnRa3R5fv3wN9dNS5WCN3wCPcBGAsYHg/s4618/screen_sapce.png
+        // 求ray(P,S0-S2)和ray(S0,S1-S2)的交點
+        // 等同於求ray(P,S0-S2)和平面的交點
+        var dir01 = s1 - s0;
+        var dir02 = s2 - s0;
+
+        var help = Vector3.Cross(dir01, dir02);
+        var n = Vector3.Cross(help, dir01); // 不需要正規化
+
+        Vector3 hitPos;
+        var result = RayHitPlane(P, -dir02, s0, n, out hitPos);
+        if (!result)
+        {
+            // 退化成直線的三角形才有也可能
+            // console.log('平行', s0, s1, s2, P);
+            success = false;
+        }
+
+        var p_on_dir01 = hitPos;
+        var vector_α = p_on_dir01 - s0;
+        var vector_β = diff - vector_α;
+
+        // 擋掉dir01、dir02是y軸平行的情況
+        // 浮點數請用 number_equal，不然會GG
+        // 見圖：bug/float_point_compaire_error(fixed)/bug_when_clipping_2.jpg
+        // 其實當初直接用長度比算α、β不是更簡單嗎？
+        α = vector_α.magnitude / dir01.magnitude;
+        β = vector_β.magnitude / dir02.magnitude;
+
+        γ = 1 - α - β;
+    }
 }
