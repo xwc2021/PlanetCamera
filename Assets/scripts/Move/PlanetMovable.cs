@@ -67,10 +67,10 @@ public class PlanetMovable : MonoBehaviour
         var layer = collision.gameObject.layer;
         if (layer == LayerDefined.Border || layer == LayerDefined.BorderBlockCamera || layer == LayerDefined.BorderNoAvoid)
         {
-            var len = collision.contacts.Length;
+            var len = collision.contactCount;
             for (var i = 0; i < len; ++i)
             {
-                var cp = collision.contacts[i];
+                var cp = collision.GetContact(i);
                 if (isWallNormal(cp.normal))
                 {
                     if (layer != LayerDefined.BorderNoAvoid)
@@ -124,6 +124,9 @@ public class PlanetMovable : MonoBehaviour
 
     /* 接觸相關：rigid on rigid (跳上摩天輪和電纜需要) */
     public float heightToFloor;
+    bool isHitFloor;
+    Vector3 hitFloorNormal;
+    Vector3 hitFloorPos;
     void hitFloor()
     {
         float rayCastDistance = 5;
@@ -133,12 +136,17 @@ public class PlanetMovable : MonoBehaviour
         Debug.DrawRay(from, -upDir * rayCastDistance, Color.yellow);
 
         heightToFloor = float.MaxValue;
+        isHitFloor = false;
+
         RaycastHit hit;
         int layerMask = 1 << LayerDefined.Border | 1 << LayerDefined.BorderBlockCamera;
         if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
         {
             heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
-            Debug.DrawRay(hit.point, hit.normal * debugLen, Color.black);
+            hitFloorNormal = hit.normal;
+            hitFloorPos = hit.point;
+            isHitFloor = true;
+            Debug.DrawRay(hit.point, hitFloorNormal * debugLen, Color.black);
         }
     }
 
@@ -168,7 +176,7 @@ public class PlanetMovable : MonoBehaviour
     {
         // 重力朝向:預設向下
         var pos = transform.position;
-        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, pos) : -Vector3.up;
+        gravityDir = this.grounGravityGenerator != null ? this.grounGravityGenerator.findGravityDir(transform.up, pos, isHitFloor, hitFloorPos) : -Vector3.up;
         upDir = -gravityDir;
 
         Debug.DrawRay(pos, upDir * debugLen * 2, orange);

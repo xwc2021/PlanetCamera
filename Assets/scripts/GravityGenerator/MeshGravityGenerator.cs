@@ -30,7 +30,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
         }
     }
 
-    public Vector3 findGravityDir(Vector3 headUp, Vector3 targetPos)
+    public Vector3 findGravityDir(Vector3 headUp, Vector3 targetPos, bool isHitFloor, Vector3 hitFloorPos)
     {
         // 收集GS
         int layerMask = 1 << LayerDefined.GravitySensor;
@@ -46,7 +46,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
         {
             Collider c = colliderList[i];
             float nowDistance = (c.transform.position - targetPos).sqrMagnitude;
-            Debug.DrawRay(c.transform.position, c.transform.forward * nowDistance);
+            Debug.DrawRay(c.transform.position, c.transform.forward * 5);
             if (nowDistance < nearestDistance)
             {
                 nearestC = c;
@@ -54,7 +54,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             }
         }
 
-        Debug.DrawRay(nearestC.transform.position, nearestC.transform.forward * nearestDistance, purple);
+        Debug.DrawRay(nearestC.transform.position, nearestC.transform.forward * 5, purple);
         return -nearestC.transform.forward;
     }
 }
