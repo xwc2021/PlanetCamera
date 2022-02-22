@@ -99,7 +99,7 @@ public class GeometryTool
     }
 
     // 這些點z都是0
-    static void CalculateBarycentricCoordinates(Vector3 s0, Vector3 s1, Vector3 s2, Vector3 P, ref bool success, out float α, out float β, out float γ)
+    public static void CalculateBarycentricCoordinates(ref Vector3 s0, ref Vector3 s1, ref Vector3 s2, ref Vector3 P, out bool isGetValue, out float a, out float b, out float r)
     {
         var diff = P - s0;
 
@@ -111,27 +111,49 @@ public class GeometryTool
 
         var help = Vector3.Cross(dir01, dir02);
         var n = Vector3.Cross(help, dir01); // 不需要正規化
-
+        Debug.DrawRay((s0 + s1) / 2, n.normalized, Color.red);
+        Debug.DrawRay(P, -dir02.normalized, Color.yellow);
         Vector3 hitPos;
-        var result = RayHitPlane(P, -dir02, s0, n, out hitPos);
+        var result = RayHitPlane(P, -dir02, n, s0, out hitPos);
         if (!result)
         {
-            // 退化成直線的三角形才有也可能
-            // console.log('平行', s0, s1, s2, P);
-            success = false;
+            Debug.DrawRay(hitPos, help * 10, Color.green);
+            Debug.Log("RayHitPlane失敗");
+            isGetValue = false;
         }
 
         var p_on_dir01 = hitPos;
-        var vector_α = p_on_dir01 - s0;
-        var vector_β = diff - vector_α;
+        Debug.DrawRay(p_on_dir01, Vector3.up, Color.green);
+        var vector_alpha = p_on_dir01 - s0;
+        var vector_Beta = diff - vector_alpha;
 
         // 擋掉dir01、dir02是y軸平行的情況
-        // 浮點數請用 number_equal，不然會GG
-        // 見圖：bug/float_point_compaire_error(fixed)/bug_when_clipping_2.jpg
-        // 其實當初直接用長度比算α、β不是更簡單嗎？
-        α = vector_α.magnitude / dir01.magnitude;
-        β = vector_β.magnitude / dir02.magnitude;
+        a = floatEqual(dir01.x, 0) ? vector_alpha.y / dir01.y : vector_alpha.x / dir01.x;
+        b = floatEqual(dir02.x, 0) ? vector_Beta.y / dir02.y : vector_Beta.x / dir02.x;
 
-        γ = 1 - α - β;
+        r = 1 - a - b;
+        isGetValue = true;
+    }
+
+    public static bool floatEqual(float a, float b)
+    {
+        return Mathf.Abs(a - b) < float.Epsilon;
+    }
+
+    public static Vector3 CalculateInterpolationValueByBarycentricCoordinates(ref Vector3 s0, ref Vector3 s1, ref Vector3 s2, float a, float b, float r)
+    {
+        return s0 * r + s1 * a + s2 * b;
+    }
+
+    public static bool isInTriangle(float a, float b, float r)
+    {
+        return (a >= 0 && b >= 0 && r >= 0);
+    }
+
+    public static Vector3 CalculateTriangleNormal(ref Vector3 s0, ref Vector3 s1, ref Vector3 s2)
+    {
+        var dir01 = s1 - s0;
+        var dir02 = s2 - s0;
+        return Vector3.Cross(dir01, dir02).normalized;
     }
 }
