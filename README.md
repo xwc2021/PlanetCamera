@@ -1,6 +1,11 @@
 # PlanetCamera
 可以在一般平面、球上、甜甜上使用的第3人稱角色控制
 
+# 在webgl執行
+舊的手機操作被我拔掉了
+所以只能用電腦玩
+[prototype](https://xwc2021.github.io/mypage/Game/)
+
 # 操作
 
 鍵盤  
