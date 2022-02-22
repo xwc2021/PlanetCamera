@@ -151,8 +151,8 @@ public class PlanetPlayerController : MonoBehaviour
         //跳
         if (planetMovable.Ladding)
         {
-            // Ladding mark
-            Debug.DrawRay(transform.position, -transform.up, Color.green);
+            // 標示 HitFloorPos
+            Debug.DrawRay(planetMovable.HitFloorPos, -transform.up * 0.25f, Color.green);
             if (doJump)
             {
                 if (measuringJumpHeight != null)

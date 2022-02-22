@@ -9,4 +9,7 @@ public class LayerDefined
     public static readonly int BorderNoAvoid = LayerMask.NameToLayer("BorderNoAvoid");
     public static readonly int BlockCamera = LayerMask.NameToLayer("BlockCamera");
 
+    public static readonly int HitFloor = LayerMask.NameToLayer("HitFloor");
+
+
 }

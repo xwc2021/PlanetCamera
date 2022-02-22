@@ -34,7 +34,16 @@ public class PlanetMovable : MonoBehaviour
     bool doContactDetect;
     public bool Ladding
     {
+        // get { return contactGround; }
         get { return contactGround || (heightToFloor < 0.1f); }
+    }
+
+    Vector3 getGroundOrFloorNormal()
+    {
+        if (contactGround)
+            return contactGroundNormal;
+        else
+            return hitFloorNormal;
     }
 
     static float max_cos_value = Mathf.Cos(80 * Mathf.Deg2Rad);
@@ -45,7 +54,7 @@ public class PlanetMovable : MonoBehaviour
         return (dotValue > min_cos_value && dotValue < max_cos_value);
     }
 
-    /* 接觸相關：rigid on collder */
+    /* 接觸相關 */
 
     // https://docs.unity3d.com/Manual/ExecutionOrder.html
     // 執行順序
@@ -58,7 +67,8 @@ public class PlanetMovable : MonoBehaviour
     List<ContactPoint> contactPointWall;
 
     // 收集contanct資訊並分類(有可能同時碰到2個以上的物件)
-    // 這裡只有rigid和collider相碰會觸發
+    // rigid on collider | rigid on rigid
+    // kinematic rigidbody 不行
     void OnCollisionStay(Collision collision)
     {
         if (!doContactDetect)
@@ -96,7 +106,7 @@ public class PlanetMovable : MonoBehaviour
     {
         int listCount = list.Count;
         bool contact = false;
-        // 想看所有的contactGroundNormal
+        // 想看所有的normal
         for (int x = 0; x < listCount; x++)
         {
             var cp = list[x];
@@ -122,11 +132,15 @@ public class PlanetMovable : MonoBehaviour
         get { return touchWallNormal; }
     }
 
-    /* 接觸相關：rigid on rigid (跳上摩天輪和電纜需要) */
+    /* 接觸相關：(跳上摩天輪和電纜需要，因為 它們的parent有 kinematic rigidbody) */
     public float heightToFloor;
-    bool isHitFloor;
+    bool isHitFloor = false;
     Vector3 hitFloorNormal;
     Vector3 hitFloorPos;
+    public Vector3 HitFloorPos
+    {
+        get => hitFloorPos;
+    }
     void hitFloor()
     {
         float rayCastDistance = 5;
@@ -139,7 +153,7 @@ public class PlanetMovable : MonoBehaviour
         isHitFloor = false;
 
         RaycastHit hit;
-        int layerMask = 1 << LayerDefined.Border | 1 << LayerDefined.BorderBlockCamera;
+        int layerMask = 1 << LayerDefined.HitFloor;
         if (Physics.Raycast(from, -upDir, out hit, rayCastDistance, layerMask))
         {
             heightToFloor = (hit.point - from).magnitude - rayFromUpOffset;
@@ -236,7 +250,7 @@ public class PlanetMovable : MonoBehaviour
         // 貼著地板移動
         if (Ladding)
         {
-            moveForce = Vector3.ProjectOnPlane(moveForce, contactGroundNormal);
+            moveForce = Vector3.ProjectOnPlane(moveForce, getGroundOrFloorNormal());
             moveForce.Normalize();
             Debug.DrawRay(transform.position + transform.up, moveForce * debugLen, Color.blue);
         }
@@ -255,7 +269,7 @@ public class PlanetMovable : MonoBehaviour
 
         // 處理斜坡
         if (slopeForceMonitor != null && Ladding)
-            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!Ladding), upDir, contactGroundNormal);
+            moveForceWithStrength = slopeForceMonitor.modifyMoveForce(moveForceWithStrength, moveForceParameter.getGravityForceStrength(!Ladding), upDir, getGroundOrFloorNormal());
 
         // 移動
         rigid.AddForce(moveForceWithStrength, ForceMode.Acceleration);
