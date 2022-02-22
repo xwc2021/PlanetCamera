@@ -118,7 +118,6 @@ public class GeometryTool
         if (!result)
         {
             Debug.DrawRay(hitPos, help * 10, Color.green);
-            Debug.Log("RayHitPlane失敗");
             isGetValue = false;
         }
 

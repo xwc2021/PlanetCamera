@@ -3,12 +3,6 @@ using UnityEngine;
 //非球圓形星球：像是Donuts、Knot
 public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
 {
-
-
-    public float findingGravitySensorR = 4;
-    Collider[] colliderList = new Collider[100];//大小看需求自己設定
-    Color purple = new Color(159.0f / 255, 90.0f / 255, 253.0f / 255);
-
     void Awake()
     {
         Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
@@ -56,22 +50,15 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
         }
     }
 
-    Vector3 getInterpolationNormal(GravitySensor gs, ref Vector3 movablePos, ref Vector3 headUp)
+    Vector3 getInterpolationNormal(List<int> triIndexList, ref Vector3 movablePos, ref Vector3 headUp)
     {
-        // 找出位在那個三角形上
-        var triIndexList = gs.neighborTriangleIndex;
-        // print(triIndexList.Count + "->" + gs.info());
-
         var triCount = triIndexList.Count;
-
-        // Color[] c = new Color[6] { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan, Color.white };
         for (var i = 0; i < triCount; ++i)
         {
             var triIndex = triIndexList[i];
             int v0Index = triangles[3 * triIndex];
             int v1Index = triangles[3 * triIndex + 1];
             int v2Index = triangles[3 * triIndex + 2];
-            // print(v0Index + "," + v1Index + "," + v2Index);
 
             var v0 = vertices[v0Index];
             var v1 = vertices[v1Index];
@@ -87,7 +74,6 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
             Vector3 hitPos;
             if (!GeometryTool.RayHitPlane(movablePos, -N, N, v0, out hitPos))
                 continue;
-            // Debug.DrawRay(hitPos, N * 5, c[i]);
 
             bool isGetValue;
             float a, b, r;
@@ -97,8 +83,6 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
 
             if (!GeometryTool.isInTriangle(a, b, r))
                 continue;
-
-            Debug.Log("->" + a + " " + b + " " + r);
 
             Debug.DrawLine(v0, v1, Color.red);
             Debug.DrawLine(v1, v2, Color.green);
@@ -118,6 +102,11 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
         return headUp;
     }
 
+    public bool usingInterpolationNormal = true;
+    public float findingGravitySensorR = 4;
+    Collider[] colliderList = new Collider[100];//大小看需求自己設定
+    Color purple = new Color(159.0f / 255, 90.0f / 255, 253.0f / 255);
+
     public Vector3 findGravityDir(Vector3 headUp, Vector3 movablePos, bool isHitFloor, Vector3 hitFloorPos)
     {
         // 收集GS
@@ -127,26 +116,69 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
         if (overlapCount == 0)
             return -headUp;
 
-        // 找出最近的GS
-        // todo: 有甜甜圈的交界處的GravitySensor，會漏掉一些相鄰資訊，所以該處不平滑
-        Collider nearestC = null;
-        float nearestDistance = float.MaxValue;
+        Collider nearestC;
+        var allNeighborTriangelIndex = getAllNeighborTriangelIndex(ref movablePos, overlapCount, out nearestC);
+        var normal = getInterpolationNormal(allNeighborTriangelIndex, ref movablePos, ref headUp);
+        Debug.DrawRay(nearestC.transform.position, nearestC.transform.forward * 5, purple);
+        Debug.DrawRay(movablePos, normal * 10, Color.black);
+        if (usingInterpolationNormal)
+            return -normal;
+        else
+            return -nearestC.transform.forward;
+    }
+
+    List<int> getAllNeighborTriangelIndex(ref Vector3 movablePos, int overlapCount, out Collider nearestC)
+    {
+        // 只有1個的話
+        if (overlapCount == 1)
+        {
+            var c = colliderList[0];
+            nearestC = c;
+            return c.GetComponent<GravitySensor>().neighborTriangleIndex;
+        }
+
+        // 找出最近的GS(1個以上)
+        // 有甜甜圈的交界處的GravitySensor，會漏掉一些相鄰資訊
+        var vertexInfoList = new List<VertexInfo>();
         for (int i = 0; i < overlapCount; i++)
         {
             Collider c = colliderList[i];
-            float nowDistance = (c.transform.position - movablePos).sqrMagnitude;
-            // Debug.DrawRay(c.transform.position, c.transform.forward * 5);
-            if (nowDistance < nearestDistance)
-            {
-                nearestC = c;
-                nearestDistance = nowDistance;
-            }
+            var vPos = c.transform.position;
+            var vNormal = c.transform.forward;
+            vertexInfoList.Add(new VertexInfo() { position = vPos, normal = vNormal, distance = (vPos - movablePos).sqrMagnitude, collider = c });
         }
-        var gs = nearestC.GetComponent<GravitySensor>();
-        var normal = getInterpolationNormal(gs, ref movablePos, ref headUp);
-        Debug.DrawRay(gs.transform.position, gs.transform.forward * 5, purple);
-        Debug.DrawRay(movablePos, normal * 10, Color.black);
-        return -normal;
-        // return -nearestC.transform.forward;
+
+        vertexInfoList.Sort(
+            (VertexInfo a, VertexInfo b) =>
+            {
+                if (a.distance < b.distance) return -1;
+                else return 1;
+            }
+        );
+
+        nearestC = vertexInfoList[0].collider;
+
+        // 最近的2個
+        var gs0 = vertexInfoList[0].collider.GetComponent<GravitySensor>();
+        var gs1 = vertexInfoList[1].collider.GetComponent<GravitySensor>();
+        var distance_0_1 = (gs0.transform.position - gs1.transform.position).magnitude;
+        if (GeometryTool.floatEqual(distance_0_1, 0))
+        {
+            Debug.Log("GravitySensor合體");
+            List<int> list = new List<int>();
+            list.AddRange(gs0.neighborTriangleIndex);
+            list.AddRange(gs1.neighborTriangleIndex);
+            return list;
+        }
+        else
+            return gs0.neighborTriangleIndex;
+    }
+
+    struct VertexInfo
+    {
+        public Vector3 position;
+        public Vector3 normal;
+        public float distance;
+        public Collider collider;
     }
 }
