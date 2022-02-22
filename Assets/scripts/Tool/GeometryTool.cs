@@ -111,18 +111,18 @@ public class GeometryTool
 
         var help = Vector3.Cross(dir01, dir02);
         var n = Vector3.Cross(help, dir01); // 不需要正規化
-        Debug.DrawRay((s0 + s1) / 2, n.normalized, Color.red);
-        Debug.DrawRay(P, -dir02.normalized, Color.yellow);
+        // Debug.DrawRay((s0 + s1) / 2, n.normalized, Color.red);
+        // Debug.DrawRay(P, -dir02.normalized, Color.yellow);
         Vector3 hitPos;
         var result = RayHitPlane(P, -dir02, n, s0, out hitPos);
         if (!result)
         {
-            Debug.DrawRay(hitPos, help * 10, Color.green);
+            // Debug.DrawRay(hitPos, help * 10, Color.green);
             isGetValue = false;
         }
 
         var p_on_dir01 = hitPos;
-        Debug.DrawRay(p_on_dir01, Vector3.up, Color.green);
+        // Debug.DrawRay(p_on_dir01, Vector3.up, Color.green);
         var vector_alpha = p_on_dir01 - s0;
         var vector_Beta = diff - vector_alpha;
 
