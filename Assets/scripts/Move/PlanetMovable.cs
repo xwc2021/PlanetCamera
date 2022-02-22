@@ -182,6 +182,7 @@ public class PlanetMovable : MonoBehaviour
             if (Ladding)
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime);
             else transform.rotation = targetRotation;
+            // transform.rotation = targetRotation;
         }
     }
 
