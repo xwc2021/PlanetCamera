@@ -164,7 +164,7 @@ public class MeshGravityGenerator : MonoBehaviour, GroundGravityGenerator
         var distance_0_1 = (gs0.transform.position - gs1.transform.position).magnitude;
         if (GeometryTool.floatEqual(distance_0_1, 0))
         {
-            Debug.Log("GravitySensor合體");
+            // Debug.Log("GravitySensor合體");
             List<int> list = new List<int>();
             list.AddRange(gs0.neighborTriangleIndex);
             list.AddRange(gs1.neighborTriangleIndex);
