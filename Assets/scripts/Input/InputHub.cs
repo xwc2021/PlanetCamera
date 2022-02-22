@@ -18,28 +18,34 @@ public class InputHub : MonoBehaviour
     public void OnFire(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
-            getPlanetPlayerController().setTurbo(true);
+            getPlanetPlayerController()?.setTurbo(true);
         else if (context.phase == InputActionPhase.Canceled)
-            getPlanetPlayerController().setTurbo(false);
+            getPlanetPlayerController()?.setTurbo(false);
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
         if (context.performed)
-            getPlanetPlayerController().triggerJump();
+            getPlanetPlayerController()?.triggerJump();
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         var value = context.ReadValue<Vector2>();
-        getPlanetPlayerController().MoveVec = value;
+        var controller = getPlanetPlayerController();
+        if (!controller)
+            return;
+        controller.MoveVec = value;
         // print(value);
     }
 
     public void OnLook(InputAction.CallbackContext context)
     {
         var value = context.ReadValue<Vector2>();
-        GetCameraPivot().LookVec = value;
+        var cameraPivot = GetCameraPivot();
+        if (!cameraPivot)
+            return;
+        cameraPivot.LookVec = value;
         // print(value);
     }
 }
