@@ -43,6 +43,7 @@ public class CreatePlayer : MonoBehaviour
         slopeForceMonitor.maxForceLimit = 120;
 
         var planetMovable = gameObject.AddComponent<PlanetMovable>();
+        planetMovable.standUpDirectly = true;
         planetMovable.slopeForceMonitor = slopeForceMonitor;
         planetMovable.moveForceParameterRepository = moveForceParameterRepository;
         planetMovable.init();

@@ -164,6 +164,7 @@ public class PlanetMovable : MonoBehaviour
         }
     }
 
+    public bool standUpDirectly = false;
     /* 移動相關：準備工具 called in FixedUpdate */
     public void preProcess(bool doContactDetect, bool standUp)
     {
@@ -179,10 +180,17 @@ public class PlanetMovable : MonoBehaviour
             Vector3 forward = Vector3.Cross(transform.right, upDir);
             Quaternion targetRotation = Quaternion.LookRotation(forward, upDir);
 
-            if (Ladding)
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime);
-            else transform.rotation = targetRotation;
-            // transform.rotation = targetRotation;
+            if (standUpDirectly)
+            {
+                transform.rotation = targetRotation;
+                return;
+            }
+            else
+            {
+                if (Ladding) // 漸變
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime);
+                else transform.rotation = targetRotation;
+            }
         }
     }
 
